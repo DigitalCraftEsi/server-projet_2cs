@@ -21,12 +21,11 @@ export const HandlError  = (err : Prisma.PrismaClientKnownRequestError | ErrorEv
             errors.email = "this email is already registred"
         }
     }else {
-        console.log("dkdsk",err.message)
         if (err.message == "incorrect Password") {
             errors.password = "this password is incorrect"
         }
         if (err.message == "incorrect Email") {
-            errors.email = "this email is already registred"
+            errors.email = "this email is incorrect"
         }
     }
 

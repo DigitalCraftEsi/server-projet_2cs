@@ -1,6 +1,7 @@
 // Import the express in typescript file
-import express , {Application} from 'express';
-import authRouter from './routers/authRouter';
+import express , {Application, NextFunction , Request , Response} from 'express';
+import { ApiError, ErrorType, InternalError } from './src/handler/apiError';
+import authRouter from './src/routers/authRouter';
 
  
 // Initialize the express engine
@@ -21,6 +22,31 @@ app.listen(port, () => {
 
 });
 
-
 app.use('/user',authRouter);
 
+
+
+function errorHandler(err : Error, req:Request, res:Response, next:NextFunction) {
+  if (err instanceof ApiError) {
+    ApiError.handle(<ApiError>err, res);
+      if (err.type === ErrorType.INTERNAL)
+        console.log(
+          `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`,
+        );
+    } else {
+      console.log(
+        `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`,
+      );
+      console.log(err);
+      if (process.env.NODE_ENV === 'development') {
+        return res.status(500).send(err);
+      }
+      ApiError.handle(new InternalError(), res);
+    }
+
+}
+
+app.use(errorHandler)
+
+
+  

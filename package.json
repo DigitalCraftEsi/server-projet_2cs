@@ -4,7 +4,7 @@
   "description": "projet_2cs",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon - exec 'ts-node' ./index.ts",
+    "dev": "nodemon --env NODE_ENV='development' - exec  'ts-node' ./index.ts ",
     "start": "nodemon   ./index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
