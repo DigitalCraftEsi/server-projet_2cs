@@ -1,7 +1,8 @@
 // Import the express in typescript file
 import express , {Application, NextFunction , Request , Response} from 'express';
-import { ApiError, ErrorType, InternalError } from './src/handler/apiError';
+import { ApiError, BadRequestError, ErrorType, InternalError } from './src/handler/apiError';
 import authRouter from './src/routers/authRouter';
+import machinRouter from './src/routers/vendingMachineRouter';
 
  
 // Initialize the express engine
@@ -11,7 +12,7 @@ app.use(express.json({limit: '50mb'}));
 
 // Take a port 3000 for running server.
 // eslint-disable-next-line @typescript-eslint/ban-types
-const port : Number = 3000;
+const port : Number = 8000;
  
 
  
@@ -21,12 +22,14 @@ app.listen(port, () => {
          http://localhost:${port}/`);
 
 });
-
 app.use('/user',authRouter);
+app.use("/machine",machinRouter);
+
 
 
 
 function errorHandler(err : Error, req:Request, res:Response, next:NextFunction) {
+  console.log(err)
   if (err instanceof ApiError) {
     ApiError.handle(<ApiError>err, res);
       if (err.type === ErrorType.INTERNAL)

@@ -5,6 +5,7 @@ import {
   InternalErrorResponse,
   BadRequestResponse,
   ForbiddenResponse,
+  InvalidDataResponse,
 } from './ApiResponse';
 
 export enum ErrorType {
@@ -15,6 +16,7 @@ export enum ErrorType {
   NOT_FOUND = 'NotFoundError',
   BAD_REQUEST = 'BadRequestError',
   FORBIDDEN = 'ForbiddenError',
+  INVDALID_DATA = 'InvalidData'
 }
 
 export abstract class ApiError extends Error {
@@ -27,7 +29,6 @@ export abstract class ApiError extends Error {
       case ErrorType.BAD_TOKEN:
       case ErrorType.TOKEN_EXPIRED:
       case ErrorType.UNAUTHORIZED:
-        console.log("ssq;flkdj ");
         return new AuthFailureResponse(err.message).send(res);
       case ErrorType.INTERNAL:
         return new InternalErrorResponse(err.message).send(res);
@@ -36,6 +37,8 @@ export abstract class ApiError extends Error {
         return new BadRequestResponse(err.message).send(res);
       case ErrorType.FORBIDDEN:
         return new ForbiddenResponse(err.message).send(res);
+      case ErrorType.INVDALID_DATA :
+        return new InvalidDataResponse(err.message).send(res)
       default: {
         let message = err.message;
         // Do not send failure message in production as it may send sensitive data
@@ -49,6 +52,12 @@ export abstract class ApiError extends Error {
 export class AuthFailureError extends ApiError {
   constructor(message = 'Invalid Credentials') {
     super(ErrorType.UNAUTHORIZED, message);
+  }
+}
+
+export class InvalidDataError extends ApiError {
+  constructor(message = 'Invalid data') {
+    super(ErrorType.INVDALID_DATA, message);
   }
 }
 

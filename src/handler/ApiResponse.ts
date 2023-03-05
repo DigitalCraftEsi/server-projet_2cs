@@ -14,6 +14,7 @@ enum StatusCode {
   FORBIDDEN = 403,
   NOT_FOUND = 404,
   INTERNAL_ERROR = 500,
+  INVALID_DATA = 400,
 }
 
 
@@ -51,6 +52,14 @@ export class AuthFailureResponse extends ApiResponse {
   }
 }
 
+
+export class InvalidDataResponse extends ApiResponse {
+  constructor(message = 'Invalid Data') {
+    super(Status.ERROR, StatusCode.INVALID_DATA, message);
+  }
+}
+
+
 export class NotFoundResponse extends ApiResponse {
   constructor(message = 'Not Found') {
     super(Status.ERROR, StatusCode.NOT_FOUND, message);
@@ -77,7 +86,7 @@ export class InternalErrorResponse extends ApiResponse {
 }
 
 export class SuccessMsgResponse extends ApiResponse {
-  constructor(message: string) {
+  constructor(message = "success") {
     super(Status.SUCCESS, StatusCode.SUCCESS, message);
   }
 }
@@ -89,7 +98,7 @@ export class FailureMsgResponse extends ApiResponse {
 }
 
 export class SuccessResponse extends ApiResponse {
-  constructor(message: string,data: unknown) {
+  constructor(message = "success",data: unknown) {
     super(Status.SUCCESS, StatusCode.SUCCESS, message,data);
   }
 }

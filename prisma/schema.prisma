@@ -7,13 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id       Int     @id @default(autoincrement())
-  email    String  @unique(map: "User_email_key")
-  name     String?
-  password String
-}
-
 model actionsuspecte {
   idActionSuspecte Int      @id
   dateAction       Int?
@@ -42,7 +35,6 @@ model agent_commerciale {
   telephoneAC  String? @db.VarChar(200)
   motDePasseAC String? @db.VarChar(200)
   idClient     Int
-
   @@index([idClient], map: "idClient")
 }
 
@@ -67,21 +59,22 @@ model amdistributeur {
 }
 
 model annoncepublicitaire {
-  idAnnonce   Int       @id
-  sexe        String?   @db.VarChar(1)
-  ageMin      Int?
-  ageMax      Int?
-  video       String?   @db.VarChar(200)
-  region      String?   @db.VarChar(200)
-  prix        Float?
-  dateDebut   DateTime? @db.DateTime(0)
-  dateFin     DateTime? @db.DateTime(0)
-  periode     Int?
-  idBoisson   Int?
-  idAnnonceur Int
+  idAnnonce      Int       @id
+  sexe           String?   @db.VarChar(1)
+  ageMin         Int?
+  ageMax         Int?
+  video          String?   @db.VarChar(200)
+  region         String?   @db.VarChar(200)
+  prix           Float?
+  dateDebut      DateTime? @db.DateTime(0)
+  dateFin        DateTime? @db.DateTime(0)
+  periode        Int?
+  idBoisson      Int?
+  idDistributeur Int?
+  idAnnonceur    Int
 
   @@index([idAnnonceur], map: "idAnnonceur")
-  @@index([idBoisson], map: "idBoisson")
+  @@index([idBoisson, idDistributeur], map: "idBoisson")
 }
 
 model annonceur {
@@ -99,20 +92,23 @@ model anomalie {
 }
 
 model boisson {
-  idBoisson      Int     @id
-  nomBoisson     String? @db.VarChar(200)
-  tarif          Float?
-  idDistributeur Int?
+  idBoisson        Int
+  idDistributeur   Int
+  nomBoisson       String? @db.VarChar(200)
+  tarif            Float?
+  idDistributeur_1 Int?
 
-  @@index([idDistributeur], map: "idDistributeur")
+  @@id([idBoisson, idDistributeur])
+  @@index([idDistributeur_1], map: "idDistributeur_1")
 }
 
 model boissoncommande {
-  idBoisson  Int
-  idCommande Int
-  Quantite   Int?
+  idBoisson      Int
+  idDistributeur Int
+  idCommande     Int
+  Quantite       Int?
 
-  @@id([idBoisson, idCommande])
+  @@id([idBoisson, idDistributeur, idCommande])
   @@index([idCommande], map: "idCommande")
 }
 
@@ -155,23 +151,17 @@ model decideur {
 }
 
 model distributeur {
-  idDistributeur        Int      @id
+  idDistributeur        Int    @id  @default(autoincrement())
   positionX             Int?
   positionY             Int?
   adresse               String?  @db.VarChar(200)
   etat                  String?  @db.VarChar(50)
   codeDeDeverrouillage_ String?  @db.VarChar(200)
-  actif                 Boolean?
+  actif                 Boolean? @default(true)
+  idClient              Int?
   idAC                  Int?
 
   @@index([idAC], map: "idAC")
-}
-
-model distributeurclient {
-  idDistributeur Int
-  idClient       Int
-
-  @@id([idDistributeur, idClient])
   @@index([idClient], map: "idClient")
 }
 
@@ -241,4 +231,11 @@ model vol {
   idDistributeur Int
 
   @@index([idDistributeur], map: "idDistributeur")
+}
+
+model reclamationauto {
+  idReclamationAuto   Int       @id
+  dateReclamationAuto DateTime? @db.DateTime(0)
+  description         String?   @db.VarChar(200)
+  idCommande          Int       @unique(map: "idCommande")
 }
