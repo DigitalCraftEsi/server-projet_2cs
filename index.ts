@@ -2,6 +2,7 @@
 import express , {Application, NextFunction , Request , Response} from 'express';
 import { ApiError, BadRequestError, ErrorType, InternalError } from './src/handler/apiError';
 import authRouter from './src/routers/authRouter';
+import baverageRouter from './src/routers/beverageRouter';
 import machinRouter from './src/routers/vendingMachineRouter';
 
  
@@ -20,10 +21,11 @@ const port : Number = 8000;
 app.listen(port, () => {
     console.log(`TypeScript with Express
          http://localhost:${port}/`);
-
 });
+
 app.use('/user',authRouter);
 app.use("/machine",machinRouter);
+app.use("/beverage",baverageRouter);
 
 
 

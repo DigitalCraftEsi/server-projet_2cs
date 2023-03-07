@@ -1,26 +1,15 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable prefer-const */
 import { NextFunction, Request, Response } from "express";
-import { PrismaClient, Prisma, distributeur } from "@prisma/client";
-import { AuthFailureError, BadRequestError } from "../handler/apiError";
+import { PrismaClient } from "@prisma/client";
+import { BadRequestError } from "../handler/apiError";
 import {
   BadRequestResponse,
-  InternalErrorResponse,
-  NotFoundResponse,
   SuccessResponse,
 } from "../handler/ApiResponse";
 const prisma = new PrismaClient();
 
-interface distr {
-    positionX? : number,
-    positionY? : number,
-    adresse? : string,
-    etat? : string,
-    codeDeDeverrouillage_? : string,
-    actif? : boolean,
-    idClient? : number,
-    idAC ? : number,
-  }
+
 
 export const getAllMaachin = async (
   req: Request,
@@ -73,24 +62,42 @@ export const addMachine = async (
 
 
 
-export const modifyMachine = async (
+export const updateMachine = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const data: distr = req.body; 
+    const {
+      positionX ,
+      positionY,
+      adresse,
+      etat,
+      codeDeDeverrouillage_,
+      actif,
+      idClient,
+      idAC 
+    } = req.body; 
     const id = parseInt(req.params.id);
     await prisma.distributeur.update({
         where: { idDistributeur: id },
-      data: data
-
+      data: {
+        positionX ,
+        positionY,
+        adresse,
+        etat,
+        codeDeDeverrouillage_,
+        actif,
+        idClient,
+        idAC 
+      }
     });
     const machine = await prisma.distributeur.findUnique({
-      where: { idDistributeur: id },
+      where: { idDistributeur:id },
     });
     new SuccessResponse("",machine).send(res);
   } catch (err: unknown) {
+    console.log(err,"ll")
     next(new BadRequestError());
   }
 };

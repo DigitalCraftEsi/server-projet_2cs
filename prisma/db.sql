@@ -193,9 +193,8 @@ CREATE TABLE Boisson(
    idDistributeur INT,
    nomBoisson VARCHAR(200),
    tarif DOUBLE,
-   idDistributeur_1 INT,
    PRIMARY KEY(idBoisson, idDistributeur),
-   FOREIGN KEY(idDistributeur_1) REFERENCES Distributeur(idDistributeur)
+   FOREIGN KEY(idDistributeur) REFERENCES Distributeur(idDistributeur)
 );
 
 CREATE TABLE AnnoncePublicitaire(
