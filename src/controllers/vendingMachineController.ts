@@ -83,7 +83,7 @@ export const modifyMachine = async (
     const id = parseInt(req.params.id);
     await prisma.distributeur.update({
         where: { idDistributeur: id },
-      data: data ,
+      data: data
 
     });
     const machine = await prisma.distributeur.findUnique({
