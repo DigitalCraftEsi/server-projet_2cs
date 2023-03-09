@@ -1,106 +1,110 @@
 CREATE TABLE Consommateur(
-   idConsommateur INT,
-   nomConsommateur VARCHAR(200),
-   prenomConsommateur VARCHAR(200),
-   emailConsommateur VARCHAR(200),
+   idConsommateur INT AUTO_INCREMENT,
+   nomConsommateur VARCHAR(200) NOT NULL,
+   prenomConsommateur VARCHAR(200) NOT NULL,
+   emailConsommateur VARCHAR(200) NOT NULL,
    telephoneConsommateur VARCHAR(200),
-   motDePasseConsommateur VARCHAR(200),
+   motDePasseConsommateur VARCHAR(200) NOT NULL,
+   UNIQUE(emailConsommateur),
    PRIMARY KEY(idConsommateur)
 );
 
 CREATE TABLE SADM(
-   idSADM INT,
-   nomSADM VARCHAR(200),
-   prenomSADM VARCHAR(200),
-   emailSADM VARCHAR(200),
+   idSADM INT AUTO_INCREMENT,
+   nomSADM VARCHAR(200) NOT NULL,
+   prenomSADM VARCHAR(200) NOT NULL,
+   emailSADM VARCHAR(200) NOT NULL,
    telephoneSADM VARCHAR(200),
-   motDePasseSADM VARCHAR(200),
+   motDePasseSADM VARCHAR(200) NOT NULL,
+   UNIQUE(emailSADM),
    PRIMARY KEY(idSADM)
 );
 
 CREATE TABLE Client(
-   idClient INT,
-   nomClient VARCHAR(200),
-   emailClient VARCHAR(200),
+   idClient INT AUTO_INCREMENT,
+   nomClient VARCHAR(200) NOT NULL,
+   emailClient VARCHAR(200) NOT NULL,
    telephoneClient VARCHAR(200),
+   UNIQUE(emailClient),
    PRIMARY KEY(idClient)
 );
 
 CREATE TABLE Annonceur(
-   idAnnonceur INT,
-   nomAnnonceur VARCHAR(200),
-   emailAnnonceur VARCHAR(200),
+   idAnnonceur INT AUTO_INCREMENT,
+   nomAnnonceur VARCHAR(200) NOT NULL,
+   emailAnnonceur VARCHAR(200) NOT NULL,
    telephoneAnnonceur VARCHAR(200),
+   UNIQUE(emailAnnonceur),
    PRIMARY KEY(idAnnonceur)
 );
 
 CREATE TABLE Decideur(
-   idDecideur INT,
-   nomDecideur VARCHAR(200),
-   prenomDecideur VARCHAR(200),
-   emailDecideur VARCHAR(200),
+   idDecideur INT AUTO_INCREMENT,
+   nomDecideur VARCHAR(200) NOT NULL,
+   prenomDecideur VARCHAR(200) NOT NULL,
+   emailDecideur VARCHAR(200) NOT NULL,
    telephoneDecideur VARCHAR(200),
-   motDePasseDecideur VARCHAR(50),
+   motDePasseDecideur VARCHAR(200) NOT NULL,
    idClient INT NOT NULL,
+   UNIQUE(emailDecideur),
    PRIMARY KEY(idDecideur),
    FOREIGN KEY(idClient) REFERENCES Client(idClient)
 );
 
-CREATE TABLE Agent_Maitenance(
-   idAM INT,
-   nomAM VARCHAR(200),
-   prenomAM VARCHAR(200),
-   emailAM VARCHAR(200),
+CREATE TABLE AM(
+   idAM INT AUTO_INCREMENT,
+   nomAM VARCHAR(200)NOT NULL,
+   prenomAM VARCHAR(200) NOT NULL,
+   emailAM VARCHAR(200) NOT NULL,
    telephoneAM VARCHAR(200),
-   motDePasseAM VARCHAR(200),
+   motDePasseAM VARCHAR(200) NOT NULL,
    idClient INT NOT NULL,
+   UNIQUE(emailAM),
    PRIMARY KEY(idAM),
    FOREIGN KEY(idClient) REFERENCES Client(idClient)
 );
 
-CREATE TABLE Agent_Commerciale(
-   idAC INT,
-   nomAc VARCHAR(200),
-   prenomAC VARCHAR(200),
-   emailAC VARCHAR(200),
+CREATE TABLE AC(
+   idAC INT AUTO_INCREMENT,
+   nomAc VARCHAR(200) NOT NULL,
+   prenomAC VARCHAR(200) NOT NULL,
+   emailAC VARCHAR(200) NOT NULL,
    telephoneAC VARCHAR(200),
-   motDePasseAC VARCHAR(200),
+   motDePasseAC VARCHAR(200) NOT NULL,
    idClient INT NOT NULL,
+   UNIQUE(emailAC),
    PRIMARY KEY(idAC),
    FOREIGN KEY(idClient) REFERENCES Client(idClient)
 );
 
 CREATE TABLE ADM(
-   idADM INT,
-   nomADM_ VARCHAR(200),
-   prenomADM VARCHAR(200),
-   emailADM VARCHAR(200),
+   idADM INT AUTO_INCREMENT,
+   nomADM VARCHAR(200) NOT NULL,
+   prenomADM VARCHAR(200) NOT NULL,
+   emailADM VARCHAR(200) NOT NULL,
    telephoneADM VARCHAR(200),
-   motDePasseADM VARCHAR(200),
+   motDePasseADM VARCHAR(200) NOT NULL,
    idClient INT NOT NULL,
-   PRIMARY KEY(idADM),
    UNIQUE(idClient),
+   UNIQUE(emailADM),
+   PRIMARY KEY(idADM)
    FOREIGN KEY(idClient) REFERENCES Client(idClient)
 );
 
 CREATE TABLE Distributeur(
-   idDistributeur INT,
-   positionX INT,
-   positionY INT,
-   adresse VARCHAR(200),
-   etat VARCHAR(50),
-   codeDeDeverrouillage_ VARCHAR(200),
-   actif BOOLEAN,
+   idDistributeur INT AUTO_INCREMENT,
+   adresse VARCHAR(200) NOT NULL,
+   codeDeDeverrouillage VARCHAR(200) NOT NULL,
    idClient INT,
    idAC INT,
    PRIMARY KEY(idDistributeur),
    FOREIGN KEY(idClient) REFERENCES Client(idClient),
-   FOREIGN KEY(idAC) REFERENCES Agent_Commerciale(idAC)
+   FOREIGN KEY(idAC) REFERENCES AC(idAC)
 );
 
 CREATE TABLE Commande(
-   idCommande INT,
-   dateCommande DATETIME,
+   idCommande INT AUTO_INCREMENT,
+   dateCommande DATETIME  NOT NULL,
    idConsommateur INT NOT NULL,
    idDistributeur INT NOT NULL,
    PRIMARY KEY(idCommande),
@@ -109,32 +113,31 @@ CREATE TABLE Commande(
 );
 
 CREATE TABLE Reclamation(
-   idReclamation INT,
-   titre VARCHAR(200),
-   description VARCHAR(200),
-   dateReclamation DATETIME,
-   notif BOOLEAN,
+   idReclamation INT AUTO_INCREMENT,
+   titre VARCHAR(200) NOT NULL,
+   description VARCHAR(200) NOT NULL,
+   dateReclamation DATETIME NOT NULL,
+   notif BOOLEAN NOT NULL,
    idCommande INT NOT NULL,
    PRIMARY KEY(idReclamation),
-   UNIQUE(idCommande),
    FOREIGN KEY(idCommande) REFERENCES Commande(idCommande)
 );
 
 CREATE TABLE Vol(
-   idVol INT,
-   dateVol DATETIME,
-   description VARCHAR(200),
-   notif BOOLEAN,
+   idVol INT AUTO_INCREMENT,
+   dateVol DATETIME NOT NULL,
+   description VARCHAR(200) NOT NULL,
+   notif BOOLEAN NOT NULL,
    idDistributeur INT NOT NULL,
    PRIMARY KEY(idVol),
    FOREIGN KEY(idDistributeur) REFERENCES Distributeur(idDistributeur)
 );
 
 CREATE TABLE Facture(
-   idFacture INT,
-   etat VARCHAR(50),
-   prix DOUBLE,
-   notif BOOLEAN,
+   idFacture INT AUTO_INCREMENT,
+   etat VARCHAR(50) NOT NULL,
+   prix DOUBLE NOT NULL,
+   notif BOOLEAN NOT NULL,
    idCommande INT NOT NULL,
    PRIMARY KEY(idFacture),
    UNIQUE(idCommande),
@@ -142,46 +145,46 @@ CREATE TABLE Facture(
 );
 
 CREATE TABLE Reponse(
-   idReponse INT,
-   titre VARCHAR(200),
-   description VARCHAR(200),
-   dateReponse DATETIME,
-   notif BOOLEAN,
+   idReponse INT AUTO_INCREMENT,
+   titre VARCHAR(200)  NOT NULL,
+   description VARCHAR(200) NOT NULL,
+   dateReponse DATETIME NOT NULL,
+   notif BOOLEAN NOT NULL,
    idReclamation INT NOT NULL,
    idAC INT NOT NULL,
    PRIMARY KEY(idReponse),
    UNIQUE(idReclamation),
    FOREIGN KEY(idReclamation) REFERENCES Reclamation(idReclamation),
-   FOREIGN KEY(idAC) REFERENCES Agent_Commerciale(idAC)
+   FOREIGN KEY(idAC) REFERENCES AC(idAC)
 );
 
 CREATE TABLE Tache(
-   idTache INT,
-   dateDebut DATETIME,
-   dateFin DATETIME,
-   etat VARCHAR(50),
-   notif BOOLEAN,
+   idTache INT AUTO_INCREMENT,
+   dateDebut DATETIME NOT NULL,
+   dateFin DATETIME NOT NULL,
+   etat VARCHAR(50) NOT NULL,
+   notif BOOLEAN NOT NULL,
    idDistributeur INT NOT NULL,
    idAM INT,
    PRIMARY KEY(idTache),
    FOREIGN KEY(idDistributeur) REFERENCES Distributeur(idDistributeur),
-   FOREIGN KEY(idAM) REFERENCES Agent_Maitenance(idAM)
+   FOREIGN KEY(idAM) REFERENCES AM(idAM)
 );
 
 CREATE TABLE ActionSuspecte(
-   idActionSuspecte INT,
-   dateAction INT,
-   description VARCHAR(200),
-   notif BOOLEAN,
+   idActionSuspecte INT AUTO_INCREMENT,
+   dateAction INT NOT NULL,
+   description VARCHAR(200) NOT NULL,
+   notif BOOLEAN NOT NULL,
    idDistributeur INT NOT NULL,
    PRIMARY KEY(idActionSuspecte),
    FOREIGN KEY(idDistributeur) REFERENCES Distributeur(idDistributeur)
 );
 
 CREATE TABLE ReclamationAuto(
-   idReclamationAuto INT,
-   dateReclamationAuto DATETIME,
-   description VARCHAR(200),
+   idReclamationAuto INT AUTO_INCREMENT,
+   dateReclamationAuto DATETIME NOT NULL,
+   description VARCHAR(200) NOT NULL,
    idCommande INT NOT NULL,
    PRIMARY KEY(idReclamationAuto),
    UNIQUE(idCommande),
@@ -189,38 +192,37 @@ CREATE TABLE ReclamationAuto(
 );
 
 CREATE TABLE Boisson(
-   idBoisson INT,
-   idDistributeur INT,
-   nomBoisson VARCHAR(200),
-   tarif DOUBLE,
-   idDistributeur_1 INT,
-   PRIMARY KEY(idBoisson, idDistributeur),
-   FOREIGN KEY(idDistributeur_1) REFERENCES Distributeur(idDistributeur)
+   idBoisson INT AUTO_INCREMENT,
+   idDistributeur INT NOT NULL,
+   nomBoisson VARCHAR(200) NOT NULL,
+   tarif DOUBLE NOT NULL,
+   PRIMARY KEY(idBoisson, idDistributeur)
+   FOREIGN KEY(idDistributeur) REFERENCES Distributeur(idDistributeur)
 );
 
 CREATE TABLE AnnoncePublicitaire(
-   idAnnonce INT,
-   sexe VARCHAR(1),
+   idAnnonce INT AUTO_INCREMENT,
+   sexe VARCHAR(50) NOT NULL,
    ageMin INT,
    ageMax INT,
    video VARCHAR(200),
    region VARCHAR(200),
-   prix DOUBLE,
-   dateDebut DATETIME,
-   dateFin DATETIME,
+   prix DOUBLE NOT NULL,
+   dateDebut DATETIME NOT NULL,
+   dateFin DATETIME NOT NULL,
    periode INT,
    idBoisson INT,
    idDistributeur INT,
    idAnnonceur INT NOT NULL,
    PRIMARY KEY(idAnnonce),
-   FOREIGN KEY(idBoisson, idDistributeur) REFERENCES Boisson(idBoisson, idDistributeur),
+   FOREIGN KEY(idBoisson) REFERENCES Boisson(idBoisson),
    FOREIGN KEY(idAnnonceur) REFERENCES Annonceur(idAnnonceur)
 );
 
 CREATE TABLE Panne(
-   idPanne INT,
-   titre VARCHAR(200),
-   description VARCHAR(200),
+   idPanne INT AUTO_INCREMENT,
+   titre VARCHAR(200) NOT NULL,
+   description VARCHAR(200) NOT NULL,
    idTache INT,
    PRIMARY KEY(idPanne),
    UNIQUE(idTache),
@@ -228,9 +230,9 @@ CREATE TABLE Panne(
 );
 
 CREATE TABLE Anomalie(
-   idAnomalie INT,
-   titre VARCHAR(200),
-   description VARCHAR(200),
+   idAnomalie INT AUTO_INCREMENT,
+   titre VARCHAR(200) NOT NULL,
+   description VARCHAR(200) NOT NULL,
    idTache INT,
    PRIMARY KEY(idAnomalie),
    UNIQUE(idTache),
@@ -242,7 +244,7 @@ CREATE TABLE AMDistributeur(
    idAM INT,
    PRIMARY KEY(idDistributeur, idAM),
    FOREIGN KEY(idDistributeur) REFERENCES Distributeur(idDistributeur),
-   FOREIGN KEY(idAM) REFERENCES Agent_Maitenance(idAM)
+   FOREIGN KEY(idAM) REFERENCES AM(idAM)
 );
 
 CREATE TABLE BoissonCommande(
@@ -250,7 +252,7 @@ CREATE TABLE BoissonCommande(
    idDistributeur INT,
    idCommande INT,
    Quantite INT,
-   PRIMARY KEY(idBoisson, idDistributeur, idCommande),
-   FOREIGN KEY(idBoisson, idDistributeur) REFERENCES Boisson(idBoisson, idDistributeur),
+   PRIMARY KEY(idBoisson, idCommande),
+   FOREIGN KEY(idBoisson) REFERENCES Boisson(idBoisson),
    FOREIGN KEY(idCommande) REFERENCES Commande(idCommande)
 );

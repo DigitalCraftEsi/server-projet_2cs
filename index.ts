@@ -1,4 +1,12 @@
 // Import the express in typescript file
+declare global {
+  namespace Express {
+     interface Request {
+        user?: object
+     }
+  }
+}
+
 import express , {Application, NextFunction , Request , Response} from 'express';
 import { ApiError, BadRequestError, ErrorType, InternalError } from './src/handler/apiError';
 import authRouter from './src/routers/authRouter';
@@ -22,13 +30,11 @@ app.listen(port, () => {
          http://localhost:${port}/`);
 
 });
-app.use('/user',authRouter);
-app.use("/machine",machinRouter);
+app.use('/', authRouter);
+app.use('/machine', machinRouter);
 
 
-
-
-function errorHandler(err : Error, req:Request, res:Response, next:NextFunction) {
+const errorHandler = (err : Error, req:Request, res:Response, next:NextFunction) => {
   console.log(err)
   if (err instanceof ApiError) {
     ApiError.handle(<ApiError>err, res);
@@ -50,6 +56,3 @@ function errorHandler(err : Error, req:Request, res:Response, next:NextFunction)
 }
 
 app.use(errorHandler)
-
-
-  

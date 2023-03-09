@@ -22,7 +22,7 @@ type reponseType = {
    statusCode: StatusCode,
    status: Status,
    message: string,
-   data : unknown  
+   data : any  
 }
 
 abstract class ApiResponse {
@@ -30,7 +30,7 @@ abstract class ApiResponse {
     protected status: Status,
     protected statusCode: StatusCode,
     protected message: string,
-    protected data : unknown = null 
+    protected data : any = null 
   ) {}
 
 
@@ -98,7 +98,7 @@ export class FailureMsgResponse extends ApiResponse {
 }
 
 export class SuccessResponse extends ApiResponse {
-  constructor(message = "success",data: unknown) {
+  constructor(message = "success",data: any) {
     super(Status.SUCCESS, StatusCode.SUCCESS, message,data);
   }
 }

@@ -8,46 +8,23 @@ datasource db {
 }
 
 model actionsuspecte {
-  idActionSuspecte Int      @id
-  dateAction       Int?
-  description      String?  @db.VarChar(200)
-  notif            Boolean?
+  idActionSuspecte Int     @id @default(autoincrement())
+  dateAction       Int
+  description      String  @db.VarChar(200)
+  notif            Boolean
   idDistributeur   Int
 
   @@index([idDistributeur], map: "idDistributeur")
 }
 
 model adm {
-  idADM         Int     @id
-  nomADM_       String? @db.VarChar(200)
-  prenomADM     String? @db.VarChar(200)
-  emailADM      String? @db.VarChar(200)
+  idADM         Int     @id @default(autoincrement())
+  nomADM        String  @db.VarChar(200)
+  prenomADM     String  @db.VarChar(200)
+  emailADM      String  @unique(map: "emailADM") @db.VarChar(200)
   telephoneADM  String? @db.VarChar(200)
-  motDePasseADM String? @db.VarChar(200)
+  motDePasseADM String  @db.VarChar(200)
   idClient      Int     @unique(map: "idClient")
-}
-
-model agent_commerciale {
-  idAC         Int     @id
-  nomAc        String? @db.VarChar(200)
-  prenomAC     String? @db.VarChar(200)
-  emailAC      String? @db.VarChar(200)
-  telephoneAC  String? @db.VarChar(200)
-  motDePasseAC String? @db.VarChar(200)
-  idClient     Int
-  @@index([idClient], map: "idClient")
-}
-
-model agent_maitenance {
-  idAM         Int     @id
-  nomAM        String? @db.VarChar(200)
-  prenomAM     String? @db.VarChar(200)
-  emailAM      String? @db.VarChar(200)
-  telephoneAM  String? @db.VarChar(200)
-  motDePasseAM String? @db.VarChar(200)
-  idClient     Int
-
-  @@index([idClient], map: "idClient")
 }
 
 model amdistributeur {
@@ -59,69 +36,68 @@ model amdistributeur {
 }
 
 model annoncepublicitaire {
-  idAnnonce      Int       @id
-  sexe           String?   @db.VarChar(1)
+  idAnnonce      Int      @id @default(autoincrement())
+  sexe           String   @db.VarChar(50)
   ageMin         Int?
   ageMax         Int?
-  video          String?   @db.VarChar(200)
-  region         String?   @db.VarChar(200)
-  prix           Float?
-  dateDebut      DateTime? @db.DateTime(0)
-  dateFin        DateTime? @db.DateTime(0)
+  video          String?  @db.VarChar(200)
+  region         String?  @db.VarChar(200)
+  prix           Float
+  dateDebut      DateTime @db.DateTime(0)
+  dateFin        DateTime @db.DateTime(0)
   periode        Int?
   idBoisson      Int?
   idDistributeur Int?
   idAnnonceur    Int
 
   @@index([idAnnonceur], map: "idAnnonceur")
-  @@index([idBoisson, idDistributeur], map: "idBoisson")
+  @@index([idBoisson], map: "idBoisson")
 }
 
 model annonceur {
-  idAnnonceur        Int     @id
-  nomAnnonceur       String? @db.VarChar(200)
-  emailAnnonceur     String? @db.VarChar(200)
+  idAnnonceur        Int     @id @default(autoincrement())
+  nomAnnonceur       String  @db.VarChar(200)
+  emailAnnonceur     String  @unique(map: "emailAnnonceur") @db.VarChar(200)
   telephoneAnnonceur String? @db.VarChar(200)
 }
 
 model anomalie {
-  idAnomalie  Int     @id
-  titre       String? @db.VarChar(200)
-  description String? @db.VarChar(200)
-  idTache     Int?    @unique(map: "idTache")
+  idAnomalie  Int    @id @default(autoincrement())
+  titre       String @db.VarChar(200)
+  description String @db.VarChar(200)
+  idTache     Int?   @unique(map: "idTache")
 }
 
 model boisson {
-  idBoisson        Int
-  idDistributeur   Int
-  nomBoisson       String? @db.VarChar(200)
-  tarif            Float?
-  idDistributeur_1 Int?
+  idBoisson      Int    @default(autoincrement())
+  nomBoisson     String @db.VarChar(200)
+  tarif          Float
+  idDistributeur Int
 
   @@id([idBoisson, idDistributeur])
-  @@index([idDistributeur_1], map: "idDistributeur_1")
+  @@index([idDistributeur], map: "idDistributeur")
 }
 
 model boissoncommande {
   idBoisson      Int
-  idDistributeur Int
+  idDistributeur Int?
   idCommande     Int
   Quantite       Int?
 
-  @@id([idBoisson, idDistributeur, idCommande])
+  @@id([idBoisson, idCommande])
   @@index([idCommande], map: "idCommande")
 }
 
 model client {
-  idClient        Int     @id
-  nomClient       String? @db.VarChar(200)
-  emailClient     String? @db.VarChar(200)
+  idClient        Int     @id @default(autoincrement())
+  nomClient       String  @db.VarChar(200)
+  emailClient     String  @unique(map: "emailClient") @db.VarChar(200)
   telephoneClient String? @db.VarChar(200)
 }
 
 model commande {
-  idCommande     Int       @id
-  dateCommande   DateTime? @db.DateTime(0)
+  idCommande     Int      @id @default(autoincrement())
+  dateCommande   DateTime @db.DateTime(0)
   idConsommateur Int
   idDistributeur Int
 
@@ -130,92 +106,90 @@ model commande {
 }
 
 model consommateur {
-  idConsommateur         Int     @id
-  nomConsommateur        String? @db.VarChar(200)
-  prenomConsommateur     String? @db.VarChar(200)
-  emailConsommateur      String? @db.VarChar(200)
+  idConsommateur         Int     @id @default(autoincrement())
+  nomConsommateur        String  @db.VarChar(200)
+  prenomConsommateur     String  @db.VarChar(200)
+  emailConsommateur      String  @unique(map: "emailConsommateur") @db.VarChar(200)
   telephoneConsommateur  String? @db.VarChar(200)
-  motDePasseConsommateur String? @db.VarChar(200)
+  motDePasseConsommateur String  @db.VarChar(200)
 }
 
 model decideur {
-  idDecideur         Int     @id
-  nomDecideur        String? @db.VarChar(200)
-  prenomDecideur     String? @db.VarChar(200)
-  emailDecideur      String? @db.VarChar(200)
+  idDecideur         Int     @id @default(autoincrement())
+  nomDecideur        String  @db.VarChar(200)
+  prenomDecideur     String  @db.VarChar(200)
+  emailDecideur      String  @unique(map: "emailDecideur") @db.VarChar(200)
   telephoneDecideur  String? @db.VarChar(200)
-  motDePasseDecideur String? @db.VarChar(50)
+  motDePasseDecideur String  @db.VarChar(200)
   idClient           Int
 
   @@index([idClient], map: "idClient")
 }
 
 model distributeur {
-  idDistributeur        Int    @id  @default(autoincrement())
-  positionX             Int?
-  positionY             Int?
-  adresse               String?  @db.VarChar(200)
-  etat                  String?  @db.VarChar(50)
-  codeDeDeverrouillage_ String?  @db.VarChar(200)
-  actif                 Boolean? @default(true)
-  idClient              Int?
-  idAC                  Int?
+  idDistributeur       Int    @id @default(autoincrement())
+  adresse              String @db.VarChar(200)
+  codeDeDeverrouillage String @db.VarChar(200)
+  idClient             Int?
+  idAC                 Int?
 
   @@index([idAC], map: "idAC")
   @@index([idClient], map: "idClient")
 }
 
 model facture {
-  idFacture  Int      @id
-  etat       String?  @db.VarChar(50)
-  prix       Float?
-  notif      Boolean?
-  idCommande Int      @unique(map: "idCommande")
+  idFacture  Int     @id @default(autoincrement())
+  etat       String  @db.VarChar(50)
+  prix       Float
+  notif      Boolean
+  idCommande Int     @unique(map: "idCommande")
 }
 
 model panne {
-  idPanne     Int     @id
-  titre       String? @db.VarChar(200)
-  description String? @db.VarChar(200)
-  idTache     Int?    @unique(map: "idTache")
+  idPanne     Int    @id @default(autoincrement())
+  titre       String @db.VarChar(200)
+  description String @db.VarChar(200)
+  idTache     Int?   @unique(map: "idTache")
 }
 
 model reclamation {
-  idReclamation   Int       @id
-  titre           String?   @db.VarChar(200)
-  description     String?   @db.VarChar(200)
-  dateReclamation DateTime? @db.DateTime(0)
-  notif           Boolean?
-  idCommande      Int       @unique(map: "idCommande")
+  idReclamation   Int      @id @default(autoincrement())
+  titre           String   @db.VarChar(200)
+  description     String   @db.VarChar(200)
+  dateReclamation DateTime @db.DateTime(0)
+  notif           Boolean
+  idCommande      Int
+
+  @@index([idCommande], map: "idCommande")
 }
 
 model reponse {
-  idReponse     Int       @id
-  titre         String?   @db.VarChar(200)
-  description   String?   @db.VarChar(200)
-  dateReponse   DateTime? @db.DateTime(0)
-  notif         Boolean?
-  idReclamation Int       @unique(map: "idReclamation")
+  idReponse     Int      @id @default(autoincrement())
+  titre         String   @db.VarChar(200)
+  description   String   @db.VarChar(200)
+  dateReponse   DateTime @db.DateTime(0)
+  notif         Boolean
+  idReclamation Int      @unique(map: "idReclamation")
   idAC          Int
 
   @@index([idAC], map: "idAC")
 }
 
 model sadm {
-  idSADM         Int     @id
-  nomSADM        String? @db.VarChar(200)
-  prenomSADM     String? @db.VarChar(200)
-  emailSADM      String? @db.VarChar(200)
+  idSADM         Int     @id @default(autoincrement())
+  nomSADM        String  @db.VarChar(200)
+  prenomSADM     String  @db.VarChar(200)
+  emailSADM      String  @unique(map: "emailSADM") @db.VarChar(200)
   telephoneSADM  String? @db.VarChar(200)
-  motDePasseSADM String? @db.VarChar(200)
+  motDePasseSADM String  @db.VarChar(200)
 }
 
 model tache {
-  idTache        Int       @id
-  dateDebut      DateTime? @db.DateTime(0)
-  dateFin        DateTime? @db.DateTime(0)
-  etat           String?   @db.VarChar(50)
-  notif          Boolean?
+  idTache        Int      @id @default(autoincrement())
+  dateDebut      DateTime @db.DateTime(0)
+  dateFin        DateTime @db.DateTime(0)
+  etat           String   @db.VarChar(50)
+  notif          Boolean
   idDistributeur Int
   idAM           Int?
 
@@ -224,18 +198,42 @@ model tache {
 }
 
 model vol {
-  idVol          Int       @id
-  dateVol        DateTime? @db.DateTime(0)
-  description    String?   @db.VarChar(200)
-  notif          Boolean?
+  idVol          Int      @id @default(autoincrement())
+  dateVol        DateTime @db.DateTime(0)
+  description    String   @db.VarChar(200)
+  notif          Boolean
   idDistributeur Int
 
   @@index([idDistributeur], map: "idDistributeur")
 }
 
 model reclamationauto {
-  idReclamationAuto   Int       @id
-  dateReclamationAuto DateTime? @db.DateTime(0)
-  description         String?   @db.VarChar(200)
-  idCommande          Int       @unique(map: "idCommande")
+  idReclamationAuto   Int      @id @default(autoincrement())
+  dateReclamationAuto DateTime @db.DateTime(0)
+  description         String   @db.VarChar(200)
+  idCommande          Int      @unique(map: "idCommande")
+}
+
+model ac {
+  idAC         Int     @id @default(autoincrement())
+  nomAc        String  @db.VarChar(200)
+  prenomAC     String  @db.VarChar(200)
+  emailAC      String  @unique(map: "emailAC") @db.VarChar(200)
+  telephoneAC  String? @db.VarChar(200)
+  motDePasseAC String  @db.VarChar(200)
+  idClient     Int
+
+  @@index([idClient], map: "idClient")
+}
+
+model am {
+  idAM         Int     @id @default(autoincrement())
+  nomAM        String  @db.VarChar(200)
+  prenomAM     String  @db.VarChar(200)
+  emailAM      String  @unique(map: "emailAM") @db.VarChar(200)
+  telephoneAM  String? @db.VarChar(200)
+  motDePasseAM String  @db.VarChar(200)
+  idClient     Int
+
+  @@index([idClient], map: "idClient")
 }

@@ -2,13 +2,17 @@
 /* eslint-disable prefer-const */
 import { NextFunction, Request, Response } from "express";
 import { PrismaClient, Prisma, distributeur } from "@prisma/client";
-import { AuthFailureError, BadRequestError } from "../handler/apiError";
+import { AuthFailureError, BadRequestError } from "../../handler/apiError";
 import {
   BadRequestResponse,
   InternalErrorResponse,
   NotFoundResponse,
   SuccessResponse,
-} from "../handler/ApiResponse";
+} from "../../handler/apiResponse";
+import asyncHandler from "../../handler/asyncHandler";
+import schema from "./schema";
+
+
 const prisma = new PrismaClient();
 
 interface distr {
@@ -22,26 +26,23 @@ interface distr {
     idAC ? : number,
   }
 
-export const getAllMaachin = async (
+export const getAllCoffeeMachines = asyncHandler(async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    const allMachin = await prisma.distributeur.findMany();
-    new SuccessResponse("", allMachin).send(res);
-  } catch (err) {
-    next(new BadRequestError());
-  }
-};
 
-export const getMachine = async (
+    const allMachines = await prisma.distributeur.findMany();
+    
+    new SuccessResponse("", allMachines).send(res);
+});
+
+export const getCoffeeMachine = asyncHandler(async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    const id = parseInt(req.params.id);
+    const id:number = parseInt(req.params.id);
     const machine = await prisma.distributeur.findUnique({
       where: { idDistributeur: id },
     });
@@ -50,35 +51,34 @@ export const getMachine = async (
     } else {
       next(new BadRequestError());
     }
-  } catch (err: unknown) {
-    next(new BadRequestError());
-  }
-};
+});
 
-export const addMachine = async (
+export const addCoffeeMachine = asyncHandler(async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  try {
+
+  const { error } = schema.vendingMachineSchema.validate(req.body);
+
+    if (error) {
+        throw new BadRequestError(error.details[0].message)
+    }
+
     const data = req.body;
     const machin = await prisma.distributeur.create({
       data: data,
     });
     new SuccessResponse("", machin).send(res);
-  } catch (err: unknown) {
-    next(new BadRequestResponse());
-  }
-};
+});
 
 
 
-export const modifyMachine = async (
+export const updateCoffeeMachine = asyncHandler(async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  try {
     const data: distr = req.body; 
     const id = parseInt(req.params.id);
     await prisma.distributeur.update({
@@ -90,7 +90,4 @@ export const modifyMachine = async (
       where: { idDistributeur: id },
     });
     new SuccessResponse("",machine).send(res);
-  } catch (err: unknown) {
-    next(new BadRequestError());
-  }
-};
+});
