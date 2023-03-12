@@ -1,5 +1,5 @@
 import  express, { Router }   from "express";
-import * as beverageController from "../controllers/beverageController"
+import * as beverageController from "../controllers/beverage/beverageController"
 const beverageRouter : Router = express.Router();
 
 
