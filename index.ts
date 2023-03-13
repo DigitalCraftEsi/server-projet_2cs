@@ -1,8 +1,6 @@
 // Import the express in typescript file
-import express , {Application, NextFunction , Request , Response} from 'express';
-import { ApiError, BadRequestError, ErrorType, InternalError } from './src/handler/apiError';
+import express , {Application} from 'express';
 import { errorHandler } from './src/handler/errorHandler';
-import authRouter from './src/routers/authRouter';
 import baverageRouter from './src/routers/beverageRouter';
 import orderRouter from './src/routers/orderRouter';
 import machinRouter from './src/routers/vendingMachineRouter';
