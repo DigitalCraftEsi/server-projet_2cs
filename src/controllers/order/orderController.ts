@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import { BadRequestError } from "../../handler/apiError";
-import { SuccessResponse } from "../../handler/ApiResponse";
+import { SuccessResponse } from "../../handler/apiResponse";
 import {Request , Response , NextFunction } from "express"
 import asyncHandler from "../../handler/asyncHandler";
 

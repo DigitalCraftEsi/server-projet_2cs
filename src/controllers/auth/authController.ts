@@ -1,14 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from 'express'
-import { HandlError } from '../../middlwares/authMiddlware'
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client'
 import { AuthFailureError } from '../../handler/apiError';
-import { SuccessMsgResponse, SuccessResponse } from '../../handler/apiResponse';
+import { SuccessMsgResponse } from '../../handler/apiResponse';
 import asyncHandler from '../../handler/asyncHandler';
 import schema from './schema'
 import { BadRequestError, BadTokenError, InternalError } from '../../handler/apiError';
 import { createTokens, removeTokens, createCookie } from '../../utils/token';
-import jwt, { TokenExpiredError } from 'jsonwebtoken';
+import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { ROLES } from '../../enums/rolesEnum';
 
 const prisma = new PrismaClient()
@@ -41,7 +41,8 @@ export const loginController = asyncHandler(async (req: Request, res: Response, 
     const user: userInfo = req.body;
     // ['sadm', 'adm', 'agent_commerciale', 'agent_maitenance', 'decideur']
 
-    let role: string = '';
+    // eslint-disable-next-line prefer-const
+    let role = '';
     userFetched = await prisma.sadm.findUnique({
         where: {
             emailSADM: user.email
