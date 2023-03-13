@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client'
 import { AuthFailureError } from '../../handler/apiError';
-import { SuccessMsgResponse } from '../../handler/apiResponse';
+import { SuccessMsgResponse, SuccessResponse } from '../../handler/apiResponse';
 import asyncHandler from '../../handler/asyncHandler';
 import schema from './schema'
 import { BadRequestError, BadTokenError, InternalError } from '../../handler/apiError';
@@ -43,11 +43,14 @@ export const loginController = asyncHandler(async (req: Request, res: Response, 
 
     // eslint-disable-next-line prefer-const
     let role = '';
+
     userFetched = await prisma.sadm.findUnique({
         where: {
             emailSADM: user.email
         }
     })
+
+
 
     if (userFetched) {
         passwordFetched = userFetched.motDePasseSADM;
@@ -146,7 +149,7 @@ export const loginController = asyncHandler(async (req: Request, res: Response, 
     createCookie(res, token, 'accessToken', Number(process.env.ACCESS_TOKEN_COOKIE_EXPIRES));
     createCookie(res, refreshToken, 'refreshToken', Number(process.env.REFRESH_TOKEN_COOKIE_EXPIRES));
 
-    new SuccessMsgResponse('Login succesful').send(res);
+    new SuccessResponse('Login succesful',userPayload).send(res);
 
     return next();
 });
