@@ -1,3 +1,4 @@
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 
@@ -15,3 +16,4 @@ export default (execution: AsyncFunction) =>
   (req: Request, res: Response, next: NextFunction) => {
     execution(req, res, next).catch(next);
   };
+

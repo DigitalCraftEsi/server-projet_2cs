@@ -5,7 +5,7 @@ import { PrismaClient } from "@prisma/client";
 import { BadRequestError } from "../../handler/apiError";
 import {
   SuccessResponse,
-} from "../../handler/ApiResponse";
+} from "../../handler/apiResponse";
 import asyncHandler from "../../handler/asyncHandler";
 const prisma = new PrismaClient();
 

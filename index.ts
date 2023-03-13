@@ -1,9 +1,22 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 // Import the express in typescript file
+
 import express , {Application} from 'express';
 import { errorHandler } from './src/handler/errorHandler';
 import baverageRouter from './src/routers/beverageRouter';
 import orderRouter from './src/routers/orderRouter';
 import machinRouter from './src/routers/vendingMachineRouter';
+import authRouter from './src/routers/authRouter';
+
+declare global {
+  namespace Express {
+     interface Request {
+        user?: object
+     }
+  }
+}
+
+
 
  
 // Initialize the express engine
@@ -23,7 +36,8 @@ app.listen(port, () => {
          http://localhost:${port}/`);
 });
 
-app.use("/machine",machinRouter);
+app.use('/', authRouter);
+app.use('/machine', machinRouter);
 app.use("/beverage",baverageRouter);
 app.use("/order",orderRouter);
 app.use(errorHandler)
@@ -31,4 +45,3 @@ app.use(errorHandler)
 export default app
 
 
-  

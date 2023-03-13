@@ -29,7 +29,6 @@ export const HandlError  = (err : Prisma.PrismaClientKnownRequestError | ErrorEv
         }
     }
 
-
     return errors ;
   };
 
