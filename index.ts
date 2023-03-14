@@ -1,8 +1,10 @@
 // Import the express in typescript file
+import { userJwtPayload } from './src/utils/token';
+
 declare global {
   namespace Express {
      interface Request {
-        user?: object
+        user?: userJwtPayload
      }
   }
 }
@@ -11,10 +13,25 @@ import express , {Application, NextFunction , Request , Response} from 'express'
 import { ApiError, BadRequestError, ErrorType, InternalError } from './src/handler/apiError';
 import authRouter from './src/routers/authRouter';
 import machinRouter from './src/routers/vendingMachineRouter';
+import compression from 'compression';
+import cors, {CorsOptions} from 'cors';
+import cookieParser from 'cookie-parser';
 
  
 // Initialize the express engine
 const app:Application = express();
+
+let corsOptions:cors.CorsOptions = {
+    origin: [`${process.env.FRONTEND_URL}`],
+    credentials: true,
+}
+
+app.use(compression())
+app.use(cors(corsOptions));
+
+//to parse everything to json
+app.use(cookieParser());
+
 app.use(express.urlencoded({extended : true}))
 app.use(express.json({limit: '50mb'}));
 
@@ -31,7 +48,7 @@ app.listen(port, () => {
 
 });
 app.use('/', authRouter);
-app.use('/machine', machinRouter);
+app.use('/machines', machinRouter);
 
 
 const errorHandler = (err : Error, req:Request, res:Response, next:NextFunction) => {

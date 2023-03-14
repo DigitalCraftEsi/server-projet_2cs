@@ -11,9 +11,7 @@ import {
 } from "../../handler/apiResponse";
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
-
-
-const prisma = new PrismaClient();
+import { prismaClientSingleton } from "../../utils/prismaClient";
 
 interface distr {
     positionX? : number,
@@ -32,7 +30,7 @@ export const getAllCoffeeMachines = asyncHandler(async (
   next: NextFunction
 ) => {
 
-    const allMachines = await prisma.distributeur.findMany();
+    const allMachines = await prismaClientSingleton.distributeur.findMany();
     
     new SuccessResponse("", allMachines).send(res);
 });
@@ -43,13 +41,13 @@ export const getCoffeeMachine = asyncHandler(async (
   next: NextFunction
 ) => {
     const id:number = parseInt(req.params.id);
-    const machine = await prisma.distributeur.findUnique({
+    const machine = await prismaClientSingleton.distributeur.findUnique({
       where: { idDistributeur: id },
     });
     if (machine != null) {
       new SuccessResponse("", machine).send(res);
     } else {
-      next(new BadRequestError());
+      throw new BadRequestError();
     }
 });
 
@@ -66,7 +64,7 @@ export const addCoffeeMachine = asyncHandler(async (
     }
 
     const data = req.body;
-    const machin = await prisma.distributeur.create({
+    const machin = await prismaClientSingleton.distributeur.create({
       data: data,
     });
     new SuccessResponse("", machin).send(res);
@@ -81,12 +79,12 @@ export const updateCoffeeMachine = asyncHandler(async (
 ) => {
     const data: distr = req.body; 
     const id = parseInt(req.params.id);
-    await prisma.distributeur.update({
+    await prismaClientSingleton.distributeur.update({
         where: { idDistributeur: id },
       data: data
 
     });
-    const machine = await prisma.distributeur.findUnique({
+    const machine = await prismaClientSingleton.distributeur.findUnique({
       where: { idDistributeur: id },
     });
     new SuccessResponse("",machine).send(res);

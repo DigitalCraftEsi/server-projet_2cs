@@ -9,6 +9,7 @@ enum Status {
 
 enum StatusCode {
   SUCCESS = 200,
+  CREATION_SUCCESS = 201,
   BAD_REQUEST = 400,
   UNAUTHORIZED = 401,
   FORBIDDEN = 403,
@@ -100,6 +101,12 @@ export class FailureMsgResponse extends ApiResponse {
 export class SuccessResponse extends ApiResponse {
   constructor(message = "success",data: any) {
     super(Status.SUCCESS, StatusCode.SUCCESS, message,data);
+  }
+}
+
+export class SuccessCreationResponse extends ApiResponse {
+  constructor(message = "success creation",data: any) {
+    super(Status.SUCCESS, StatusCode.CREATION_SUCCESS, message,data);
   }
 }
 
