@@ -27,14 +27,6 @@ model adm {
   idClient      Int     @unique(map: "idClient")
 }
 
-model amdistributeur {
-  idDistributeur Int
-  idAM           Int
-
-  @@id([idDistributeur, idAM])
-  @@index([idAM], map: "idAM")
-}
-
 model annoncepublicitaire {
   idAnnonce      Int      @id @default(autoincrement())
   sexe           String   @db.VarChar(50)
@@ -127,6 +119,7 @@ model decideur {
 }
 
 
+
 model distributeur {
   idDistributeur        Int      @id @default(autoincrement())
   positionX             Int?
@@ -139,6 +132,7 @@ model distributeur {
   idAC                  Int?
   @@index([idAC], map: "idAC")
   @@index([idClient], map: "idClient")
+  @@index([idAM], map: "idAM")
 }
 
 model facture {
@@ -225,9 +219,7 @@ model ac {
   emailAC      String  @unique(map: "emailAC") @db.VarChar(200)
   telephoneAC  String? @db.VarChar(200)
   motDePasseAC String  @db.VarChar(200)
-  idClient     Int
-
-  @@index([idClient], map: "idClient")
+  idClient     Int     @unique(map: "idClient")
 }
 
 model am {

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client'
 import { AuthFailureError } from '../../handler/apiError';
 import { SuccessMsgResponse, SuccessResponse } from '../../handler/apiResponse';
 import asyncHandler from '../../handler/asyncHandler';
@@ -10,25 +9,17 @@ import { BadRequestError, BadTokenError, InternalError } from '../../handler/api
 import { createTokens, removeTokens, createCookie } from '../../utils/token';
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { ROLES } from '../../enums/rolesEnum';
+import { userJwtPayload } from '../../utils/token';
+import { prismaClientSingleton } from '../../utils/prismaClient';
 
-const prisma = new PrismaClient()
 
 type userInfo = {
     email: string,
     password: string,
 }
 
-type userJwtPayload = {
-    id: number,
-    nom: string,
-    prenom: string,
-    email: string,
-    role: string;
-    telephone: string | null,
-}
-
 // login user
-export const loginController = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const login = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 
     const { error } = schema.loginSchema.validate(req.body);
 
@@ -39,12 +30,8 @@ export const loginController = asyncHandler(async (req: Request, res: Response, 
     let userFetched, passwordFetched;
     let userPayload: userJwtPayload;
     const user: userInfo = req.body;
-    // ['sadm', 'adm', 'agent_commerciale', 'agent_maitenance', 'decideur']
 
-    // eslint-disable-next-line prefer-const
-    let role = '';
-
-    userFetched = await prisma.sadm.findUnique({
+    userFetched = await prismaClientSingleton.sadm.findUnique({
         where: {
             emailSADM: user.email
         }
@@ -64,7 +51,7 @@ export const loginController = asyncHandler(async (req: Request, res: Response, 
         };
     }
     else {
-        userFetched = await prisma.adm.findUnique({
+        userFetched = await prismaClientSingleton.adm.findUnique({
             where: {
                 emailADM: user.email
             }
@@ -79,10 +66,11 @@ export const loginController = asyncHandler(async (req: Request, res: Response, 
                 email: userFetched.emailADM,
                 role: ROLES.ADM,
                 telephone: userFetched.telephoneADM,
+                clientId: userFetched.idClient
             };
         }
         else {
-            userFetched = await prisma.ac.findUnique({
+            userFetched = await prismaClientSingleton.ac.findUnique({
                 where: {
                     emailAC: user.email
                 }
@@ -97,10 +85,11 @@ export const loginController = asyncHandler(async (req: Request, res: Response, 
                     email: userFetched.emailAC,
                     role: ROLES.AC,
                     telephone: userFetched.telephoneAC,
+                    clientId: userFetched.idClient
                 };
             }
             else {
-                userFetched = await prisma.am.findUnique({
+                userFetched = await prismaClientSingleton.am.findUnique({
                     where: {
                         emailAM: user.email
                     }
@@ -115,9 +104,10 @@ export const loginController = asyncHandler(async (req: Request, res: Response, 
                         email: userFetched.emailAM,
                         role: ROLES.AM,
                         telephone: userFetched.telephoneAM,
+                        clientId: userFetched.idClient
                     };
                 } else {
-                    userFetched = await prisma.decideur.findUnique({
+                    userFetched = await prismaClientSingleton.decideur.findUnique({
                         where: {
                             emailDecideur: user.email
                         }
@@ -132,6 +122,7 @@ export const loginController = asyncHandler(async (req: Request, res: Response, 
                             email: userFetched.emailDecideur,
                             role: ROLES.AM,
                             telephone: userFetched.telephoneDecideur,
+                            clientId: userFetched.idClient
                         };
                     } else {
                         throw new AuthFailureError('Incorrect email');
@@ -145,7 +136,7 @@ export const loginController = asyncHandler(async (req: Request, res: Response, 
     if (!match)
         throw new AuthFailureError('Incorrect password');
 
-    const [token, refreshToken] = createTokens({ user: userPayload })
+    const [token, refreshToken] = createTokens(userPayload)
     createCookie(res, token, 'accessToken', Number(process.env.ACCESS_TOKEN_COOKIE_EXPIRES));
     createCookie(res, refreshToken, 'refreshToken', Number(process.env.REFRESH_TOKEN_COOKIE_EXPIRES));
 
@@ -158,7 +149,7 @@ export const verifyAuth = asyncHandler(async (req: Request, res: Response, next:
 
     const token: string = req.cookies.accessToken;
     if (!token) {
-        throw new BadTokenError()
+        throw new BadTokenError('Please login first')
     }
 
     let decoded;
@@ -167,10 +158,12 @@ export const verifyAuth = asyncHandler(async (req: Request, res: Response, next:
     try {
         decoded = jwt.verify(token, `${process.env.JWT_SECRET}`) as {
             user: userJwtPayload,
-            iat: number,
         }
     } catch (err: unknown) {
         if (err instanceof TokenExpiredError) {
+            decoded = jwt.decode(token) as {
+                user: userJwtPayload,
+            }
             tokenIsExpired = true
         } else {
             removeTokens(res)
@@ -182,41 +175,43 @@ export const verifyAuth = asyncHandler(async (req: Request, res: Response, next:
 
     switch (decoded?.user.role) {
         case ROLES.SADM:
-            userFetched = await prisma.sadm.findUnique({
+            userFetched = await prismaClientSingleton.sadm.findUnique({
                 where: {
                     idSADM: decoded.user.id
                 }
             })
             break;
         case ROLES.ADM:
-            userFetched = await prisma.adm.findUnique({
+            userFetched = await prismaClientSingleton.adm.findUnique({
                 where: {
                     idADM: decoded.user.id
                 }
             })
             break;
         case ROLES.AC:
-            userFetched = await prisma.ac.findUnique({
+            userFetched = await prismaClientSingleton.ac.findUnique({
                 where: {
                     idAC: decoded.user.id
                 }
             })
             break;
         case ROLES.AM:
-            userFetched = await prisma.am.findUnique({
+            userFetched = await prismaClientSingleton.am.findUnique({
                 where: {
                     idAM: decoded.user.id
                 }
             })
             break;
         case ROLES.DECIDEUR:
-            userFetched = await prisma.decideur.findUnique({
+            userFetched = await prismaClientSingleton.decideur.findUnique({
                 where: {
                     idDecideur: decoded.user.id
                 }
             })
             break;
         default:
+            console.log(decoded, tokenIsExpired);
+            
             throw new InternalError('Unknown role')
     }
 
@@ -225,25 +220,13 @@ export const verifyAuth = asyncHandler(async (req: Request, res: Response, next:
         throw new InternalError('User not found')
     }
 
-    // req.user = user.toJSON()
-
-
-    // const passwordChangeAt = Math.round(
-    //     new Date(`${user.toJSON().changedPassword}`).getTime() / 1000
-    // );
-
-    // if (passwordChangeAt > decoded.iat) {
-    //     removeTokens(res)
-    //     throw new AuthFailureError('Session expirée, Veuillez vous reconnecter.');
-    // }
-
     if (tokenIsExpired) {
         try {
             jwt.verify(req.cookies.refreshToken, `${process.env.JWT_REFRESH_SECRET}`);
         } catch (err) {
-            throw new BadTokenError('Bad refresh token');
+            throw new BadTokenError('Session expired, please login');
         }
-
+        
         const [newAccessToken, newRefreshToken] = createTokens(decoded.user);
 
         createCookie(res, newAccessToken, 'accessToken', Number(process.env.ACCESS_TOKEN_COOKIE_EXPIRES));
