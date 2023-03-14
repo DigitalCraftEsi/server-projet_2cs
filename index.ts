@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-namespace */
 // Import the express in typescript file
 
@@ -10,6 +11,10 @@ import baverageRouter from './src/routers/beverageRouter';
 import orderRouter from './src/routers/orderRouter';
 import machinRouter from './src/routers/vendingMachineRouter';
 import authRouter from './src/routers/authRouter';
+import userRouter from './src/routers/usersRouter';
+import compression from 'compression';
+import cors, {CorsOptions} from 'cors';
+import cookieParser from 'cookie-parser';
 
 
 declare global {
@@ -21,13 +26,7 @@ declare global {
 }
 
 
-import { ApiError, BadRequestError, ErrorType, InternalError } from './src/handler/apiError';
-import authRouter from './src/routers/authRouter';
-import machinRouter from './src/routers/vendingMachineRouter';
-import userRouter from './src/routers/usersRouter';
-import compression from 'compression';
-import cors, {CorsOptions} from 'cors';
-import cookieParser from 'cookie-parser';
+
 
 
 

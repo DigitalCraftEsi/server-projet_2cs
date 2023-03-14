@@ -1,9 +1,10 @@
-import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import { BadRequestError } from "../../handler/apiError";
 import { SuccessResponse } from "../../handler/apiResponse";
 import asyncHandler from "../../handler/asyncHandler";
-const prisma = new PrismaClient();
+import { prismaClientSingleton } from "../../utils/prismaClient";
+import schema from "./schema";
+
 
 /**
  * Get all beverage of vendingMachine 
@@ -14,7 +15,7 @@ const prisma = new PrismaClient();
 export const getBeveragesOfMachin = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id);
-    const beverages = await prisma.boisson.findMany({
+    const beverages = await prismaClientSingleton.boisson.findMany({
       where: { idDistributeur: id },
     });
     if (beverages === null ){
@@ -35,7 +36,7 @@ export const getBeveragesOfMachin = asyncHandler(
 export const getBeverage = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id);
-    const beverages = await prisma.boisson.findFirst({
+    const beverages = await prismaClientSingleton.boisson.findFirst({
       where: { idBoisson: id },
     });
     if (beverages === null ){
@@ -54,7 +55,7 @@ export const getBeverage = asyncHandler(
  */
 export const getBeverages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const beverages = await prisma.boisson.findMany();
+    const beverages = await prismaClientSingleton.boisson.findMany();
     if (beverages === null ){
         next(new BadRequestError());
     }else{
@@ -71,12 +72,17 @@ export const getBeverages = asyncHandler(
  */
 export const addbeverage = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { nom, price, idMachine } = req.body;
-    const beverage = await prisma.boisson.create({
+
+    const { error } = schema.beverageSchema.validate(req.body) 
+    if (error) {
+         next(new BadRequestError(error.details[0].message))
+    }
+    const { nomBoisson, tarif, idDistributeur } = req.body;
+    const beverage = await prismaClientSingleton.boisson.create({
       data: {
-        nomBoisson: nom,
-        tarif: price,
-        idDistributeur: idMachine,
+        nomBoisson,
+        tarif ,
+        idDistributeur
       },
     });
     if (beverage === null ){
@@ -97,7 +103,7 @@ export const updateBeverage = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { nom, price, idMachine } = req.body;
     const id = parseInt(req.params.id);
-    await prisma.boisson.updateMany({
+    await prismaClientSingleton.boisson.updateMany({
       where: { idBoisson: id },
       data: {
         nomBoisson: nom,
@@ -105,7 +111,7 @@ export const updateBeverage = asyncHandler(
         idDistributeur: idMachine,
       },
     });
-    const beverage = await prisma.boisson.findMany({
+    const beverage = await prismaClientSingleton.boisson.findMany({
         where: { idBoisson : id},
       });
       if (beverage === null || beverage.length == 0) {

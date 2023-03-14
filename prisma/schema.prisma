@@ -118,8 +118,6 @@ model decideur {
   @@index([idClient], map: "idClient")
 }
 
-
-
 model distributeur {
   idDistributeur        Int      @id @default(autoincrement())
   positionX             Int?
@@ -132,7 +130,7 @@ model distributeur {
   idAC                  Int?
   @@index([idAC], map: "idAC")
   @@index([idClient], map: "idClient")
-  @@index([idAM], map: "idAM")
+
 }
 
 model facture {

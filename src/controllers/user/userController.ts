@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { Request, Response, NextFunction } from "express";
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
