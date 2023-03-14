@@ -6,6 +6,7 @@ import {
   BadRequestResponse,
   ForbiddenResponse,
   InvalidDataResponse,
+  NotFoundResponse,
 } from './apiResponse';
 
 export enum ErrorType {
@@ -33,6 +34,7 @@ export abstract class ApiError extends Error {
       case ErrorType.INTERNAL:
         return new InternalErrorResponse(err.message).send(res);
       case ErrorType.NOT_FOUND:
+        return new NotFoundResponse(err.message).send(res);
       case ErrorType.BAD_REQUEST:
         return new BadRequestResponse(err.message).send(res);
       case ErrorType.FORBIDDEN:

@@ -13,6 +13,7 @@ import express , {Application, NextFunction , Request , Response} from 'express'
 import { ApiError, BadRequestError, ErrorType, InternalError } from './src/handler/apiError';
 import authRouter from './src/routers/authRouter';
 import machinRouter from './src/routers/vendingMachineRouter';
+import userRouter from './src/routers/usersRouter';
 import compression from 'compression';
 import cors, {CorsOptions} from 'cors';
 import cookieParser from 'cookie-parser';
@@ -49,6 +50,7 @@ app.listen(port, () => {
 });
 app.use('/', authRouter);
 app.use('/machines', machinRouter);
+app.use('/users', userRouter);
 
 
 const errorHandler = (err : Error, req:Request, res:Response, next:NextFunction) => {
