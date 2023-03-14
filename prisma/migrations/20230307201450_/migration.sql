@@ -1,0 +1,56 @@
+-- AlterTable
+ALTER TABLE `actionsuspecte` MODIFY `idActionSuspecte` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `adm` MODIFY `idADM` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `agent_commerciale` MODIFY `idAC` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `agent_maitenance` MODIFY `idAM` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `annoncepublicitaire` MODIFY `idAnnonce` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `annonceur` MODIFY `idAnnonceur` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `anomalie` MODIFY `idAnomalie` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `client` MODIFY `idClient` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `commande` MODIFY `idCommande` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `consommateur` MODIFY `idConsommateur` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `decideur` MODIFY `idDecideur` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `facture` MODIFY `idFacture` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `panne` MODIFY `idPanne` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `reclamation` MODIFY `idReclamation` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `reclamationauto` MODIFY `idReclamationAuto` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `reponse` MODIFY `idReponse` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `sadm` MODIFY `idSADM` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `tache` MODIFY `idTache` INTEGER NOT NULL AUTO_INCREMENT;
+
+-- AlterTable
+ALTER TABLE `vol` MODIFY `idVol` INTEGER NOT NULL AUTO_INCREMENT;

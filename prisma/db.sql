@@ -192,6 +192,7 @@ CREATE TABLE ReclamationAuto(
 );
 
 CREATE TABLE Boisson(
+
    idBoisson INT AUTO_INCREMENT,
    idDistributeur INT NOT NULL,
    nomBoisson VARCHAR(200) NOT NULL,

@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from 'express'
-import { HandlError } from '../../middlwares/authMiddlware'
 import bcrypt from 'bcrypt';
 import { AuthFailureError } from '../../handler/apiError';
 import { SuccessMsgResponse, SuccessResponse } from '../../handler/apiResponse';
@@ -7,7 +7,7 @@ import asyncHandler from '../../handler/asyncHandler';
 import schema from './schema'
 import { BadRequestError, BadTokenError, InternalError } from '../../handler/apiError';
 import { createTokens, removeTokens, createCookie } from '../../utils/token';
-import jwt, { TokenExpiredError } from 'jsonwebtoken';
+import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { ROLES } from '../../enums/rolesEnum';
 import { userJwtPayload } from '../../utils/token';
 import { prismaClientSingleton } from '../../utils/prismaClient';
@@ -36,6 +36,8 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
             emailSADM: user.email
         }
     })
+
+
 
     if (userFetched) {
         passwordFetched = userFetched.motDePasseSADM;
@@ -138,7 +140,7 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
     createCookie(res, token, 'accessToken', Number(process.env.ACCESS_TOKEN_COOKIE_EXPIRES));
     createCookie(res, refreshToken, 'refreshToken', Number(process.env.REFRESH_TOKEN_COOKIE_EXPIRES));
 
-    new SuccessMsgResponse('Login succesful').send(res);
+    new SuccessResponse('Login succesful',userPayload).send(res);
 
     return next();
 });

@@ -1,5 +1,16 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 // Import the express in typescript file
+
 import { userJwtPayload } from './src/utils/token';
+
+
+import express , {Application} from 'express';
+import { errorHandler } from './src/handler/errorHandler';
+import baverageRouter from './src/routers/beverageRouter';
+import orderRouter from './src/routers/orderRouter';
+import machinRouter from './src/routers/vendingMachineRouter';
+import authRouter from './src/routers/authRouter';
+
 
 declare global {
   namespace Express {
@@ -9,7 +20,7 @@ declare global {
   }
 }
 
-import express , {Application, NextFunction , Request , Response} from 'express';
+
 import { ApiError, BadRequestError, ErrorType, InternalError } from './src/handler/apiError';
 import authRouter from './src/routers/authRouter';
 import machinRouter from './src/routers/vendingMachineRouter';
@@ -17,6 +28,9 @@ import userRouter from './src/routers/usersRouter';
 import compression from 'compression';
 import cors, {CorsOptions} from 'cors';
 import cookieParser from 'cookie-parser';
+
+
+
 
  
 // Initialize the express engine
@@ -46,32 +60,18 @@ const port : Number = 8000;
 app.listen(port, () => {
     console.log(`TypeScript with Express
          http://localhost:${port}/`);
-
 });
+
 app.use('/', authRouter);
-app.use('/machines', machinRouter);
+
 app.use('/users', userRouter);
 
-
-const errorHandler = (err : Error, req:Request, res:Response, next:NextFunction) => {
-  console.log(err)
-  if (err instanceof ApiError) {
-    ApiError.handle(<ApiError>err, res);
-      if (err.type === ErrorType.INTERNAL)
-        console.log(
-          `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`,
-        );
-    } else {
-      console.log(
-        `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`,
-      );
-      console.log(err);
-      if (process.env.NODE_ENV === 'development') {
-        return res.status(500).send(err);
-      }
-      ApiError.handle(new InternalError(), res);
-    }
-
-}
-
+app.use('/machine', machinRouter);
+app.use("/beverage",baverageRouter);
+app.use("/order",orderRouter);
 app.use(errorHandler)
+
+
+export default app
+
+
