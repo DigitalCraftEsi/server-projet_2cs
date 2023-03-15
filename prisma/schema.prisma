@@ -113,9 +113,7 @@ model decideur {
   emailDecideur      String  @unique(map: "emailDecideur") @db.VarChar(200)
   telephoneDecideur  String? @db.VarChar(200)
   motDePasseDecideur String  @db.VarChar(200)
-  idClient           Int
-
-  @@index([idClient], map: "idClient")
+  idClient           Int     @unique(map: "idClient")
 }
 
 model distributeur {

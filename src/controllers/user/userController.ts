@@ -48,19 +48,27 @@ export const addUser = asyncHandler(
             throw new BadRequestError('Client ID required')
         }
 
+        const emailExists: any[] = await prismaClientSingleton.$queryRaw`
+        select email from (
+            select emailSADM as email from sadm
+            union 
+            select emailClient as email from client
+            union 
+            select emailADM as email from adm
+            union 
+            select emailAM as email from am
+            union 
+            select emailAC as email from ac
+        ) t WHERE email = ${req.body.email} ;`
+
+        if (emailExists.length > 0) {
+            throw new BadRequestError('Email already taken')
+        }
+
         const hashedPassword = req.body.password ? await bcrypt.hash(req.body.password, 10) : ''
 
         switch (req.body.role) {
             case ROLES.CLIENT: {
-                let userExists: any = await prismaClientSingleton.client.findUnique({
-                    where: {
-                        emailClient: req.body.email
-                    }
-                })
-
-                if (userExists) {
-                    throw new BadRequestError('Client already exists')
-                }
 
                 const newClientObject = {
                     nomClient: req.body.nom,
@@ -74,7 +82,7 @@ export const addUser = asyncHandler(
 
                 break;
             }
-            case ROLES.ADM:{
+            case ROLES.ADM: {
                 let clientExists = await prismaClientSingleton.client.findUnique({
                     where: {
                         idClient: req.body.client
@@ -85,17 +93,14 @@ export const addUser = asyncHandler(
                     throw new NotFoundError('Client doesn\'t exist')
                 }
 
-                let userExists = await prismaClientSingleton.adm.findFirst({
+                let userExists = await prismaClientSingleton.adm.findUnique({
                     where: {
-                        OR: {
-                            emailADM: req.body.email,
-                            idClient: req.body.client
-                        }
+                        idClient: req.body.client
                     }
                 })
 
                 if (userExists) {
-                    throw new BadRequestError('Admin already exists or client already has an admin')
+                    throw new BadRequestError('Client already has an admin')
                 }
 
                 const newADMObject = {
@@ -115,17 +120,16 @@ export const addUser = asyncHandler(
 
                 break;
             }
-            case ROLES.DECIDEUR:{
+            case ROLES.DECIDEUR: {
 
                 let userExists = await prismaClientSingleton.decideur.findUnique({
                     where: {
-                        //if client can have many decideurs, add: or idClient: user.clientId
-                        emailDecideur: req.body.email,
+                        idClient: req.body.client
                     }
                 })
 
                 if (userExists) {
-                    throw new BadRequestError('Decider already exists')
+                    throw new BadRequestError('Client already has a decider')
                 }
 
                 const newDeciderObject = {
@@ -145,19 +149,16 @@ export const addUser = asyncHandler(
 
                 break;
             }
-            case ROLES.AC:{
+            case ROLES.AC: {
 
-                let userExists = await prismaClientSingleton.ac.findFirst({
+                let userExists = await prismaClientSingleton.ac.findUnique({
                     where: {
-                        OR: {
-                            emailAC: req.body.email,
-                            idClient: user.clientId
-                        }
+                        idClient: user.clientId
                     }
                 })
 
                 if (userExists) {
-                    throw new BadRequestError('AC already exists or client already has an AC')
+                    throw new BadRequestError('client already has an AC')
                 }
 
                 const newACObject = {
@@ -177,17 +178,7 @@ export const addUser = asyncHandler(
 
                 break;
             }
-            case ROLES.AM:{
-
-                let userExists = await prismaClientSingleton.am.findFirst({
-                    where: {
-                        emailAM: req.body.email
-                    }
-                })
-
-                if (userExists) {
-                    throw new BadRequestError('AM already exists ')
-                }
+            case ROLES.AM: {
 
                 const newAMObject = {
                     nomAM: req.body.nom,
@@ -203,7 +194,6 @@ export const addUser = asyncHandler(
                 await prismaClientSingleton.am.create({
                     data: newAMObject
                 })
-
 
                 break;
             }
@@ -245,7 +235,7 @@ export const deleteUser = asyncHandler(
         }
 
         switch (req.body.role) {
-            case ROLES.CLIENT:{
+            case ROLES.CLIENT: {
                 const client: any = await prismaClientSingleton.client.findUnique({
                     where: {
                         idClient: req.body.id
@@ -265,7 +255,7 @@ export const deleteUser = asyncHandler(
 
                 break;
             }
-            case ROLES.ADM:{
+            case ROLES.ADM: {
                 const adm = await prismaClientSingleton.adm.findUnique({
                     where: {
                         idADM: req.body.id
@@ -286,7 +276,7 @@ export const deleteUser = asyncHandler(
 
                 break;
             }
-            case ROLES.DECIDEUR:{
+            case ROLES.DECIDEUR: {
 
                 const decideur = await prismaClientSingleton.decideur.findUnique({
                     where: {
@@ -313,7 +303,7 @@ export const deleteUser = asyncHandler(
 
                 break;
             }
-            case ROLES.AC:{
+            case ROLES.AC: {
 
                 const ac = await prismaClientSingleton.ac.findUnique({
                     where: {
@@ -339,7 +329,7 @@ export const deleteUser = asyncHandler(
 
                 break;
             }
-            case ROLES.AM:{
+            case ROLES.AM: {
 
                 const am = await prismaClientSingleton.am.findUnique({
                     where: {
