@@ -13,6 +13,7 @@ machinRouter.get("/:id/beverages",beverageController.getBeveragesOfMachin);
 machinRouter.get("/:id/orders",orderController.getOrdersOfMachine);
 machinRouter.post("/",vendingMachineController.addMachine);
 machinRouter.post("/:id",vendingMachineController.updateMachine);
+machinRouter.delete("/:id",vendingMachineController.deleteMachine);
 
 
 export default machinRouter;

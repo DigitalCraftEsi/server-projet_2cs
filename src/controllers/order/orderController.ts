@@ -1,10 +1,11 @@
-import { PrismaClient } from "@prisma/client"
 import { BadRequestError } from "../../handler/apiError";
-import { SuccessResponse } from "../../handler/apiResponse";
+import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
 import {Request , Response , NextFunction } from "express"
 import asyncHandler from "../../handler/asyncHandler";
+import { prismaClientSingleton } from "../../utils/prismaClient";
+import schema from "./schema";
 
-const prisma = new PrismaClient();
+
 
 /**
  * Get All orders existe in DB
@@ -13,7 +14,7 @@ const prisma = new PrismaClient();
  * @param {NextFunction} next - callback function that is used to pass control to the next middleware function in the stack
  */
 export const getAllOrders = asyncHandler( async ( req : Request , res : Response , next : NextFunction ) => {
-        const data = await prisma.commande.findMany();
+        const data = await prismaClientSingleton.commande.findMany();
         if (data === null ){
             next(new BadRequestError());
         }else {
@@ -30,7 +31,7 @@ export const getAllOrders = asyncHandler( async ( req : Request , res : Response
  */
 export const getOrder = asyncHandler( async ( req : Request , res : Response , next : NextFunction ) => {
         const id = parseInt( req.params.id )
-        const order = await prisma.commande.findFirst({where : {
+        const order = await prismaClientSingleton.commande.findFirst({where : {
             idCommande : id
         }})
         if (order === null ){
@@ -49,7 +50,7 @@ export const getOrder = asyncHandler( async ( req : Request , res : Response , n
  */
 export const getOrdersOfMachine = asyncHandler( async( req : Request , res  :Response , next : NextFunction ) => {
         const idMachine = parseInt(req.params.id)
-        const orders = await prisma.commande.findMany({
+        const orders = await prismaClientSingleton.commande.findMany({
             where : {
                 idDistributeur : idMachine
             }
@@ -70,7 +71,7 @@ export const getOrdersOfMachine = asyncHandler( async( req : Request , res  :Res
  */
 export const getOrdersOfClient = asyncHandler( async ( req : Request , res  :Response , next : NextFunction ) => {
         const idClient = parseInt(req.params.id)
-        const orders = await prisma.commande.findMany({
+        const orders = await prismaClientSingleton.commande.findMany({
             where : {
                 idConsommateur : idClient
             }
@@ -89,14 +90,21 @@ export const getOrdersOfClient = asyncHandler( async ( req : Request , res  :Res
  * @param {NextFunction} next - callback function that is used to pass control to the next middleware function in the stack
  */
 export const addOrder = asyncHandler( async ( req : Request , res : Response , next : NextFunction ) => {
-        const {  dateCommande  , idConsommateur , idDistributeur ,} = req.body;
-        const order = await prisma.commande.create({
-            data : {
-                dateCommande ,
+    
+    const { error } = schema.orderSchema.validate(req.body) 
+
+    if (error) {
+         next(new BadRequestError(error.details[0].message))
+    }
+    
+    const {  dateCommande  , idConsommateur , idDistributeur ,} = req.body;
+    const order = await prismaClientSingleton.commande.create({
+        data : {
+                dateCommande : new Date(dateCommande) ,
                 idConsommateur,
                 idDistributeur
-            }
-        })
+        }
+    })
         new SuccessResponse("sucess" , order).send(res);
 })
 
@@ -109,7 +117,7 @@ export const addOrder = asyncHandler( async ( req : Request , res : Response , n
 export const updateOrder = asyncHandler( async ( req : Request , res : Response , next : NextFunction ) => {
         const id = parseInt(req.params.id)
         const {  dateCommande  , idConsommateur , idDistributeur ,} = req.body;
-        await prisma.commande.updateMany({
+        await prismaClientSingleton.commande.updateMany({
             where : {
                idCommande : id
             },
@@ -119,9 +127,36 @@ export const updateOrder = asyncHandler( async ( req : Request , res : Response 
                 idDistributeur
             }
         })
-        const order = await prisma.commande.findUnique({
+        const order = await prismaClientSingleton.commande.findUnique({
             where: { idCommande:id },
           });
         new SuccessResponse("success",order).send(res);
 
 })
+
+/**
+ * Delete existing order .
+ * @param {Request} req - object represents an incoming HTTP request
+ * @param {Response} res - object represents the server's response to an HTTP request
+ * @param {NextFunction} next - callback function that is used to pass control to the next middleware function in the stack
+ */
+export const deleteOrder = asyncHandler( async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const id = parseInt(req.params.id);
+    const OrderDelete = await prismaClientSingleton.commande.findUnique({
+      where : {
+        idCommande : id
+      }
+    })
+    if (OrderDelete == null) {
+      next(new BadRequestError("Order doesn't existe"))
+    }
+    await prismaClientSingleton.commande.delete({where : {
+      idCommande : id
+    }})
+    new SuccessMsgResponse("deleting successfull").send(res)
+  
+  })

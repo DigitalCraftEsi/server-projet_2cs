@@ -5,8 +5,10 @@ const vendingMachine = {
     positionY: Joi.number().required(),
     adresse: Joi.string().required(),
     etat: Joi.string().required(),
-    codeDeDeverrouillage_: Joi.string().required(),
-    idDistributeur :  Joi.number().positive().required(),
+    codeDeDeverrouillage : Joi.string().required(),
+    actif : Joi.boolean(),
+    idClient : Joi.number().positive(),
+    idAC : Joi.number().positive(),
 }
 
 export default {
