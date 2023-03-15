@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable no-undef */
-const app = require("../index")
+const bcrypt = require('bcrypt')
 
 describe('Sample Test', function() {
     it('should pass', function() {

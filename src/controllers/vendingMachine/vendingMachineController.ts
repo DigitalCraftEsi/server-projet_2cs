@@ -98,6 +98,7 @@ export const updateMachine = asyncHandler( async (
       adresse,
       codeDeDeverrouillage,
       idClient,
+      idAM 
     } = req.body; 
     const id = parseInt(req.params.id);
     await prismaClientSingleton.distributeur.update({
@@ -108,6 +109,7 @@ export const updateMachine = asyncHandler( async (
         adresse,
         codeDeDeverrouillage,
         idClient,
+        idAM
       }
     });
     const machine = await prismaClientSingleton.distributeur.findUnique({

@@ -1,14 +1,12 @@
 import Joi from 'joi'
 
 const vendingMachine = {
-    positionX: Joi.number().required(),
-    positionY: Joi.number().required(),
+    longitude: Joi.number().required(),
+    latitude: Joi.number().required(),
     adresse: Joi.string().required(),
-    etat: Joi.string().required(),
     codeDeDeverrouillage : Joi.string().required(),
-    actif : Joi.boolean(),
     idClient : Joi.number().positive(),
-    idAC : Joi.number().positive(),
+    idAM : Joi.number().positive(),
 }
 
 export default {
