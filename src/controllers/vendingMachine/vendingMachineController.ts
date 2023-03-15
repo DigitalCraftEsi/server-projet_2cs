@@ -3,6 +3,7 @@
 import { NextFunction, Request, Response } from "express";
 import { BadRequestError } from "../../handler/apiError";
 import {
+  SuccessMsgResponse,
   SuccessResponse,
 } from "../../handler/apiResponse";
 import asyncHandler from "../../handler/asyncHandler";
@@ -125,3 +126,32 @@ export const updateMachine = asyncHandler( async (
     }
 
 });
+
+
+/**
+ * Delete existing vendingMachine .
+ * @param {Request} req - object represents an incoming HTTP request
+ * @param {Response} res - object represents the server's response to an HTTP request
+ * @param {NextFunction} next - callback function that is used to pass control to the next middleware function in the stack
+ */
+export const deleteMachine = asyncHandler( async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = parseInt(req.params.id);
+  let machineDelete = await prismaClientSingleton.distributeur.findUnique({
+    where : {
+      idDistributeur : id
+    }
+  })
+  if (machineDelete == null) {
+    next(new BadRequestError("Machine doesn't existe"))
+  }
+  await prismaClientSingleton.distributeur.delete({where : {
+    idDistributeur : id
+  }})
+
+  new SuccessMsgResponse("deleting successfull").send(res)
+
+})

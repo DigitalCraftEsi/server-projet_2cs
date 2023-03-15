@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { BadRequestError } from "../../handler/apiError";
-import { SuccessResponse } from "../../handler/apiResponse";
+import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
 import asyncHandler from "../../handler/asyncHandler";
 import { prismaClientSingleton } from "../../utils/prismaClient";
 import schema from "./schema";
@@ -121,3 +121,31 @@ export const updateBeverage = asyncHandler(
       }
   }
 );
+
+/**
+ * Delete existing veberage .
+ * @param {Request} req - object represents an incoming HTTP request
+ * @param {Response} res - object represents the server's response to an HTTP request
+ * @param {NextFunction} next - callback function that is used to pass control to the next middleware function in the stack
+ */
+export const deleteBeverage = asyncHandler( async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = parseInt(req.params.id);
+  const beverageDelete = await prismaClientSingleton.boisson.findMany({
+    where : {
+      idBoisson : id
+    }
+  })
+  if (beverageDelete == null || beverageDelete.length == 0) {
+    next(new BadRequestError("Beverage doesn't existe"))
+  }
+  await prismaClientSingleton.boisson.deleteMany({where : {
+    idBoisson : id
+  }})
+
+  new SuccessMsgResponse("deleting successfull").send(res)
+
+})

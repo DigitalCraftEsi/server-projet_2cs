@@ -1,5 +1,5 @@
 import { BadRequestError } from "../../handler/apiError";
-import { SuccessResponse } from "../../handler/apiResponse";
+import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
 import {Request , Response , NextFunction } from "express"
 import asyncHandler from "../../handler/asyncHandler";
 import { prismaClientSingleton } from "../../utils/prismaClient";
@@ -133,3 +133,30 @@ export const updateOrder = asyncHandler( async ( req : Request , res : Response 
         new SuccessResponse("success",order).send(res);
 
 })
+
+/**
+ * Delete existing order .
+ * @param {Request} req - object represents an incoming HTTP request
+ * @param {Response} res - object represents the server's response to an HTTP request
+ * @param {NextFunction} next - callback function that is used to pass control to the next middleware function in the stack
+ */
+export const deleteOrder = asyncHandler( async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const id = parseInt(req.params.id);
+    const OrderDelete = await prismaClientSingleton.commande.findUnique({
+      where : {
+        idCommande : id
+      }
+    })
+    if (OrderDelete == null) {
+      next(new BadRequestError("Order doesn't existe"))
+    }
+    await prismaClientSingleton.commande.delete({where : {
+      idCommande : id
+    }})
+    new SuccessMsgResponse("deleting successfull").send(res)
+  
+  })
