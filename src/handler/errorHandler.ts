@@ -9,7 +9,6 @@ import { ApiError, ErrorType, InternalError } from '../handler/apiError';
  * @param {Response} res - object represents the server's response to an HTTP request .
  */
 export const errorHandler = (err : Error, req:Request, res:Response , next : NextFunction ) => {
-    console.log(err ,"handler")
     if (err instanceof ApiError) {
       ApiError.handle(<ApiError>err, res);
         if (err.type === ErrorType.INTERNAL)
@@ -20,7 +19,6 @@ export const errorHandler = (err : Error, req:Request, res:Response , next : Nex
         console.log(
           `500 - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`,
         );
-        console.log(err);
         if (process.env.NODE_ENV === 'development') {
           return res.status(500).send(err);
         }

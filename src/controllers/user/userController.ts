@@ -112,7 +112,6 @@ export const addUser = asyncHandler(
                     idClient: req.body.client
                 }
 
-                console.log("added user ADM");
 
                 await prismaClientSingleton.adm.create({
                     data: newADMObject
@@ -141,7 +140,6 @@ export const addUser = asyncHandler(
                     idClient: user.clientId as number
                 }
 
-                console.log("added user DECIDER");
 
                 await prismaClientSingleton.decideur.create({
                     data: newDeciderObject
@@ -170,7 +168,6 @@ export const addUser = asyncHandler(
                     idClient: user.clientId as number
                 }
 
-                console.log("added user AC");
 
                 await prismaClientSingleton.ac.create({
                     data: newACObject
@@ -189,7 +186,6 @@ export const addUser = asyncHandler(
                     idClient: user.clientId as number
                 }
 
-                console.log("added user AM");
 
                 await prismaClientSingleton.am.create({
                     data: newAMObject
@@ -266,7 +262,6 @@ export const deleteUser = asyncHandler(
                     throw new NotFoundError('ADM doesn\'t exist')
                 }
 
-                console.log("removed user ADM");
 
                 await prismaClientSingleton.adm.delete({
                     where: {
@@ -293,7 +288,6 @@ export const deleteUser = asyncHandler(
                     throw new ForbiddenError('Permission denied')
                 }
 
-                console.log("removed user DECIDER");
 
                 await prismaClientSingleton.decideur.delete({
                     where: {
@@ -319,7 +313,6 @@ export const deleteUser = asyncHandler(
                     throw new ForbiddenError('Permission denied')
                 }
 
-                console.log("removed user AC");
 
                 await prismaClientSingleton.ac.delete({
                     where: {
@@ -341,7 +334,6 @@ export const deleteUser = asyncHandler(
                     throw new BadRequestError('AM already exists')
                 }
 
-                console.log("removed user AM");
                 await prismaClientSingleton.am.delete({
                     where: {
                         idAM: req.body.id

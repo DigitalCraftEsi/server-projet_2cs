@@ -116,19 +116,15 @@ model decideur {
   idClient           Int     @unique(map: "idClient")
 }
 
-
-
 model distributeur {
-  idDistributeur        Int      @id @default(autoincrement())
-  positionX             Int?
-  positionY             Int?
-  adresse               String?  @db.VarChar(200)
-  etat                  String?  @db.VarChar(50)
-  codeDeDeverrouillage String?  @db.VarChar(200)
-  actif                 Boolean? @default(true)
-  idClient              Int?
-  idAC                  Int?
-  @@index([idAC], map: "idAC")
+  idDistributeur       Int    @id @default(autoincrement())
+  adresse              String @db.VarChar(200)
+  codeDeDeverrouillage String @db.VarChar(200)
+  idClient             Int?
+  idAM                 Int?
+  longitude            Float
+  latitude             Float
+
   @@index([idClient], map: "idClient")
   @@index([idAM], map: "idAM")
 }

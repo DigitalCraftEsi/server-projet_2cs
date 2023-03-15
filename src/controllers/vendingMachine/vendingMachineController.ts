@@ -86,27 +86,21 @@ export const updateMachine = asyncHandler( async (
   next: NextFunction
 ) => {
     const {
-      positionX ,
-      positionY,
+      longitude ,
+      latitude,
       adresse,
-      etat,
       codeDeDeverrouillage,
-      actif,
       idClient,
-      idAC 
     } = req.body; 
     const id = parseInt(req.params.id);
     await prisma.distributeur.update({
         where: { idDistributeur: id },
       data: {
-        positionX ,
-        positionY,
+        longitude,
+        latitude,
         adresse,
-        etat,
         codeDeDeverrouillage,
-        actif,
         idClient,
-        idAC 
       }
     });
     const machine = await prisma.distributeur.findUnique({

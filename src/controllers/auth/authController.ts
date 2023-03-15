@@ -37,8 +37,6 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
         }
     })
 
-
-
     if (userFetched) {
         passwordFetched = userFetched.motDePasseSADM;
         userPayload = {
@@ -209,9 +207,7 @@ export const verifyAuth = asyncHandler(async (req: Request, res: Response, next:
                 }
             })
             break;
-        default:
-            console.log(decoded, tokenIsExpired);
-            
+        default:            
             throw new InternalError('Unknown role')
     }
 

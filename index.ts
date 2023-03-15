@@ -8,8 +8,6 @@ import express , {Application} from 'express';
 import { errorHandler } from './src/handler/errorHandler';
 import baverageRouter from './src/routers/beverageRouter';
 import orderRouter from './src/routers/orderRouter';
-import machinRouter from './src/routers/vendingMachineRouter';
-import authRouter from './src/routers/authRouter';
 
 
 declare global {
