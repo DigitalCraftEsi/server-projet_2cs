@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response, NextFunction } from "express";
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
@@ -16,6 +18,7 @@ export const addUser = asyncHandler(
             throw new InternalError('User not found');
         }
 
+        // eslint-disable-next-line prefer-const
         let user = req.user
 
         if (isADM(user.role)) {
@@ -69,7 +72,6 @@ export const addUser = asyncHandler(
 
         switch (req.body.role) {
             case ROLES.CLIENT: {
-
                 const newClientObject = {
                     nomClient: req.body.nom,
                     telephoneClient: req.body.telephone,

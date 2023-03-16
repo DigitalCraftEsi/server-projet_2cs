@@ -1,8 +1,6 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-namespace */
 // Import the express in typescript file
-
-
-
 import { userJwtPayload } from './src/utils/token';
 declare global {
    namespace Express {
@@ -56,7 +54,7 @@ app.listen(port, () => {
 
 app.use('/', authRouter);
 
-app.use('/users', userRouter);
+app.use('/user', userRouter);
 
 app.use('/machine', machinRouter);
 app.use("/beverage",baverageRouter);

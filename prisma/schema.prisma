@@ -126,7 +126,7 @@ model distributeur {
   latitude             Float
 
   @@index([idClient], map: "idClient")
-  @@index([idAM], map: "idAM")
+
 }
 
 model facture {
