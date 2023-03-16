@@ -3,7 +3,7 @@ import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
 import { BadRequestError, ForbiddenError, InternalError, NotFoundError } from "../../handler/apiError";
 import { isSADM, isADM, isAC, isAM, isDecideur, isClient, ROLES } from "../../enums/rolesEnum";
-import { SuccessCreationResponse, SuccessMsgResponse } from "../../handler/apiResponse";
+import { SuccessCreationResponse, SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
 import { prismaClientSingleton } from "../../utils/prismaClient";
 import bcrypt from 'bcrypt';
 
@@ -34,7 +34,7 @@ export const addUser = asyncHandler(
         }
 
 
-        const { error } = schema.userSchema.validate(req.body);
+        const { error } = schema.addUserSchema.validate(req.body);
 
         if (error) {
             throw new BadRequestError(error.details[0].message);
@@ -207,7 +207,7 @@ export const deleteUser = asyncHandler(
             throw new InternalError('User not found');
         }
 
-        const { error } = schema.removeUserSchema.validate(req.body);
+        const { error } = schema.RUDUserSchema.validate(req.body);
 
         if (error) {
             throw new BadRequestError(error.details[0].message);
@@ -348,4 +348,200 @@ export const deleteUser = asyncHandler(
 
         new SuccessMsgResponse('User deleted succesfully').send(res)
 
+    })
+
+export const getUsers = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+        if (!req.user) {
+            throw new InternalError('User not found');
+        }
+        const { error } = schema.RUDUserSchema.validate(req.body);
+
+        if (error) {
+            throw new BadRequestError(error.details[0].message);
+        }
+
+        const user = req.user
+
+        let role: string = ''
+        let id: number | null = null;
+
+        if (isADM(user.role)) {
+            if ((req.body.role && !req.body.id) ||
+                (!req.body.role && req.body.id) ||
+                (req.body.role && req.body.id)
+                && !isAC(req.body.role)
+                && !isAM(req.body.role)
+                && !isDecideur(req.body.role))
+                throw new BadRequestError();
+            // if both id and role are present
+            if (req.body.role) {
+                role = req.body.role
+                id = req.body.id
+            }
+
+        } else if (isSADM(user.role)) {
+            if (req.body.id) {
+                id = req.body.id
+            }
+
+        } else {
+            throw new ForbiddenError('Permission denied');
+        }
+
+        if (!id) {
+            if (isADM(user.role)) {
+                const decideurs = await prismaClientSingleton.decideur.findMany({
+                    where: {
+                        idClient: user.clientId
+                    },
+                    select : {
+                        idDecideur : true,
+                        emailDecideur : true,
+                        nomDecideur : true,
+                        prenomDecideur : true,
+                        telephoneDecideur : true,
+                        idClient : true,
+                    }
+                })
+                const acs = await prismaClientSingleton.ac.findMany({
+                    where: {
+                        idClient: user.clientId
+                    },
+                    select : {
+                        idAC : true,
+                        emailAC : true,
+                        nomAc : true,
+                        prenomAC : true,
+                        telephoneAC : true,
+                        idClient : true,
+                    }
+                })
+                const ams = await prismaClientSingleton.am.findMany({
+                    where: {
+                        idClient: user.clientId
+                    },select : {
+                        idAM : true,
+                        emailAM : true,
+                        nomAM : true,
+                        prenomAM : true,
+                        telephoneAM : true,
+                        idClient : true,
+                    }
+                })
+
+                const usersList = [...decideurs, ...acs, ...ams];
+
+                new SuccessResponse('Users list', usersList).send(res)
+            } else {
+                //SADM
+                const clients = await prismaClientSingleton.client.findMany()
+
+                let clientsList = [...clients];
+
+                new SuccessResponse('Clients list', clientsList).send(res)
+            }
+        }
+        else {
+            if (isADM(user.role)) {
+                switch (role) {
+                    case ROLES.DECIDEUR: {
+                        const decideur = await prismaClientSingleton.decideur.findUnique({
+                            where: {
+                                idDecideur: id
+                            },select : {
+                                idDecideur : true,
+                                emailDecideur : true,
+                                nomDecideur : true,
+                                prenomDecideur : true,
+                                telephoneDecideur : true,
+                                idClient : true,
+                            }
+                        })
+
+                        if (!decideur || decideur.idClient !== user.clientId) {
+                            throw new NotFoundError('Decideur not found');
+                        }
+
+                        new SuccessResponse(`Decider ${id}`, decideur).send(res)
+                        break;
+                    }
+                    case ROLES.AC: {
+
+                        const ac = await prismaClientSingleton.ac.findUnique({
+                            where: {
+                                idAC: id
+                            }, select : {
+                                idAC : true,
+                                emailAC : true,
+                                nomAc : true,
+                                prenomAC : true,
+                                telephoneAC : true,
+                                idClient : true,
+                            }
+                        })
+
+                        if (!ac || ac.idClient !== user.clientId) {
+                            throw new NotFoundError('AC not found');
+                        }
+
+                        new SuccessResponse(`AC ${id}`, ac).send(res)
+
+                        break;
+                    }
+                    case ROLES.AM:
+                        {
+                            //TODO INCLUDE NOMBRE DE PANNEES REPAREES
+                            const am = await prismaClientSingleton.am.findUnique({
+                                where: {
+                                    idAM: id
+                                }, select : {
+                                    idAM : true,
+                                    emailAM : true,
+                                    nomAM : true,
+                                    prenomAM : true,
+                                    telephoneAM : true,
+                                    idClient : true,
+                                }
+                            })
+
+                            if (!am || am.idClient !== user.clientId) {
+                                throw new NotFoundError('AM not found');
+                            }
+
+                            new SuccessResponse(`AM ${id}`, am).send(res)
+
+                            break;
+                        }
+                    default:
+                        throw new InternalError('Role unknown')
+                }
+            }else{
+                //SADM
+                const client = await prismaClientSingleton.client.findUnique({
+                    where: {
+                        idClient: id
+                    },
+                })
+
+                if (!client) {
+                    throw new NotFoundError('Client not found');
+                }
+
+                const adm = await prismaClientSingleton.adm.findUnique({
+                    where:{
+                        idClient: client.idClient
+                    }, select : {
+                        idADM : true,
+                        emailADM : true,
+                        nomADM : true,
+                        prenomADM : true,
+                        telephoneADM : true,
+                        idClient : true,
+                    }
+                })
+
+                new SuccessResponse(`Client ${id}`, {client, adm}).send(res)
+            }
+        }
     })

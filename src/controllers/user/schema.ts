@@ -4,7 +4,7 @@ import _ from 'lodash';
 
 const alloweRoles = _.remove(Object.values(ROLES), (n)=>n!==ROLES.SADM)
 
-const user = {
+const addUserSchema = {
     nom : Joi.string().required(),
     prenom : Joi.string(),
     telephone : Joi.string().pattern(new RegExp(/^(0|\+[0-9]{2,3})[0-9]{9}$/)).allow(null, '').required(),
@@ -17,12 +17,12 @@ const user = {
     distributeur : Joi.number().positive()
 }
 
-const removeUser = {
-    role : Joi.string().valid(...alloweRoles).required(),
-    id : Joi.number().positive().required(),
+const RUDUserSchema = {
+    role : Joi.string().valid(...alloweRoles),
+    id : Joi.number().positive(),
 }
 
 export default {
-    userSchema: Joi.object(user),
-    removeUserSchema : Joi.object(removeUser)
+    addUserSchema: Joi.object(addUserSchema),
+    RUDUserSchema : Joi.object(RUDUserSchema)
 }
