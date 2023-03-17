@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { BadRequestError } from "../../handler/apiError";
 import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
 import asyncHandler from "../../handler/asyncHandler";
-import { prismaClientSingleton } from "../../utils/prismaClient";
+import { onAddBeverageHandler, onDeleteBeverageHandler, onGetAllBeverageHandler, onGetBeverageHandler, onGetBeveragesOfMachineHandler, onUpdateBeverageHandler } from "../../services/beverageService";
 import schema from "./schema";
 
 
@@ -15,9 +15,7 @@ import schema from "./schema";
 export const getBeveragesOfMachin = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id);
-    const beverages = await prismaClientSingleton.boisson.findMany({
-      where: { idDistributeur: id },
-    });
+    const beverages = await onGetBeveragesOfMachineHandler(id)
     if (beverages === null ){
         next(new BadRequestError());
     }else{
@@ -36,13 +34,11 @@ export const getBeveragesOfMachin = asyncHandler(
 export const getBeverage = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id);
-    const beverages = await prismaClientSingleton.boisson.findFirst({
-      where: { idBoisson: id },
-    });
-    if (beverages === null ){
-        next(new BadRequestError());
+    const beverage = await onGetBeverageHandler(id);
+    if (beverage === null ){
+        next(new BadRequestError("Beverage Doesn't existe"));
     }else{
-        new SuccessResponse("success", beverages).send(res);
+        new SuccessResponse("success", beverage).send(res);
     }
   }
 );
@@ -55,7 +51,7 @@ export const getBeverage = asyncHandler(
  */
 export const getBeverages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const beverages = await prismaClientSingleton.boisson.findMany();
+    const beverages = await onGetAllBeverageHandler();
     if (beverages === null ){
         next(new BadRequestError());
     }else{
@@ -77,14 +73,7 @@ export const addbeverage = asyncHandler(
     if (error) {
          next(new BadRequestError(error.details[0].message))
     }
-    const { nomBoisson, tarif, idDistributeur } = req.body;
-    const beverage = await prismaClientSingleton.boisson.create({
-      data: {
-        nomBoisson,
-        tarif ,
-        idDistributeur
-      },
-    });
+    const beverage = await onAddBeverageHandler(req.body)
     if (beverage === null ){
         next(new BadRequestError());
     }else{
@@ -101,24 +90,14 @@ export const addbeverage = asyncHandler(
  */
 export const updateBeverage = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { nom, price, idMachine } = req.body;
     const id = parseInt(req.params.id);
-    await prismaClientSingleton.boisson.updateMany({
-      where: { idBoisson: id },
-      data: {
-        nomBoisson: nom,
-        tarif: price,
-        idDistributeur: idMachine,
-      },
-    });
-    const beverage = await prismaClientSingleton.boisson.findMany({
-        where: { idBoisson : id},
-      });
-      if (beverage === null || beverage.length == 0) {
-        next(new BadRequestError());
-      }else{
-        new SuccessResponse("success",beverage[0]).send(res);
-      }
+    const beverageUpdate = await onGetBeverageHandler(id)
+    if (beverageUpdate === null) {
+      next(new BadRequestError("Beverage Doesn't existe"));
+    }
+    await onUpdateBeverageHandler(req.body,id);
+    const beverage = await onGetBeverageHandler(id)
+    new SuccessResponse("success",beverage).send(res);
   }
 );
 
@@ -134,18 +113,11 @@ export const deleteBeverage = asyncHandler( async (
   next: NextFunction
 ) => {
   const id = parseInt(req.params.id);
-  const beverageDelete = await prismaClientSingleton.boisson.findMany({
-    where : {
-      idBoisson : id
-    }
-  })
-  if (beverageDelete == null || beverageDelete.length == 0) {
+  const beverageDelete = await onGetBeverageHandler(id)
+  if (beverageDelete == null ) {
     next(new BadRequestError("Beverage doesn't existe"))
   }
-  await prismaClientSingleton.boisson.deleteMany({where : {
-    idBoisson : id
-  }})
-
+  await onDeleteBeverageHandler(id);
   new SuccessMsgResponse("deleting successfull").send(res)
 
 })
