@@ -43,7 +43,7 @@ export const getMachine = asyncHandler(
     if (machine != null) {
       new SuccessResponse('', machine).send(res)
     } else {
-      next(new BadRequestError("Machine doesn't existe"))
+      throw new BadRequestError("Machine doesn't existe")
     }
   },
 )
@@ -58,11 +58,11 @@ export const addMachine = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { error } = schema.vendingMachineSchema.validate(req.body)
     if (error) {
-      next(new BadRequestError(error.details[0].message))
+      throw new BadRequestError(error.details[0].message)
     }
     const machine = await onAddMachineHandler(req.body)
     if (machine === null) {
-      next(new BadRequestError())
+      throw new BadRequestError()
     } else {
       new SuccessResponse('success', machine).send(res)
     }
@@ -78,14 +78,14 @@ export const addMachine = asyncHandler(
 export const updateMachine = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id)
+    const machineUpdate = await onGetMachineHander(id)
+    if (machineUpdate === null) {
+      throw new BadRequestError("Machine doesn't existe")
+    } 
     await onUpdateMachineHandler(req.body, id)
     const machine = await onGetMachineHander(id)
-    if (machine === null) {
-      next(new BadRequestError("Machine doesn't existe"))
-    } else {
-      new SuccessResponse('success', machine).send(res)
-    }
-  },
+    new SuccessResponse('success', machine).send(res)
+  }
 )
 
 /**
@@ -99,7 +99,7 @@ export const deleteMachine = asyncHandler(
     const id = parseInt(req.params.id)
     let machineDelete = await onGetMachineHander(id)
     if (machineDelete == null) {
-      next(new BadRequestError("Machine doesn't existe"))
+      throw new BadRequestError("Machine doesn't existe")
     }
     await onDeleteMachineHandler(id)
     new SuccessMsgResponse('deleting successfull').send(res)

@@ -83,7 +83,7 @@ export const addOrder = asyncHandler( async ( req : Request , res : Response , n
     
     const { error } = schema.orderSchema.validate(req.body) 
     if (error) {
-         next(new BadRequestError(error.details[0].message))
+         throw new BadRequestError(error.details[0].message)
     }
     const order = await onAddOrderHandler(req.body)
     new SuccessResponse("sucess" , order).send(res);
@@ -99,7 +99,7 @@ export const updateOrder = asyncHandler( async ( req : Request , res : Response 
         const id = parseInt(req.params.id)
         const OrderUpdate = await onGetOrderHandler(id);
         if (OrderUpdate == null) {
-          next(new BadRequestError("Order doesn't existe"))
+         throw new BadRequestError("Order doesn't existe")
         }
         await onUpdateOrderHandler(req.body,id);
         const order = await onGetOrderHandler(id);
@@ -121,7 +121,7 @@ export const deleteOrder = asyncHandler( async (
     const id = parseInt(req.params.id);
     const OrderDelete = await onGetOrderHandler(id);
     if (OrderDelete == null) {
-      next(new BadRequestError("Order doesn't existe"))
+     throw new BadRequestError("Order doesn't existe")
     }
     await onDeleteOrderHandler(id)
     new SuccessMsgResponse("deleting successfull").send(res)

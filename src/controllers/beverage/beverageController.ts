@@ -17,7 +17,7 @@ export const getBeveragesOfMachin = asyncHandler(
     const id = parseInt(req.params.id);
     const beverages = await onGetBeveragesOfMachineHandler(id)
     if (beverages === null ){
-        next(new BadRequestError());
+        throw new BadRequestError();
     }else{
         new SuccessResponse("success", beverages).send(res);
     }
@@ -36,7 +36,7 @@ export const getBeverage = asyncHandler(
     const id = parseInt(req.params.id);
     const beverage = await onGetBeverageHandler(id);
     if (beverage === null ){
-        next(new BadRequestError("Beverage Doesn't existe"));
+        throw new BadRequestError("Beverage Doesn't existe");
     }else{
         new SuccessResponse("success", beverage).send(res);
     }
@@ -53,7 +53,7 @@ export const getBeverages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const beverages = await onGetAllBeverageHandler();
     if (beverages === null ){
-        next(new BadRequestError());
+        throw new BadRequestError();
     }else{
         new SuccessResponse("success", beverages).send(res);
     }
@@ -71,11 +71,11 @@ export const addbeverage = asyncHandler(
 
     const { error } = schema.beverageSchema.validate(req.body) 
     if (error) {
-         next(new BadRequestError(error.details[0].message))
+         throw new BadRequestError(error.details[0].message)
     }
     const beverage = await onAddBeverageHandler(req.body)
     if (beverage === null ){
-        next(new BadRequestError());
+        throw new BadRequestError();
     }else{
         new SuccessResponse("success", beverage).send(res);
     }
@@ -93,7 +93,7 @@ export const updateBeverage = asyncHandler(
     const id = parseInt(req.params.id);
     const beverageUpdate = await onGetBeverageHandler(id)
     if (beverageUpdate === null) {
-      next(new BadRequestError("Beverage Doesn't existe"));
+      throw new BadRequestError("Beverage Doesn't existe");
     }
     await onUpdateBeverageHandler(req.body,id);
     const beverage = await onGetBeverageHandler(id)
@@ -115,7 +115,7 @@ export const deleteBeverage = asyncHandler( async (
   const id = parseInt(req.params.id);
   const beverageDelete = await onGetBeverageHandler(id)
   if (beverageDelete == null ) {
-    next(new BadRequestError("Beverage doesn't existe"))
+    throw new BadRequestError("Beverage doesn't existe")
   }
   await onDeleteBeverageHandler(id);
   new SuccessMsgResponse("deleting successfull").send(res)
