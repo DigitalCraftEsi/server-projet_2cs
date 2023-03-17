@@ -78,7 +78,7 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
                 passwordFetched = userFetched.motDePasseAC;
                 userPayload = {
                     id: userFetched.idAC,
-                    nom: userFetched.nomAc,
+                    nom: userFetched.nomAC,
                     prenom: userFetched.prenomAC,
                     email: userFetched.emailAC,
                     role: ROLES.AC,

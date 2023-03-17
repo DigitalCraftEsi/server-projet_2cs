@@ -9,8 +9,6 @@ import { SuccessCreationResponse, SuccessMsgResponse, SuccessResponse } from "..
 import { prismaClientSingleton } from "../../utils/prismaClient";
 import bcrypt from 'bcrypt';
 
-//TODO Update user And ensure EMAIL is unique across tables
-
 export const addUser = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
 
@@ -162,7 +160,7 @@ export const addUser = asyncHandler(
                 }
 
                 const newACObject = {
-                    nomAc: req.body.nom,
+                    nomAC: req.body.nom,
                     prenomAC: req.body.prenom,
                     emailAC: req.body.email,
                     telephoneAC: req.body.telephone,
@@ -188,7 +186,6 @@ export const addUser = asyncHandler(
                     idClient: user.clientId as number
                 }
 
-
                 await prismaClientSingleton.am.create({
                     data: newAMObject
                 })
@@ -209,7 +206,7 @@ export const deleteUser = asyncHandler(
             throw new InternalError('User not found');
         }
 
-        const { error } = schema.RUDUserSchema.validate(req.body);
+        const { error } = schema.getDeleteUserSchema.validate(req.body);
 
         if (error) {
             throw new BadRequestError(error.details[0].message);
@@ -277,7 +274,6 @@ export const deleteUser = asyncHandler(
 
                 const decideur = await prismaClientSingleton.decideur.findUnique({
                     where: {
-                        //if client can have many decideurs, add: or idClient: user.clientId
                         idDecideur: req.body.id,
                     }
                 })
@@ -357,7 +353,7 @@ export const getUsers = asyncHandler(
         if (!req.user) {
             throw new InternalError('User not found');
         }
-        const { error } = schema.RUDUserSchema.validate(req.body);
+        const { error } = schema.getDeleteUserSchema.validate(req.body);
 
         if (error) {
             throw new BadRequestError(error.details[0].message);
@@ -397,38 +393,38 @@ export const getUsers = asyncHandler(
                     where: {
                         idClient: user.clientId
                     },
-                    select : {
-                        idDecideur : true,
-                        emailDecideur : true,
-                        nomDecideur : true,
-                        prenomDecideur : true,
-                        telephoneDecideur : true,
-                        idClient : true,
+                    select: {
+                        idDecideur: true,
+                        emailDecideur: true,
+                        nomDecideur: true,
+                        prenomDecideur: true,
+                        telephoneDecideur: true,
+                        idClient: true,
                     }
                 })
                 const acs = await prismaClientSingleton.ac.findMany({
                     where: {
                         idClient: user.clientId
                     },
-                    select : {
-                        idAC : true,
-                        emailAC : true,
-                        nomAc : true,
-                        prenomAC : true,
-                        telephoneAC : true,
-                        idClient : true,
+                    select: {
+                        idAC: true,
+                        emailAC: true,
+                        nomAC: true,
+                        prenomAC: true,
+                        telephoneAC: true,
+                        idClient: true,
                     }
                 })
                 const ams = await prismaClientSingleton.am.findMany({
                     where: {
                         idClient: user.clientId
-                    },select : {
-                        idAM : true,
-                        emailAM : true,
-                        nomAM : true,
-                        prenomAM : true,
-                        telephoneAM : true,
-                        idClient : true,
+                    }, select: {
+                        idAM: true,
+                        emailAM: true,
+                        nomAM: true,
+                        prenomAM: true,
+                        telephoneAM: true,
+                        idClient: true,
                     }
                 })
 
@@ -451,13 +447,13 @@ export const getUsers = asyncHandler(
                         const decideur = await prismaClientSingleton.decideur.findUnique({
                             where: {
                                 idDecideur: id
-                            },select : {
-                                idDecideur : true,
-                                emailDecideur : true,
-                                nomDecideur : true,
-                                prenomDecideur : true,
-                                telephoneDecideur : true,
-                                idClient : true,
+                            }, select: {
+                                idDecideur: true,
+                                emailDecideur: true,
+                                nomDecideur: true,
+                                prenomDecideur: true,
+                                telephoneDecideur: true,
+                                idClient: true,
                             }
                         })
 
@@ -473,13 +469,13 @@ export const getUsers = asyncHandler(
                         const ac = await prismaClientSingleton.ac.findUnique({
                             where: {
                                 idAC: id
-                            }, select : {
-                                idAC : true,
-                                emailAC : true,
-                                nomAc : true,
-                                prenomAC : true,
-                                telephoneAC : true,
-                                idClient : true,
+                            }, select: {
+                                idAC: true,
+                                emailAC: true,
+                                nomAC: true,
+                                prenomAC: true,
+                                telephoneAC: true,
+                                idClient: true,
                             }
                         })
 
@@ -497,13 +493,13 @@ export const getUsers = asyncHandler(
                             const am = await prismaClientSingleton.am.findUnique({
                                 where: {
                                     idAM: id
-                                }, select : {
-                                    idAM : true,
-                                    emailAM : true,
-                                    nomAM : true,
-                                    prenomAM : true,
-                                    telephoneAM : true,
-                                    idClient : true,
+                                }, select: {
+                                    idAM: true,
+                                    emailAM: true,
+                                    nomAM: true,
+                                    prenomAM: true,
+                                    telephoneAM: true,
+                                    idClient: true,
                                 }
                             })
 
@@ -518,7 +514,7 @@ export const getUsers = asyncHandler(
                     default:
                         throw new InternalError('Role unknown')
                 }
-            }else{
+            } else {
                 //SADM
                 const client = await prismaClientSingleton.client.findUnique({
                     where: {
@@ -531,19 +527,217 @@ export const getUsers = asyncHandler(
                 }
 
                 const adm = await prismaClientSingleton.adm.findUnique({
-                    where:{
+                    where: {
                         idClient: client.idClient
-                    }, select : {
-                        idADM : true,
-                        emailADM : true,
-                        nomADM : true,
-                        prenomADM : true,
-                        telephoneADM : true,
-                        idClient : true,
+                    }, select: {
+                        idADM: true,
+                        emailADM: true,
+                        nomADM: true,
+                        prenomADM: true,
+                        telephoneADM: true,
+                        idClient: true,
                     }
                 })
 
-                new SuccessResponse(`Client ${id}`, {client, adm}).send(res)
+                new SuccessResponse(`Client ${id}`, { client, adm }).send(res)
             }
         }
     })
+
+export const updateUser = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+
+        if (!req.user) {
+            throw new InternalError('User not found');
+        }
+
+        const { error } = schema.updateUserSchema.validate(req.body);
+
+        if (error) {
+            throw new BadRequestError(error.details[0].message);
+        }
+
+        if (!isClient(req.body.role) && (!req.body.prenom)) {
+            throw new BadRequestError('First name/password required')
+        }
+
+        if (!isClient(req.body.role) && !isSADM(req.body.role) && !req.body.client) {
+            throw new BadRequestError('Client ID required')
+        }
+
+        const user = req.user
+        if (isADM(user.role)) {
+            if (user.clientId !== req.body.client)
+                throw new ForbiddenError('Permission denied');
+            else if (!isAC(req.body.role)
+                && !isAM(req.body.role)
+                && !isDecideur(req.body.role)
+                && !isADM(req.body.role))
+                throw new ForbiddenError('Permission denied');
+
+        } else if (isSADM(user.role)) {
+            if (!isADM(req.body.role)
+                && !isClient(req.body.role))
+                throw new ForbiddenError('Permission denied');
+
+        } else if (!(user.role === req.body.role
+            && user.id === req.body.id
+            && user.clientId === req.body.client)) {
+            throw new ForbiddenError('Permission denied');
+        }
+
+        const hashedPassword = req.body.password ? await bcrypt.hash(req.body.password, 10) : null
+
+        switch (req.body.role) {
+            case ROLES.CLIENT: {
+                const clientObject = {
+                    nomClient: req.body.nom,
+                    telephoneClient: req.body.telephone,
+                    emailClient: req.body.email,
+                }
+
+                await prismaClientSingleton.client.update({
+                    where : {
+                        idClient : req.body.id
+                    },
+                    data: clientObject
+                })
+
+                break;
+            }
+            case ROLES.SADM: {
+                
+                let sadmObject:object = {
+                    nomSADM: req.body.nom,
+                    prenomSADM: req.body.prenom,
+                    emailSADM: req.body.email,
+                    telephoneSADM: req.body.telephone,
+                }
+
+                if(hashedPassword){
+                    sadmObject = {
+                        ...sadmObject,
+                        motDePasseSADM : hashedPassword
+                    }
+                }
+
+                await prismaClientSingleton.sadm.update({
+                    where : {
+                        idSADM : req.body.id
+                    },
+                    data: sadmObject
+                })
+
+                break;
+            }
+            case ROLES.ADM: {
+                
+                let admObject:object = {
+                    nomADM: req.body.nom,
+                    prenomADM: req.body.prenom,
+                    emailADM: req.body.email,
+                    telephoneADM: req.body.telephone,
+                }
+
+                if(hashedPassword){
+                    admObject = {
+                        ...admObject,
+                        motDePasseADM : hashedPassword
+                    }
+                }
+
+                await prismaClientSingleton.adm.updateMany({
+                    where : {
+                        idADM : user.id,
+                        idClient : user.clientId
+                    },
+                    data: admObject
+                })
+
+                break;
+            }
+            case ROLES.DECIDEUR: {
+
+                let decideurObjet:object = {
+                    nomDecideur: req.body.nom,
+                    prenomDecideur: req.body.prenom,
+                    emailDecideur: req.body.email,
+                    telephoneDecideur: req.body.telephone,
+                }
+
+                if(hashedPassword){
+                    decideurObjet = {
+                        ...decideurObjet,
+                        motDePasseDecideur : hashedPassword
+                    }
+                }
+                
+                await prismaClientSingleton.decideur.updateMany({
+                    where:{
+                        idDecideur : req.body.id,
+                        idClient : user.clientId
+                    },
+                    data: decideurObjet
+                })
+                
+                break;
+            }
+            case ROLES.AC: {
+                
+                let acObject:object = {
+                    nomAC: req.body.nom,
+                    prenomAC: req.body.prenom,
+                    emailAC: req.body.email,
+                    telephoneAC: req.body.telephone,
+                }
+                
+                if(hashedPassword){
+                    acObject = {
+                        ...acObject,
+                        motDePasseAC : hashedPassword
+                    }
+                }
+                
+                await prismaClientSingleton.ac.updateMany({
+                    where : {
+                        idAC : req.body.id,
+                        idClient : user.clientId
+                    },
+                    data: acObject
+                })
+                
+                break;
+            }
+            case ROLES.AM: {
+                
+                let amObject:object = {
+                    nomAM: req.body.nom,
+                    prenomAM: req.body.prenom,
+                    emailAM: req.body.email,
+                    telephoneAM: req.body.telephone,
+                }
+                
+                if(hashedPassword){
+                    amObject = {
+                        ...amObject,
+                        motDePasseAM : hashedPassword
+                    }
+                }
+
+                await prismaClientSingleton.am.updateMany({
+                    where : {
+                        idAM: req.body.id,
+                        idClient : user.clientId
+                    },
+                    data: amObject
+                })
+
+                break;
+            }
+            default:
+                throw new InternalError('Unknown role')
+        }
+
+        new SuccessMsgResponse('User updated succesfully').send(res)
+    }
+)
