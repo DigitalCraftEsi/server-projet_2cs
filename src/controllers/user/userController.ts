@@ -17,9 +17,10 @@ export const addUser = asyncHandler(
         if (!req.user) {
             throw new InternalError('User not found');
         }
-
         // eslint-disable-next-line prefer-const
         let user = req.user
+
+        let newUser : any;
 
         if (isADM(user.role)) {
             if (!isAC(req.body.role)
@@ -78,7 +79,7 @@ export const addUser = asyncHandler(
                     emailClient: req.body.email,
                 }
 
-                await prismaClientSingleton.client.create({
+                newUser = await prismaClientSingleton.client.create({
                     data: newClientObject
                 })
 
@@ -115,7 +116,7 @@ export const addUser = asyncHandler(
                 }
 
 
-                await prismaClientSingleton.adm.create({
+                newUser = await prismaClientSingleton.adm.create({
                     data: newADMObject
                 })
 
@@ -143,7 +144,7 @@ export const addUser = asyncHandler(
                 }
 
 
-                await prismaClientSingleton.decideur.create({
+                newUser = await prismaClientSingleton.decideur.create({
                     data: newDeciderObject
                 })
 
@@ -171,7 +172,7 @@ export const addUser = asyncHandler(
                 }
 
 
-                await prismaClientSingleton.ac.create({
+                newUser = await prismaClientSingleton.ac.create({
                     data: newACObject
                 })
 
@@ -189,7 +190,7 @@ export const addUser = asyncHandler(
                 }
 
 
-                await prismaClientSingleton.am.create({
+                newUser = await prismaClientSingleton.am.create({
                     data: newAMObject
                 })
 
@@ -199,7 +200,7 @@ export const addUser = asyncHandler(
                 throw new InternalError('Unknown role')
         }
 
-        new SuccessCreationResponse('User created succesfully', null).send(res)
+        new SuccessCreationResponse('User created succesfully', newUser).send(res)
     })
 
 export const deleteUser = asyncHandler(

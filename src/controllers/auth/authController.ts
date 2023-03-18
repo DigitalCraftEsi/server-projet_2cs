@@ -10,7 +10,7 @@ import { createTokens, removeTokens, createCookie } from '../../utils/token';
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { ROLES } from '../../enums/rolesEnum';
 import { userJwtPayload } from '../../utils/token';
-import { prismaClientSingleton } from '../../utils/prismaClient';
+import { onGetACHandler, onGetADMHandler, onGetAMHandler, onGetDECIDEURHandler, onGetSADMHandler } from "../../services/userService";
 
 
 type userInfo = {
@@ -31,11 +31,7 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
     let userPayload: userJwtPayload;
     const user: userInfo = req.body;
 
-    userFetched = await prismaClientSingleton.sadm.findUnique({
-        where: {
-            emailSADM: user.email
-        }
-    })
+    userFetched = await onGetSADMHandler(user.email)
 
     if (userFetched) {
         passwordFetched = userFetched.motDePasseSADM;
@@ -49,11 +45,7 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
         };
     }
     else {
-        userFetched = await prismaClientSingleton.adm.findUnique({
-            where: {
-                emailADM: user.email
-            }
-        })
+        userFetched = await onGetADMHandler(user.email)
 
         if (userFetched) {
             passwordFetched = userFetched.motDePasseADM;
@@ -68,11 +60,7 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
             };
         }
         else {
-            userFetched = await prismaClientSingleton.ac.findUnique({
-                where: {
-                    emailAC: user.email
-                }
-            })
+            userFetched = await onGetACHandler(user.email)
 
             if (userFetched) {
                 passwordFetched = userFetched.motDePasseAC;
@@ -87,11 +75,7 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
                 };
             }
             else {
-                userFetched = await prismaClientSingleton.am.findUnique({
-                    where: {
-                        emailAM: user.email
-                    }
-                })
+                userFetched = await onGetAMHandler(user.email)
 
                 if (userFetched) {
                     passwordFetched = userFetched.motDePasseAM;
@@ -105,11 +89,7 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
                         clientId: userFetched.idClient
                     };
                 } else {
-                    userFetched = await prismaClientSingleton.decideur.findUnique({
-                        where: {
-                            emailDecideur: user.email
-                        }
-                    })
+                    userFetched = await onGetDECIDEURHandler(user.email)
 
                     if (userFetched) {
                         passwordFetched = userFetched.motDePasseDecideur;
@@ -173,39 +153,19 @@ export const verifyAuth = asyncHandler(async (req: Request, res: Response, next:
 
     switch (decoded?.user.role) {
         case ROLES.SADM:
-            userFetched = await prismaClientSingleton.sadm.findUnique({
-                where: {
-                    idSADM: decoded.user.id
-                }
-            })
+            userFetched = await onGetSADMHandler(decoded.user.id)
             break;
         case ROLES.ADM:
-            userFetched = await prismaClientSingleton.adm.findUnique({
-                where: {
-                    idADM: decoded.user.id
-                }
-            })
+            userFetched = await onGetADMHandler(decoded.user.id)
             break;
         case ROLES.AC:
-            userFetched = await prismaClientSingleton.ac.findUnique({
-                where: {
-                    idAC: decoded.user.id
-                }
-            })
+            userFetched = await onGetACHandler(decoded.user.id)
             break;
         case ROLES.AM:
-            userFetched = await prismaClientSingleton.am.findUnique({
-                where: {
-                    idAM: decoded.user.id
-                }
-            })
+            userFetched = await onGetAMHandler(decoded.user.id)
             break;
         case ROLES.DECIDEUR:
-            userFetched = await prismaClientSingleton.decideur.findUnique({
-                where: {
-                    idDecideur: decoded.user.id
-                }
-            })
+            userFetched = await onGetDECIDEURHandler(decoded.user.id)
             break;
         default:            
             throw new InternalError('Unknown role')
