@@ -2,8 +2,8 @@ import { BadRequestError } from "../../handler/apiError";
 import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
 import {Request , Response , NextFunction } from "express"
 import asyncHandler from "../../handler/asyncHandler";
-import { prismaClientSingleton } from "../../utils/prismaClient";
 import schema from "./schema";
+import { onAddOrderHandler, onDeleteOrderHandler, onGetAllOrderHandler, onGetOrderHandler, onGetOrdersOfClientHandler, onGetOrdersOfMacineHandler, onUpdateOrderHandler } from "../../services/orderService";
 
 
 
@@ -14,7 +14,7 @@ import schema from "./schema";
  * @param {NextFunction} next - callback function that is used to pass control to the next middleware function in the stack
  */
 export const getAllOrders = asyncHandler( async ( req : Request , res : Response , next : NextFunction ) => {
-        const data = await prismaClientSingleton.commande.findMany();
+       const data = await onGetAllOrderHandler();
         if (data === null ){
             next(new BadRequestError());
         }else {
@@ -31,11 +31,9 @@ export const getAllOrders = asyncHandler( async ( req : Request , res : Response
  */
 export const getOrder = asyncHandler( async ( req : Request , res : Response , next : NextFunction ) => {
         const id = parseInt( req.params.id )
-        const order = await prismaClientSingleton.commande.findFirst({where : {
-            idCommande : id
-        }})
+        const order = await onGetOrderHandler(id);
         if (order === null ){
-             next(new BadRequestError());
+             next(new BadRequestError("Order Doesn't existe"));
         }else {
             new SuccessResponse("sucess" , order).send(res);         
         }
@@ -50,11 +48,7 @@ export const getOrder = asyncHandler( async ( req : Request , res : Response , n
  */
 export const getOrdersOfMachine = asyncHandler( async( req : Request , res  :Response , next : NextFunction ) => {
         const idMachine = parseInt(req.params.id)
-        const orders = await prismaClientSingleton.commande.findMany({
-            where : {
-                idDistributeur : idMachine
-            }
-        })
+        const orders = await onGetOrdersOfMacineHandler(idMachine)
         if (orders === null ){
             next(new BadRequestError());
        }else {
@@ -71,13 +65,9 @@ export const getOrdersOfMachine = asyncHandler( async( req : Request , res  :Res
  */
 export const getOrdersOfClient = asyncHandler( async ( req : Request , res  :Response , next : NextFunction ) => {
         const idClient = parseInt(req.params.id)
-        const orders = await prismaClientSingleton.commande.findMany({
-            where : {
-                idConsommateur : idClient
-            }
-        })
+        const orders = await onGetOrdersOfClientHandler(idClient)
         if (orders === null ){
-            next(new BadRequestError());
+            next(new BadRequestError("Order Doesn't existe"));
        }else {
            new SuccessResponse("sucess" , orders).send(res);         
        }
@@ -92,20 +82,11 @@ export const getOrdersOfClient = asyncHandler( async ( req : Request , res  :Res
 export const addOrder = asyncHandler( async ( req : Request , res : Response , next : NextFunction ) => {
     
     const { error } = schema.orderSchema.validate(req.body) 
-
     if (error) {
-         next(new BadRequestError(error.details[0].message))
+         throw new BadRequestError(error.details[0].message)
     }
-    
-    const {  dateCommande  , idConsommateur , idDistributeur ,} = req.body;
-    const order = await prismaClientSingleton.commande.create({
-        data : {
-                dateCommande : new Date(dateCommande) ,
-                idConsommateur,
-                idDistributeur
-        }
-    })
-        new SuccessResponse("sucess" , order).send(res);
+    const order = await onAddOrderHandler(req.body)
+    new SuccessResponse("sucess" , order).send(res);
 })
 
 /**
@@ -116,20 +97,12 @@ export const addOrder = asyncHandler( async ( req : Request , res : Response , n
  */
 export const updateOrder = asyncHandler( async ( req : Request , res : Response , next : NextFunction ) => {
         const id = parseInt(req.params.id)
-        const {  dateCommande  , idConsommateur , idDistributeur ,} = req.body;
-        await prismaClientSingleton.commande.updateMany({
-            where : {
-               idCommande : id
-            },
-            data : {
-                dateCommande ,
-                idConsommateur , 
-                idDistributeur
-            }
-        })
-        const order = await prismaClientSingleton.commande.findUnique({
-            where: { idCommande:id },
-          });
+        const OrderUpdate = await onGetOrderHandler(id);
+        if (OrderUpdate == null) {
+         throw new BadRequestError("Order doesn't existe")
+        }
+        await onUpdateOrderHandler(req.body,id);
+        const order = await onGetOrderHandler(id);
         new SuccessResponse("success",order).send(res);
 
 })
@@ -146,17 +119,11 @@ export const deleteOrder = asyncHandler( async (
     next: NextFunction
   ) => {
     const id = parseInt(req.params.id);
-    const OrderDelete = await prismaClientSingleton.commande.findUnique({
-      where : {
-        idCommande : id
-      }
-    })
+    const OrderDelete = await onGetOrderHandler(id);
     if (OrderDelete == null) {
-      next(new BadRequestError("Order doesn't existe"))
+     throw new BadRequestError("Order doesn't existe")
     }
-    await prismaClientSingleton.commande.delete({where : {
-      idCommande : id
-    }})
+    await onDeleteOrderHandler(id)
     new SuccessMsgResponse("deleting successfull").send(res)
   
   })
