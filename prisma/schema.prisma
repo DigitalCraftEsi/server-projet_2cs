@@ -126,7 +126,7 @@ model distributeur {
   latitude             Float
 
   @@index([idClient], map: "idClient")
-
+  @@index([idAM], map: "idAM")
 }
 
 model facture {
@@ -208,7 +208,7 @@ model reclamationauto {
 
 model ac {
   idAC         Int     @id @default(autoincrement())
-  nomAc        String  @db.VarChar(200)
+  nomAC        String  @db.VarChar(200)
   prenomAC     String  @db.VarChar(200)
   emailAC      String  @unique(map: "emailAC") @db.VarChar(200)
   telephoneAC  String? @db.VarChar(200)

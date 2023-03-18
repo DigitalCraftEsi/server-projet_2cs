@@ -1,43 +1,32 @@
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-namespace */
 // Import the express in typescript file
-
 import { userJwtPayload } from './src/utils/token';
+declare global {
+   namespace Express {
+      interface Request {
+         user?: userJwtPayload
+      }
+   }
+}
 
 
-import express , {Application} from 'express';
+import express, { Application } from 'express'
 import { errorHandler } from './src/handler/errorHandler';
 import baverageRouter from './src/routers/beverageRouter';
 import orderRouter from './src/routers/orderRouter';
-
-import machinRouter from './src/routers/vendingMachineRouter';
 import authRouter from './src/routers/authRouter';
+import machinRouter from './src/routers/vendingMachineRouter';
 import userRouter from './src/routers/usersRouter';
 import compression from 'compression';
 import cors, {CorsOptions} from 'cors';
 import cookieParser from 'cookie-parser';
 
 
-
-declare global {
-  namespace Express {
-     interface Request {
-        user?: userJwtPayload
-     }
-  }
-}
-
-
-
-
-
-
-
- 
 // Initialize the express engine
 const app:Application = express();
 
-let corsOptions:cors.CorsOptions = {
+let corsOptions:CorsOptions = {
     origin: [`${process.env.FRONTEND_URL}`],
     credentials: true,
 }

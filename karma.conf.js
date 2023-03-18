@@ -1,9 +1,10 @@
 
 module.exports =  function(config) {
   config.set({
-
+    basePath: '.',
     frameworks: ['jasmine','commonjs'],
     files: [
+      './*',
       'test/*.spec.js',
     ],
     preprocessors: {

@@ -41,7 +41,7 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/karma": "^6.3.3",
     "@types/lodash": "^4.14.191",
-    "@types/node": "^18.14.2",
+    "@types/node": "^18.15.3",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
