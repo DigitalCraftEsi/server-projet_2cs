@@ -8,7 +8,7 @@
     "build": "tsc",
     "dev": "nodemon --exec  ts-node ./index.ts",
     "start": "node dist/index.js",
-    "test": "jasmine-ts ./spec/test/auth.spec.ts"
+    "test": "jasmine-ts "
   },
   "author": "",
   "license": "ISC",
