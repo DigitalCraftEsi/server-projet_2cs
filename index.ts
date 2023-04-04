@@ -62,14 +62,14 @@ app.listen(port, () => {
     console.log(`TypeScript with Express
          http://localhost:${port}/`);
 });
-
+app.use("/order",orderRouter);
 app.use('/', authRouter);
 
 app.use('/user', userRouter);
 
 app.use('/machine', machinRouter);
 app.use("/beverage",baverageRouter);
-app.use("/order",orderRouter);
+
 app.use(errorHandler)
 
 

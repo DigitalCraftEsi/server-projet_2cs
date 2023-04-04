@@ -3,7 +3,7 @@ import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
 import {Request , Response , NextFunction } from "express"
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
-import { onAddOrderHandler, onDeleteOrderHandler, onGetAllOrderHandler, onGetOrderHandler, onGetOrdersOfClientHandler, onGetOrdersOfMacineHandler, onUpdateOrderHandler } from "../../services/orderService";
+import { onAddOrderHandler, onDeleteOrderHandler, onGetAllOrderHandler, onGetOrderHandler, onGetOrdersOfConsumerHandler, onGetOrdersOfMacineHandler, onUpdateOrderHandler } from "../../services/orderService";
 
 
 
@@ -65,7 +65,7 @@ export const getOrdersOfMachine = asyncHandler( async( req : Request , res  :Res
  */
 export const getOrdersOfClient = asyncHandler( async ( req : Request , res  :Response , next : NextFunction ) => {
         const idClient = parseInt(req.params.id)
-        const orders = await onGetOrdersOfClientHandler(idClient)
+        const orders = await onGetOrdersOfConsumerHandler(idClient)
         if (orders === null ){
             next(new BadRequestError("Order Doesn't existe"));
        }else {

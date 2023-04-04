@@ -65,7 +65,7 @@ export const addMachine = asyncHandler(
       throw new BadRequestError()
     } else {
       new SuccessResponse('success', machine).send(res)
-    }
+    } 
   },
 )
 
