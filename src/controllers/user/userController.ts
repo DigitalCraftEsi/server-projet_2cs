@@ -250,7 +250,6 @@ export const deleteUser = asyncHandler(
                     }
                 });
 
-
                 break;
             }
             case ROLES.ADM: {
