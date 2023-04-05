@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcrypt';
 import { AuthFailureError } from '../../handler/apiError';
@@ -11,7 +12,6 @@ import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { ROLES } from '../../enums/rolesEnum';
 import { userJwtPayload } from '../../utils/token';
 import { onGetACHandler, onGetADMHandler, onGetAMHandler, onGetDECIDEURHandler, onGetSADMHandler } from "../../services/userService";
-
 
 type userInfo = {
     email: string,
@@ -191,6 +191,5 @@ export const verifyAuth = asyncHandler(async (req: Request, res: Response, next:
     }
 
     req.user = decoded?.user;
-
     next();
 })

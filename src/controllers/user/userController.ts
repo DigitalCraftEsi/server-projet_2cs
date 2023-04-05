@@ -348,7 +348,7 @@ export const deleteUser = asyncHandler(
             default:
                 throw new InternalError('Unknown role')
         }
-
+       
         new SuccessMsgResponse('User deleted succesfully').send(res)
 
     })
