@@ -175,9 +175,28 @@ export const onGetACHandler = async ( unique : string | number) : Promise< ac | 
     return ac
 }
 
+export const onGetCONSUMERHandler = async ( unique : string | number) : Promise< consommateur | null>  => {
+    let consumer : consommateur 
+    if (isString(unique)){
+        consumer = await prismaClientSingleton.consommateur.findUnique({
+            where: {
+                emailConsommateur : unique
+            }
+        })
+    }else {
+        consumer = await prismaClientSingleton.consommateur.findUnique({
+            where: {
+                idConsommateur : unique
+            }
+        })
+    }
+
+    return consumer
+}
+
 export const onAddACHandler = async ( data : any ) : Promise< ac | null>  => {
     const {
-        nomAc,
+        nomAC,
         prenomAC,
         emailAC,
         motDePasseAC,
@@ -186,7 +205,7 @@ export const onAddACHandler = async ( data : any ) : Promise< ac | null>  => {
       } = data
     const ac = await prismaClientSingleton.ac.create({
         data : {
-            nomAc,
+            nomAC,
             prenomAC,
             emailAC,
             motDePasseAC,

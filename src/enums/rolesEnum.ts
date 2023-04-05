@@ -5,6 +5,7 @@ export enum ROLES {
     AC = 'AC',
     DECIDEUR = 'DECIDEUR',
     CLIENT = 'CLIENT',
+    CONSUMER = 'CONSUMER',
 }
 
 export const isSADM = (role:string) => {
@@ -29,4 +30,8 @@ export const isDecideur = (role:string) => {
 
 export const isClient = (role:string) => {
     return role === ROLES.CLIENT
+}
+
+export const isConsumer = (role:string) => {
+    return role === ROLES.CONSUMER
 }
