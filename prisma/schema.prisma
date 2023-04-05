@@ -73,6 +73,7 @@ model boisson {
 model boissoncommande {
   idBoisson      Int
   idDistributeur Int?
+  commande commande @relation(fields: [idCommande], references: [idCommande])
   idCommande     Int
   Quantite       Int?
 
@@ -90,11 +91,14 @@ model client {
 model commande {
   idCommande     Int      @id @default(autoincrement())
   dateCommande   DateTime @db.DateTime(0)
+  consommateur consommateur @relation(fields: [idConsommateur], references: [idConsommateur])
   idConsommateur Int
   idDistributeur Int
-
+  prix Float
+  commandes boissoncommande[]
   @@index([idConsommateur], map: "idConsommateur")
   @@index([idDistributeur], map: "idDistributeur")
+
 }
 
 model consommateur {
@@ -104,6 +108,7 @@ model consommateur {
   emailConsommateur      String  @unique(map: "emailConsommateur") @db.VarChar(200)
   telephoneConsommateur  String? @db.VarChar(200)
   motDePasseConsommateur String  @db.VarChar(200)
+  commandes commande[]
 }
 
 model decideur {
@@ -118,24 +123,17 @@ model decideur {
 
 model distributeur {
   idDistributeur       Int    @id @default(autoincrement())
-  adresse              String @db.VarChar(200)
-  codeDeDeverrouillage String @db.VarChar(200)
+  adresse              String? @db.VarChar(200)
+  codeDeDeverrouillage String? @db.VarChar(200)
   idClient             Int?
   idAM                 Int?
-  longitude            Float
-  latitude             Float
-
+  longitude            Float?
+  latitude             Float?
+  statut               String?
   @@index([idClient], map: "idClient")
   @@index([idAM], map: "idAM")
 }
 
-model facture {
-  idFacture  Int     @id @default(autoincrement())
-  etat       String  @db.VarChar(50)
-  prix       Float
-  notif      Boolean
-  idCommande Int     @unique(map: "idCommande")
-}
 
 model panne {
   idPanne     Int    @id @default(autoincrement())

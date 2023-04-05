@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcrypt';
 import { AuthFailureError } from '../../handler/apiError';
@@ -13,7 +14,6 @@ import { userJwtPayload } from '../../utils/token';
 import { onGetACHandler, onGetADMHandler, onGetAMHandler, onGetCONSUMERHandler, onGetDECIDEURHandler, onGetSADMHandler } from "../../services/userService";
 import { consommateur } from '@prisma/client';
 import { prismaClientSingleton } from '../../utils/prismaClient';
-
 
 type userInfo = {
     email: string,
@@ -280,7 +280,6 @@ export const verifyAuth = asyncHandler(async (req: Request, res: Response, next:
     }
 
     req.user = decoded?.user;
-
     next();
 })
 

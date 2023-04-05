@@ -1,7 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable prefer-const */
 import { NextFunction, Request, Response } from 'express'
-import { BadRequestError } from '../../handler/apiError'
+import { BadRequestError, ForbiddenError, InternalError } from '../../handler/apiError'
 import { SuccessMsgResponse, SuccessResponse } from '../../handler/apiResponse'
 import asyncHandler from '../../handler/asyncHandler'
 import {
@@ -12,6 +12,7 @@ import {
   onUpdateMachineHandler,
 } from '../../services/machinService'
 import schema from './schema'
+import { isAC, isADM, isAM, isSADM } from '../../enums/rolesEnum'
 
 /**
  * Get All existing vendingMachines in DB
@@ -56,6 +57,14 @@ export const getMachine = asyncHandler(
  */
 export const addMachine = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+
+    if (!req.user) {
+      throw new InternalError('User not found');
+    }
+    if (!isSADM(req.user.role)) {
+      throw new ForbiddenError('Permission denied');
+    }
+
     const { error } = schema.vendingMachineSchema.validate(req.body)
     if (error) {
       throw new BadRequestError(error.details[0].message)
@@ -65,7 +74,7 @@ export const addMachine = asyncHandler(
       throw new BadRequestError()
     } else {
       new SuccessResponse('success', machine).send(res)
-    }
+    } 
   },
 )
 
@@ -77,6 +86,12 @@ export const addMachine = asyncHandler(
  */
 export const updateMachine = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      throw new InternalError('User not found');
+    }
+    if (!isADM(req.user.role) && !isAM(req.user.role) && !isAC(req.user.role)) {
+      throw new ForbiddenError('Permission denied');
+    }
     const id = parseInt(req.params.id)
     const machineUpdate = await onGetMachineHander(id)
     if (machineUpdate === null) {
@@ -96,12 +111,93 @@ export const updateMachine = asyncHandler(
  */
 export const deleteMachine = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.user) {
+      throw new InternalError('User not found');
+    }
+    if (!isSADM(req.user.role) ) {
+      throw new ForbiddenError('Permission denied');
+    }
     const id = parseInt(req.params.id)
     let machineDelete = await onGetMachineHander(id)
     if (machineDelete == null) {
       throw new BadRequestError("Machine doesn't existe")
     }
+    if (machineDelete.idClient) {
+      throw new ForbiddenError("Permission denied , client of this machine existe")
+    }
     await onDeleteMachineHandler(id)
     new SuccessMsgResponse('deleting successfull').send(res)
+  },
+)
+
+
+export const unlockMachine = asyncHandler(
+  async (req : Request , res : Response , Next : NextFunction) => {
+    if (!req.user) {
+      throw new InternalError('User not found');
+    }
+    if (!isAM(req.user.role)) {
+      throw new ForbiddenError('Permission denied');
+    }
+    const id = parseInt(req.params.id)
+    const machineUpdate = await onGetMachineHander(id)
+    if (machineUpdate === null) {
+      throw new BadRequestError("Machine doesn't existe")
+    }
+    await onUpdateMachineHandler({codeDeDeverrouillage : req.body.code}, id)
+    const machine = await onGetMachineHander(id)
+    new SuccessResponse('success', machine).send(res)
+
+  },
+)
+
+export const changeStatusOfMachine = asyncHandler(
+  async (req : Request , res : Response , next : NextFunction) => {
+    if (!req.user) {
+      throw new InternalError('User not found');
+    }
+    if (!isAM(req.user.role)) {
+      throw new ForbiddenError('Permission denied');
+    }
+    const id = parseInt(req.params.id)
+    const machineUpdate = await onGetMachineHander(id)
+    if (machineUpdate === null) {
+      throw new BadRequestError("Machine doesn't existe")
+    }
+    if (!req.body.status) {
+      throw new BadRequestError("status is required !")
+    }
+    if (req.body.status != "Actif" && req.body.status != "Inactif") {
+      throw new BadRequestError("status should be 'Actif' or 'Inactif' ")
+    }
+    if (req.body.status == machineUpdate.statut) {
+      throw new BadRequestError("machine is already " + machineUpdate.statut)
+    }
+    await onUpdateMachineHandler({statut : req.body.status}, id)
+    const machine = await onGetMachineHander(id)
+    new SuccessResponse('success', machine).send(res)
+  },
+)
+
+
+export const assignMachinesToClient = asyncHandler(
+  async (req  : Request , res : Response , next : NextFunction) => {
+
+    if (!req.user) {
+      throw new InternalError('User not found');
+    }
+    if (!isSADM(req.user.role)) {
+      throw new ForbiddenError('Permission denied');
+    }
+    for (let i = 0 ; i < req.body.machines.length ; i++) {
+      const id = req.body.machines[i]
+      const machine = await onGetMachineHander(id);
+      if (machine == null) {
+        throw new BadRequestError("Machine <ith id = " + id + " doesn't existe")
+      }
+      await onUpdateMachineHandler({idClient : req.body.client},id)
+    }
+
+    new SuccessMsgResponse("Assignation with success").send(res)
   },
 )

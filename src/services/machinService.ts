@@ -29,10 +29,15 @@ export const onGetMachineHander = async (id: number) : Promise<distributeur | nu
  * @returns {distributeur} - vending machine already added
  */
 export const onAddMachineHandler = async (data: any) : Promise<distributeur | null> => {
-  const machine = await prismaClientSingleton.distributeur.create({
-    data: data,
-  });
-  return machine;
+  try {
+    const machine = await prismaClientSingleton.distributeur.create({
+      data: data,
+    });
+    return machine;
+  } catch (error) {
+    console.log(error,"err")
+  }
+
 };
 
 /**
@@ -41,19 +46,25 @@ export const onAddMachineHandler = async (data: any) : Promise<distributeur | nu
  * @param {number} id - identifier in distributeur table
  */
 export const onUpdateMachineHandler = async (data: any, id: number) => {
-  const { longitude, latitude, adresse, codeDeDeverrouillage, idClient, idAM } =
+  const { longitude, latitude, adresse, codeDeDeverrouillage, idClient, idAM, statut } =
     data;
-  await prismaClientSingleton.distributeur.update({
-    where: { idDistributeur: id },
-    data: {
-      longitude,
-      latitude,
-      adresse,
-      codeDeDeverrouillage,
-      idClient,
-      idAM,
-    },
-  });
+  try {
+    await prismaClientSingleton.distributeur.update({
+      where: { idDistributeur: id },
+      data: {
+        longitude,
+        latitude,
+        adresse,
+        codeDeDeverrouillage,
+        idClient,
+        idAM,
+        statut
+      },
+    });
+  } catch (error) {
+    console.log(error)
+  }
+
 };
 
 /**
