@@ -1,10 +1,14 @@
 import Joi from 'joi'
 
 const order = {
-    dateCommande  : Joi.date().iso().required(),
-    idConsommateur : Joi.number().positive().required(),
-    idDistributeur : Joi.number().positive().required(),
-    prix : Joi.number().required().positive()
+    date  : Joi.date().iso().required(),
+    consumer : Joi.number().positive().required(),
+    machine : Joi.number().positive().required(),
+    //price : Joi.number().required().positive(),
+    beverages : Joi.array().items(Joi.object({
+        id : Joi.number().required(),
+        qty : Joi.number().required()
+    })).required(),
 }
 
 

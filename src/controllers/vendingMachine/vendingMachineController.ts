@@ -193,7 +193,7 @@ export const assignMachinesToClient = asyncHandler(
       const id = req.body.machines[i]
       const machine = await onGetMachineHander(id);
       if (machine == null) {
-        throw new BadRequestError("Machine <ith id = " + id + " doesn't existe")
+        throw new BadRequestError("Machine with id = " + id + " doesn't existe")
       }
       await onUpdateMachineHandler({idClient : req.body.client},id)
     }

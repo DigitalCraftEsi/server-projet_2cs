@@ -1,4 +1,4 @@
-import { commande } from "@prisma/client";
+import { boissoncommande, commande } from "@prisma/client";
 import { prismaClientSingleton } from "../utils/prismaClient";
 
 export const onGetAllOrderHandler = async () : Promise<commande[] | null>  => {
@@ -46,6 +46,7 @@ export const onGetOrdersOfMacineHandler = async ( idMachine : number ) : Promise
 
 
 
+
 export const onAddOrderHandler = async ( data : any  ) : Promise<commande | null>  => {
     const {  dateCommande  , idConsommateur , idDistributeur , prix} = data;
     const order = await prismaClientSingleton.commande.create({
@@ -58,6 +59,20 @@ export const onAddOrderHandler = async ( data : any  ) : Promise<commande | null
     })
     return order
 }
+
+export const onAddBeverageOfOrderHandler = async ( data : any  ) : Promise<boissoncommande | null>  => {
+    const {  idBoisson  , idDistributeur , idCommande , Quantite } = data;
+    const BeverageOfOrder = await prismaClientSingleton.boissoncommande.create({
+        data : {
+                idBoisson,
+                idDistributeur,
+                idCommande,
+                Quantite
+        }
+    })
+    return BeverageOfOrder
+}
+
 
 export const onUpdateOrderHandler = async ( data : any , id : number) => {
     const {  dateCommande  , idConsommateur , idDistributeur , prix} = data;

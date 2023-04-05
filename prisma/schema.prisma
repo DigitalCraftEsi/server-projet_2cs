@@ -94,7 +94,7 @@ model commande {
   consommateur consommateur @relation(fields: [idConsommateur], references: [idConsommateur])
   idConsommateur Int
   idDistributeur Int
-  prix Float
+  prix Float?
   commandes boissoncommande[]
   @@index([idConsommateur], map: "idConsommateur")
   @@index([idDistributeur], map: "idDistributeur")

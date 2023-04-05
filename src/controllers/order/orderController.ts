@@ -1,9 +1,14 @@
-import { BadRequestError } from "../../handler/apiError";
+/* eslint-disable @typescript-eslint/no-inferrable-types */
+import { BadRequestError, ForbiddenError, InternalError } from "../../handler/apiError";
 import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
 import {Request , Response , NextFunction } from "express"
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
-import { onAddOrderHandler, onDeleteOrderHandler, onGetAllOrderHandler, onGetOrderHandler, onGetOrdersOfConsumerHandler, onGetOrdersOfMacineHandler, onUpdateOrderHandler } from "../../services/orderService";
+import { onAddBeverageOfOrderHandler, onAddOrderHandler, onDeleteOrderHandler, onGetAllOrderHandler, onGetOrderHandler, onGetOrdersOfConsumerHandler, onGetOrdersOfMacineHandler, onUpdateOrderHandler } from "../../services/orderService";
+import { isConsumer } from "../../enums/rolesEnum";
+import { onGetMachineHander } from "../../services/machinService";
+import { onGetConsumerHandler } from "../../services/userService";
+import { onGetBeverageHandler } from "../../services/beverageService";
 
 
 
@@ -80,13 +85,50 @@ export const getOrdersOfClient = asyncHandler( async ( req : Request , res  :Res
  * @param {NextFunction} next - callback function that is used to pass control to the next middleware function in the stack
  */
 export const addOrder = asyncHandler( async ( req : Request , res : Response , next : NextFunction ) => {
-    
+    if (!req.user) {
+        throw new InternalError('User not found');
+    }
+    if (!isConsumer(req.user.role)) {
+      throw new ForbiddenError('Permission denied');
+    }
+    const _data = {
+        "dateCommande" : req.body.date,
+        "idConsommateur" : req.body.consumer,
+        "idDistributeur" : req.body.machine,
+        "prix" : 0
+    }
     const { error } = schema.orderSchema.validate(req.body) 
     if (error) {
          throw new BadRequestError(error.details[0].message)
     }
-    const order = await onAddOrderHandler(req.body)
-    new SuccessResponse("sucess" , order).send(res);
+
+    const _beverages = req.body.beverages 
+    const _machine = await onGetMachineHander(_data.idDistributeur);
+    if (_machine == null) {
+      throw new BadRequestError("Machine doesn't existe")
+    }
+    const _consumer = await onGetConsumerHandler(_data.idConsommateur);
+    if (_consumer == null) {
+        throw new BadRequestError("Consumer doesn't existe")
+    }
+    const order = await onAddOrderHandler(_data)
+    let price : number = 0;
+    for (let i = 0 ; i < _beverages.length ; i++) {
+        const _beverage = await onGetBeverageHandler(_beverages[i].id);
+        if (_beverage == null) {
+            await onDeleteOrderHandler(order.idCommande);
+            throw new BadRequestError("Beverage doesn't existe")
+        }
+        price += _beverage.tarif * _beverages[i].qty;
+        await onAddBeverageOfOrderHandler({                
+            idBoisson : _beverage.idBoisson,
+            idCommande : order.idCommande,
+            Quantite : _beverages[i].qty
+        })
+    }
+    await onUpdateOrderHandler({prix : price},order.idCommande)
+
+    new SuccessResponse("sucess" , {...order,prix : price}).send(res);
 })
 
 /**
