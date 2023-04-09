@@ -217,6 +217,7 @@ export const signUpConsumer = asyncHandler(
 
 export const verifyAuth = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 
+
     const token: string = req.cookies.accessToken;
     if (!token) {
         throw new BadTokenError('Please login first')
