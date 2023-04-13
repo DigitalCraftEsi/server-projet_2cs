@@ -124,6 +124,7 @@ model commande {
 
   @@index([idConsommateur], map: "idConsommateur")
   @@index([idDistributeur], map: "idDistributeur")
+
 }
 
 model consommateur {

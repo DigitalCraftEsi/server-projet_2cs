@@ -1,4 +1,6 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcrypt';
 import { AuthFailureError } from '../../handler/apiError';
@@ -13,7 +15,6 @@ import { userJwtPayload } from '../../utils/token';
 import { onGetACHandler, onGetADMHandler, onGetAMHandler, onGetCONSUMERHandler, onGetDECIDEURHandler, onGetSADMHandler } from "../../services/userService";
 import { consommateur } from '@prisma/client';
 import { prismaClientSingleton } from '../../utils/prismaClient';
-
 
 type userInfo = {
     email: string,
@@ -185,6 +186,7 @@ export const loginConsumer = asyncHandler(async (req: Request, res: Response, ne
 export const signUpConsumer = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
 
+
         const { error } = schema.signUpSchema.validate(req.body);
 
         if (error) {
@@ -207,9 +209,10 @@ export const signUpConsumer = asyncHandler(
             motDePasseConsommateur: hashedPassword,
         }
 
-        await prismaClientSingleton.consommateur.create({
+        const {motDePasseConsommateur,..._consumer} = await prismaClientSingleton.consommateur.create({
             data : userObject
         })
+        new SuccessResponse("sucess" , _consumer).send(res);
     })
 
 export const verifyAuth = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -240,6 +243,8 @@ export const verifyAuth = asyncHandler(async (req: Request, res: Response, next:
 
     let userFetched: any;
 
+
+
     switch (decoded?.user.role) {
         case ROLES.SADM:
             userFetched = await onGetSADMHandler(decoded.user.id)
@@ -255,6 +260,9 @@ export const verifyAuth = asyncHandler(async (req: Request, res: Response, next:
             break;
         case ROLES.DECIDEUR:
             userFetched = await onGetDECIDEURHandler(decoded.user.id)
+            break;
+        case ROLES.CONSUMER : 
+            userFetched = await onGetCONSUMERHandler(decoded.user.id);
             break;
         default:
             throw new InternalError('Unknown role')
@@ -280,11 +288,10 @@ export const verifyAuth = asyncHandler(async (req: Request, res: Response, next:
     }
 
     req.user = decoded?.user;
-
     next();
 })
 
 export const signUp = asyncHandler(
     async (req: Request, res: Response, next: NextFunction) => {
-
+//
     })

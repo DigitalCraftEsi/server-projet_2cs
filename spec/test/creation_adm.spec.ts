@@ -2,32 +2,37 @@
 
 import { adm } from '@prisma/client';
 import request from 'supertest';
-
 import app from "../../index"
 
-
-// -- API Creation of Users  POST /user
+// -- API Creation of ADM  POST /user
 describe('-- API Creation User ADM  POST /user', async () => {
 
   let adm : adm;
   let cookies : string;
+  let cookiesAdm : string;
   beforeAll( async () => {
     const _data = {
         "email" : "chamsou@gmail.com",
         "password"  :"chamsou2002"
     }
+    const _dataAdm = {
+      "email" : "chamsou_ADM@esi.dz",
+      "password"  :"chamsou2002"
+  }
     const _res = await request(app).post("/login").send(_data)
     cookies =_res.headers["set-cookie"]
+    const _resAdm = await request(app).post("/login").send(_dataAdm)
+    cookiesAdm = _resAdm.headers["set-cookie"];
 
   })
   it('should return 200 OK',async (done) => {
     const _data = {
             nom: "chamsou",
             prenom: "chamsou",
-            email: "chamsou_ADM@esi.dz",
+            email: "chamsou_ADM_test@esi.dz",
             "telephone": "0664827074",
             "password" : "chamsou2002",
-            "client" : 1 ,
+            "client" : 2 ,
             "role"  : "ADM"
     }
     const _res  = await request(app).post("/user").send(_data).set("Cookie",cookies)
@@ -36,12 +41,43 @@ describe('-- API Creation User ADM  POST /user', async () => {
     done()
   });
 
-  it('should return 401 AuthFailure',async (done) => {
-
+  it('should return 400 Bad request',async (done) => {
     const _data = {
             nom: "chamsou",
             prenom: "chamsou",
-            email: "chamsou_ADM@esi.dz",
+            email: "chamsou_ADM_test1@esi.dz",
+            "telephone": "0664827074",
+            "password" : "chamsou2002",
+            "client" : 2 ,
+            "role"  : "ADM"
+    }
+    const _res  = await request(app).post("/user").send(_data).set("Cookie",cookies)
+    expect(_res.status).toBe(400)
+    expect(_res.body.message).toBe("Client already has an admin")
+    done()
+  });
+
+  it('it should return 403 Permission denied',async (done) => {
+    const _data = {
+            nom: "chamsou",
+            prenom: "chamsou",
+            email: "chamsou_ADM_test3@esi.dz",
+            "telephone": "0664827074",
+            "password" : "chamsou2002",
+            "client" : 1 ,
+            "role"  : "ADM"
+    }
+    const _res  = await request(app).post("/user").send(_data).set("Cookie",cookiesAdm)
+    expect(_res.status).toBe(403)
+    expect(_res.body.message).toBe("Permission denied");
+    done()
+  });
+
+  it('should return 401 AuthFailure',async (done) => {
+    const _data = {
+            'nom': "chamsou",
+            'prenom': "chamsou",
+            'email': "chamsou_ADM_test4@esi.dz",
             "telephone": "0664827074",
             "password" : "chamsou2002",
             "client" : 1 ,
@@ -62,9 +98,11 @@ describe('-- API Creation User ADM  POST /user', async () => {
   })
 });
 
+// ########################################################################
 
-// -- API Delete  Users  DELETE /user
-describe('-- API Delete User ADM  DELETE /user', async () => {
+
+//-- API Delete  Users  DELETE /user
+describe('-- API Delete User ADM  DELETE /adm', async () => {
 
     let adm : adm;
     let cookies : string;
@@ -76,12 +114,12 @@ describe('-- API Delete User ADM  DELETE /user', async () => {
       const _resAuth = await request(app).post("/login").send(_dataAuth)
       cookies =_resAuth.headers["set-cookie"]
       const _data = {
-        nom: "chamsou",
-        prenom: "chamsou",
-        email: "chamsou_ADM@esi.dz",
+        'nom': "chamsou",
+        'prenom': "chamsou",
+        'email': "chamsou_ADM_test@esi.dz",
         "telephone": "0664827074",
         "password" : "chamsou2002",
-        "client" : 1 ,
+        "client" : 2 ,
         "role"  : "ADM"
     }
     const _res  = await request(app).post("/user").send(_data).set("Cookie",cookies)
@@ -107,6 +145,5 @@ describe('-- API Delete User ADM  DELETE /user', async () => {
       expect(_res.status).toBe(401)
       done()
     });
-  
 
   });
