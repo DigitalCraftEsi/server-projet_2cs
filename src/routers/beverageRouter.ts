@@ -3,7 +3,7 @@ import * as beverageController from "../controllers/beverage/beverageController"
 const beverageRouter : Router = express.Router();
 
 
-beverageRouter.get("/",beverageController.getBeverages);
+beverageRouter.post("/",beverageController.getBeverages);
 beverageRouter.get("/:id",beverageController.getBeverage)
 beverageRouter.post('/',beverageController.addbeverage)
 beverageRouter.post("/:id",beverageController.updateBeverage);

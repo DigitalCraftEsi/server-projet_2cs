@@ -2,8 +2,13 @@
 import { boisson } from "@prisma/client";
 import { prismaClientSingleton } from "../utils/prismaClient";
 
-export const onGetAllBeverageHandler = async (): Promise<boisson[] | null> => {
-  const beverages = await prismaClientSingleton.boisson.findMany();
+export const onGetAllBeverageHandler = async (idDistributeur : number):
+Promise<boisson[] | null> => {
+  const beverages = await prismaClientSingleton.boisson.findMany({
+    where : {
+      idDistributeur
+    }
+  });
   return beverages;
 };
 
@@ -28,12 +33,13 @@ export const onGetBeveragesOfMachineHandler = async (
 export const onAddBeverageHandler = async (
   data: any
 ): Promise<boisson | null> => {
-  const { nomBoisson, tarif, idDistributeur } = data;
+  const { nomBoisson, tarif, idDistributeur, description } = data;
   const beverage = await prismaClientSingleton.boisson.create({
     data: {
       nomBoisson,
       tarif,
       idDistributeur,
+      description
     },
   });
   return beverage;

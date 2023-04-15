@@ -18,6 +18,12 @@ enum distStatus {
   horsCirculation
 }
 
+enum commandeStatus {
+  enAttente
+  echouee
+  terminee
+}
+
 model actionsuspecte {
   idActionSuspecte Int          @id @default(autoincrement())
   dateAction       Int
@@ -51,7 +57,7 @@ model annoncepublicitaire {
   dateDebut      DateTime     @db.DateTime(0)
   dateFin        DateTime     @db.DateTime(0)
   visible        Boolean      @default(false)
-  boisson        boisson?     @relation(fields: [idBoisson, idDistributeur], references: [idBoisson, idDistributeur])
+  boisson        boisson?     @relation(fields: [idBoisson], references: [idBoisson])
   idBoisson      Int?
   distributeur   distributeur @relation(fields: [idDistributeur], references: [idDistributeur])
   idDistributeur Int
@@ -79,6 +85,7 @@ model boisson {
   nomBoisson     String                @db.VarChar(200)
   tarif          Float
   description    String                @db.VarChar(200)
+  image          String?
   eau            Float?
   cafe           Float?
   lait           Float?
@@ -87,16 +94,17 @@ model boisson {
   distributeur   distributeur          @relation(fields: [idDistributeur], references: [idDistributeur])
   idDistributeur Int
   annonces       annoncepublicitaire[]
+  commandes      boissoncommande[]
 
-  @@id([idBoisson, idDistributeur])
+  @@id([idBoisson])
 }
 
 model boissoncommande {
+  boisson        boisson @relation(fields: [idBoisson], references: [idBoisson])
   idBoisson      Int
-  idDistributeur Int?
   commande       commande @relation(fields: [idCommande], references: [idCommande])
   idCommande     Int
-  Quantite       Int?
+  Quantite       Int
 
   @@id([idBoisson, idCommande])
 }
@@ -116,15 +124,13 @@ model client {
 model commande {
   idCommande     Int               @id @default(autoincrement())
   dateCommande   DateTime          @db.DateTime(0)
+  prix           Float?
   consommateur   consommateur      @relation(fields: [idConsommateur], references: [idConsommateur])
   idConsommateur Int
+  distributeur   distributeur      @relation(fields: [idDistributeur], references: [idDistributeur])
   idDistributeur Int
-  prix           Float?
-  commandes      boissoncommande[]
-
-  @@index([idConsommateur], map: "idConsommateur")
-  @@index([idDistributeur], map: "idDistributeur")
-
+  boissons      boissoncommande[]
+  status        commandeStatus @default(enAttente)
 }
 
 model consommateur {
@@ -165,6 +171,7 @@ model distributeur {
   boissons             boisson[]
   annonces             annoncepublicitaire[]
   actionsuspecte       actionsuspecte[]
+  commandes            commande[]
 
   @@index([idClient], map: "idClient")
 }
