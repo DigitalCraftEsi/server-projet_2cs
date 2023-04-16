@@ -69,14 +69,22 @@ export const getOrdersOfMachine = asyncHandler(async (req: Request, res: Respons
  * @param {Response} res - object represents the server's response to an HTTP request
  * @param {NextFunction} next - callback function that is used to pass control to the next middleware function in the stack
  */
-export const getOrdersOfClient = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const idClient = parseInt(req.params.id)
-    const orders = await onGetOrdersOfConsumerHandler(idClient)
-    if (orders === null) {
-        next(new BadRequestError("Order Doesn't existe"));
-    } else {
-        new SuccessResponse("sucess", orders).send(res);
-    }
+
+export const getOrdersOfClient = asyncHandler( async ( req : Request , res  :Response , next : NextFunction ) => {
+        if (!req.user) {
+            throw new InternalError('User not found');
+        }
+        if (!isConsumer(req.user.role)) {
+        throw new ForbiddenError('Permission denied');
+        }
+        const idClient = parseInt(req.params.id)
+        const orders = await onGetOrdersOfConsumerHandler(idClient)
+        if (orders === null ){
+            next(new BadRequestError("Order Doesn't existe"));
+       }else {
+           new SuccessResponse("sucess" , orders).send(res);         
+       }
+
 })
 
 /**
