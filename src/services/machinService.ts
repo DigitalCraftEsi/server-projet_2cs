@@ -23,6 +23,22 @@ export const onGetMachineHander = async (id: number) : Promise<distributeur | nu
   return machine;
 };
 
+export const onGetMachineBydistUIDHandler = async (distUID : string) : Promise<distributeur | null>=>{
+  const machine = await prismaClientSingleton.distributeur.findFirst({
+    where: {
+      distuid: distUID
+  }})
+  return machine
+}
+
+export const onGetMachineByOdbUIDHandler = async (odbUID : string) : Promise<distributeur | null>=>{
+  const machine = await prismaClientSingleton.distributeur.findFirst({
+    where: {
+      odbuid: odbUID
+  }})
+  return machine
+}
+
 /**
  * Add vending machine to DB
  * @param {distributeur} data - vending machine information

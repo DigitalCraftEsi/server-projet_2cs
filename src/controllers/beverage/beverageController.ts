@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { BadRequestError } from "../../handler/apiError";
+import { BadRequestError, InternalError } from "../../handler/apiError";
 import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
 import asyncHandler from "../../handler/asyncHandler";
 import { onAddBeverageHandler, onDeleteBeverageHandler, onGetAllBeverageHandler, onGetBeverageHandler, onGetBeveragesOfMachineHandler, onUpdateBeverageHandler } from "../../services/beverageService";
+import {onGetMachineBydistUIDHandler} from "../../services/machinService";
 import schema from "./schema";
 
 
@@ -16,10 +17,10 @@ export const getBeveragesOfMachin = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id);
     const beverages = await onGetBeveragesOfMachineHandler(id)
-    if (beverages === null ){
-        throw new BadRequestError();
-    }else{
-        new SuccessResponse("success", beverages).send(res);
+    if (beverages === null) {
+      throw new BadRequestError();
+    } else {
+      new SuccessResponse("success", beverages).send(res);
     }
 
   }
@@ -35,10 +36,10 @@ export const getBeverage = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = parseInt(req.params.id);
     const beverage = await onGetBeverageHandler(id);
-    if (beverage === null ){
-        throw new BadRequestError("Beverage Doesn't existe");
-    }else{
-        new SuccessResponse("success", beverage).send(res);
+    if (beverage === null) {
+      throw new BadRequestError("Beverage Doesn't existe");
+    } else {
+      new SuccessResponse("success", beverage).send(res);
     }
   }
 );
@@ -51,11 +52,34 @@ export const getBeverage = asyncHandler(
  */
 export const getBeverages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const beverages = await onGetAllBeverageHandler();
-    if (beverages === null ){
-        throw new BadRequestError();
-    }else{
-        new SuccessResponse("success", beverages).send(res);
+
+    if (!req.body.idDistributeur && !req.body.distUID) {
+      throw new BadRequestError()
+    }
+
+    const { error } = schema.getBeveragesSchema.validate(req.body);
+
+    if (error) {
+      throw new BadRequestError(error.details[0].message)
+    }
+
+    let idDistributeur: number;
+
+    if (req.body.distUID) {
+      const distributeur = await onGetMachineBydistUIDHandler(req.body.UID)
+      if (!distributeur) {
+        throw new BadRequestError("Vending machine not found")
+      }
+      idDistributeur = distributeur.idDistributeur
+    } else {
+      idDistributeur = req.body.idDistributeur
+    }
+
+    const beverages = await onGetAllBeverageHandler(req.body.idDistributeur);
+    if (beverages === null) {
+      throw new InternalError();
+    } else {
+      new SuccessResponse("success", {idDistributeur, boissons : beverages}).send(res);
     }
   }
 );
@@ -69,15 +93,15 @@ export const getBeverages = asyncHandler(
 export const addbeverage = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
 
-    const { error } = schema.beverageSchema.validate(req.body) 
+    const { error } = schema.beverageSchema.validate(req.body)
     if (error) {
-         throw new BadRequestError(error.details[0].message)
+      throw new BadRequestError(error.details[0].message)
     }
     const beverage = await onAddBeverageHandler(req.body)
-    if (beverage === null ){
-        throw new BadRequestError();
-    }else{
-        new SuccessResponse("success", beverage).send(res);
+    if (beverage === null) {
+      throw new BadRequestError();
+    } else {
+      new SuccessResponse("success", beverage).send(res);
     }
   }
 );
@@ -95,9 +119,9 @@ export const updateBeverage = asyncHandler(
     if (beverageUpdate === null) {
       throw new BadRequestError("Beverage Doesn't existe");
     }
-    await onUpdateBeverageHandler(req.body,id);
+    await onUpdateBeverageHandler(req.body, id);
     const beverage = await onGetBeverageHandler(id)
-    new SuccessResponse("success",beverage).send(res);
+    new SuccessResponse("success", beverage).send(res);
   }
 );
 
@@ -107,14 +131,14 @@ export const updateBeverage = asyncHandler(
  * @param {Response} res - object represents the server's response to an HTTP request
  * @param {NextFunction} next - callback function that is used to pass control to the next middleware function in the stack
  */
-export const deleteBeverage = asyncHandler( async (
+export const deleteBeverage = asyncHandler(async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const id = parseInt(req.params.id);
   const beverageDelete = await onGetBeverageHandler(id)
-  if (beverageDelete == null ) {
+  if (beverageDelete == null) {
     throw new BadRequestError("Beverage doesn't existe")
   }
   await onDeleteBeverageHandler(id);

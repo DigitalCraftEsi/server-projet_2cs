@@ -94,16 +94,6 @@ export const addUser = asyncHandler(
                     throw new NotFoundError('Client doesn\'t exist')
                 }
 
-                let userExists = await prismaClientSingleton.adm.findUnique({
-                    where: {
-                        idClient: req.body.client
-                    }
-                })
-
-                if (userExists) {
-                    throw new BadRequestError('Client already has an admin')
-                }
-
                 const newADMObject = {
                     nomADM: req.body.nom,
                     prenomADM: req.body.prenom,
@@ -122,16 +112,6 @@ export const addUser = asyncHandler(
             }
             case ROLES.DECIDEUR: {
 
-                let userExists = await prismaClientSingleton.decideur.findUnique({
-                    where: {
-                        idClient: req.body.client
-                    }
-                })
-
-                if (userExists) {
-                    throw new BadRequestError('Client already has a decider')
-                }
-
                 const newDeciderObject = {
                     nomDecideur: req.body.nom,
                     prenomDecideur: req.body.prenom,
@@ -149,16 +129,6 @@ export const addUser = asyncHandler(
                 break;
             }
             case ROLES.AC: {
-
-                let userExists = await prismaClientSingleton.ac.findUnique({
-                    where: {
-                        idClient: user.clientId
-                    }
-                })
-
-                if (userExists) {
-                    throw new BadRequestError('client already has an AC')
-                }
 
                 const newACObject = {
                     nomAC: req.body.nom,
@@ -528,7 +498,7 @@ export const getUsers = asyncHandler(
                     throw new NotFoundError('Client not found');
                 }
 
-                const adm = await prismaClientSingleton.adm.findUnique({
+                const adm = await prismaClientSingleton.adm.findMany({
                     where: {
                         idClient: client.idClient
                     }, select: {
