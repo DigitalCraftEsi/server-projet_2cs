@@ -29,12 +29,11 @@ model adm {
 
 model annoncepublicitaire {
   idAnnonce      Int      @id @default(autoincrement())
-  sexe           String   @db.VarChar(50)
+  sexe           String?   @db.VarChar(50)
   ageMin         Int?
   ageMax         Int?
   video          String?  @db.VarChar(200)
   region         String?  @db.VarChar(200)
-  prix           Float
   dateDebut      DateTime @db.DateTime(0)
   dateFin        DateTime @db.DateTime(0)
   periode        Int?

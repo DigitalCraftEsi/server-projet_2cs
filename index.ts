@@ -21,6 +21,8 @@ import userRouter from './src/routers/usersRouter';
 import compression from 'compression';
 import cors, {CorsOptions} from 'cors';
 import cookieParser from 'cookie-parser';
+import advrtRouter from './src/routers/advertisementRouter';
+import advertiserRouter from './src/routers/advertiserRouter';
 
 
 // Initialize the express engine
@@ -58,6 +60,8 @@ app.use('/user', userRouter);
 
 app.use('/machine', machinRouter);
 app.use("/beverage",baverageRouter);
+app.use("/advertisement",advrtRouter);
+app.use("/advertiser",advertiserRouter)
 
 app.use(errorHandler)
 
