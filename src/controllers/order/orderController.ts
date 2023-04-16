@@ -69,6 +69,12 @@ export const getOrdersOfMachine = asyncHandler( async( req : Request , res  :Res
  * @param {NextFunction} next - callback function that is used to pass control to the next middleware function in the stack
  */
 export const getOrdersOfClient = asyncHandler( async ( req : Request , res  :Response , next : NextFunction ) => {
+        if (!req.user) {
+            throw new InternalError('User not found');
+        }
+        if (!isConsumer(req.user.role)) {
+        throw new ForbiddenError('Permission denied');
+        }
         const idClient = parseInt(req.params.id)
         const orders = await onGetOrdersOfConsumerHandler(idClient)
         if (orders === null ){
