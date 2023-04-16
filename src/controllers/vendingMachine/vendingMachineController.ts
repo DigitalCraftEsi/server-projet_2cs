@@ -2,7 +2,7 @@
 /* eslint-disable prefer-const */
 import { NextFunction, Request, Response } from 'express'
 import { BadRequestError, ForbiddenError, InternalError } from '../../handler/apiError'
-import { SuccessMsgResponse, SuccessResponse } from '../../handler/apiResponse'
+import { SuccessMsgResponse, SuccessResponse } from '../../handler/ApiResponse'
 import asyncHandler from '../../handler/asyncHandler'
 import {
   onAddMachineHandler,

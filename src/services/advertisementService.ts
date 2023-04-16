@@ -35,7 +35,6 @@ export const onAddAdvertisementHandler = async (data : any): Promise<annoncepubl
             region : data.area,
             dateDebut : data.dateDebut,
             dateFin : data.dateFin , 
-            periode : data.period,
             idBoisson : data.beverage,
             idDistributeur : data.machine,
             video : data.video

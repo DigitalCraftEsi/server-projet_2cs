@@ -42,6 +42,7 @@ import advertiserRouter from './src/routers/advertiserRouter';
 
 
 
+
 // Initialize the express engine
 
 
@@ -77,6 +78,10 @@ httpServer.listen(port, () => {
       http://localhost:${port}/`);
    });
 
+
+   app.get("/" , async (req, res , next ) => {
+      res.send("Welcom with us :)")
+   })
 // Server setup
 // app.listen(port, () => {
 //    console.log(`TypeScript with Express

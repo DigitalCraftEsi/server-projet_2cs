@@ -5,7 +5,7 @@ import { isAC } from "../../enums/rolesEnum";
 import { BadRequestError, ForbiddenError, InternalError } from "../../handler/apiError";
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
-import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
+import { SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
 import { onAddAdvertisementHandler, onDeleteAdvertisementHandler, onGetAdvertisementByIdHandler, onGetAllAdvertisementHandler } from "../../services/advertisementService";
 import { onGetAdvertiserByIdHandler } from "../../services/advertiserService";
 import { onGetBeverageHandler } from "../../services/beverageService";

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ac, adm, am, client, consommateur, decideur, sadm } from "@prisma/client"
-import { isString, uniq } from "lodash"
+import { isString } from "lodash"
 import { prismaClientSingleton } from "../utils/prismaClient"
 
 
@@ -105,22 +105,27 @@ export const onDeleteClientHandler = async (id : number) => {
 // ADM ----------------------------------------------------------------------------
 
 export const onGetADMHandler = async ( unique : string | number) : Promise< adm | null>  => {
-    let adm : adm;
-    if (isString(unique)) {
-        adm = await prismaClientSingleton.adm.findUnique({
-            where: {
-                emailADM : unique
-            }
-        })
-    }else{
-        adm = await prismaClientSingleton.adm.findUnique({
-            where: {
-                idADM : unique
-            }
-        })
+    try {
+        let adm : adm;
+        if (isString(unique)) {
+            adm = await prismaClientSingleton.adm.findUnique({
+                where: {
+                    emailADM : unique
+                }
+            })
+        }else{
+            adm = await prismaClientSingleton.adm.findUnique({
+                where: {
+                    idADM : unique
+                }
+            })
+        }
+    
+        return adm
+    } catch (error) {
+        console.log(error,"err")
     }
 
-    return adm
 }
 
 export const onAddADMHandler = async ( data : any ) : Promise< adm | null>  => {

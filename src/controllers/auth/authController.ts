@@ -4,7 +4,7 @@
 import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcrypt';
 import { AuthFailureError } from '../../handler/apiError';
-import { SuccessMsgResponse, SuccessResponse } from '../../handler/apiResponse';
+import { SuccessMsgResponse, SuccessResponse } from '../../handler/ApiResponse';
 import asyncHandler from '../../handler/asyncHandler';
 import schema from './schema'
 import { BadRequestError, BadTokenError, InternalError } from '../../handler/apiError';

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { BadRequestError, ForbiddenError, InternalError } from "../../handler/apiError";
-import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
+import { SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
 import { Request, Response, NextFunction } from "express"
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
