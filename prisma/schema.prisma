@@ -141,6 +141,16 @@ model consommateur {
   telephoneConsommateur  String?    @db.VarChar(200)
   motDePasseConsommateur String     @db.VarChar(200)
   commandes              commande[]
+  cards                  card[]
+}
+
+model card {
+  cardNumber     String     @id@db.VarChar(200)@unique
+  expiryMonth    String     @db.VarChar(2)
+  expiryYear     String     @db.VarChar(2)
+  holderName     String    @db.VarChar(200)
+  consommateur   consommateur      @relation(fields: [idConsommateur], references: [idConsommateur])
+  idConsommateur Int
 }
 
 model decideur {
