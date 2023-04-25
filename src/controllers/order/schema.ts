@@ -6,6 +6,13 @@ const order = {
         idBoisson : Joi.number().positive().required(),
         Quantite : Joi.number().positive().required()
     })).required(),
+    card : Joi.object({
+        cardNumber : Joi.string().required(),
+        expiryMonth : Joi.string().required(),
+        expiryYear : Joi.string().required(),
+        cvc : Joi.string().required(),
+        holderName: Joi.string().required(),
+    }).required()
 }
 
 
