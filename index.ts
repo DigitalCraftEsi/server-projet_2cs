@@ -39,7 +39,10 @@ import { ioMiddleware, onConnectionHandler } from './src/controllers/socketio/so
 
 import advrtRouter from './src/routers/advertisementRouter';
 import advertiserRouter from './src/routers/advertiserRouter';
+
 import cardRouter from './src/routers/cardRouter';
+import profileRouter from './src/routers/profileRouter';
+
 
 
 
@@ -78,6 +81,11 @@ httpServer.listen(port, () => {
       http://localhost:${port}/`);
    });
 
+
+   app.get("/" , async (req, res , next ) => {
+      console.log("first")
+      res.send("Welcom with us :)")
+   })
 // Server setup
 // app.listen(port, () => {
 //    console.log(`TypeScript with Express
@@ -90,15 +98,19 @@ app.use('/user', userRouter);
 
 app.use('/machine', machinRouter);
 
-
-
 app.use("/beverage",baverageRouter);
 app.use("/advertisement",advrtRouter);
 app.use("/advertiser",advertiserRouter)
+
 app.use("/card",cardRouter)
+
+app.use("/profile",profileRouter)
+
 
 
 app.use(errorHandler)
 
 
 
+
+export default app

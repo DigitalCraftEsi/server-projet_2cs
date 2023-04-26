@@ -12,7 +12,8 @@ export type userJwtPayload = {
     email: string,
     role: string;
     telephone: string | null,
-    clientId?:number
+    clientId?:number , 
+    picture? : string | null
 }
 
 const createToken = (payload:object, secretKey:string, expiresIn:string) =>

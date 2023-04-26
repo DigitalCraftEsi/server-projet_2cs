@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-inferrable-types */
 import { BadRequestError, ForbiddenError, InternalError } from "../../handler/apiError";
-import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
+import { SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
 import { Request, Response, NextFunction } from "express"
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
@@ -124,7 +124,7 @@ export const addOrder = asyncHandler(async (req: Request, res: Response, next: N
         throw new InternalError("Vending machine busy")
     }
 
-    let _data = {
+    const _data = {
         dateCommande: new Date(),
         idConsommateur: req.user.id,
         idDistributeur: req.body.idDistributeur,
@@ -133,7 +133,7 @@ export const addOrder = asyncHandler(async (req: Request, res: Response, next: N
     }
 
     let price: number = 0.0;
-    let beveragesData: boisson[] = []
+    const beveragesData: boisson[] = []
     for (let i = 0; i < _beverages.length; i++) {
         const _beverage = await onGetBeverageHandler(_beverages[i].idBoisson);
         if (_beverage == null) {
@@ -189,6 +189,7 @@ export const addOrder = asyncHandler(async (req: Request, res: Response, next: N
         await onUpdateOrderStatusHandler(order.idCommande, commandeStatus.terminee);
         ack()
     })
+    new SuccessResponse("sucess", { ...order, prix: price }).send(res);
 })
 
 /**

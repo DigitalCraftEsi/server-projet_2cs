@@ -2,7 +2,7 @@
 /* eslint-disable prefer-const */
 import { NextFunction, Request, Response } from 'express'
 import { BadRequestError, ForbiddenError, InternalError } from '../../handler/apiError'
-import { SuccessMsgResponse, SuccessResponse } from '../../handler/apiResponse'
+import { SuccessMsgResponse, SuccessResponse } from '../../handler/ApiResponse'
 import asyncHandler from '../../handler/asyncHandler'
 import {
   onAddMachineHandler,
@@ -156,9 +156,7 @@ export const changeStatusOfMachine = asyncHandler(
     if (!req.user) {
       throw new InternalError('User not found');
     }
-    if (!isAM(req.user.role)) {
-      throw new ForbiddenError('Permission denied');
-    }
+
     const id = parseInt(req.params.id)
     const machineUpdate = await onGetMachineHander(id)
     if (machineUpdate === null) {
