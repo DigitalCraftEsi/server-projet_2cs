@@ -39,6 +39,8 @@ import { ioMiddleware, onConnectionHandler } from './src/controllers/socketio/so
 
 import advrtRouter from './src/routers/advertisementRouter';
 import advertiserRouter from './src/routers/advertiserRouter';
+
+import cardRouter from './src/routers/cardRouter';
 import profileRouter from './src/routers/profileRouter';
 
 
@@ -99,7 +101,11 @@ app.use('/machine', machinRouter);
 app.use("/beverage",baverageRouter);
 app.use("/advertisement",advrtRouter);
 app.use("/advertiser",advertiserRouter)
+
+app.use("/card",cardRouter)
+
 app.use("/profile",profileRouter)
+
 
 
 app.use(errorHandler)

@@ -28,7 +28,7 @@ export const onGetAdvertisementByAdvertiserHandler = async (id : number) => {
 export const onAddAdvertisementHandler = async (data : any , file : string): Promise<annoncepublicitaire | null> => {
     const _advert = await prismaClientSingleton.annoncepublicitaire.create({
         data : {
-          annonceur: {
+           annonceur: {
             connect: { idAnnonceur : parseInt(data.advertiser) } // or create or connectOrCreate
            },
             sexe : data.sexe,

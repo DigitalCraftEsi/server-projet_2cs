@@ -4,7 +4,7 @@ import { SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
 import { Request, Response, NextFunction } from "express"
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
-import { onAddBeverageOfOrderHandler, onAddOrderHandler, onDeleteOrderHandler, onGetAllOrderHandler, onGetOrderHandler, onGetOrdersOfConsumerHandler, onGetOrdersOfMacineHandler, onUpdateOrderHandler } from "../../services/orderService";
+import { onAddBeverageOfOrderHandler, onAddOrderHandler, onDeleteOrderHandler, onGetAllOrderHandler, onGetOrderHandler, onGetOrdersOfConsumerHandler, onGetOrdersOfMacineHandler, onUpdateOrderHandler, onUpdateOrderStatusHandler } from "../../services/orderService";
 import { isConsumer } from "../../enums/rolesEnum";
 import { onGetMachineHander } from "../../services/machinService";
 import { onGetConsumerHandler } from "../../services/userService";
@@ -12,6 +12,8 @@ import { onGetBeverageHandler } from "../../services/beverageService";
 import { boisson, commandeStatus } from "@prisma/client";
 import { socketMap } from "../socketio/socketioController";
 
+import { Client, Config, CheckoutAPI } from "@adyen/api-library";
+import { CardDetails } from "@adyen/api-library/lib/src/typings/checkout/cardDetails";
 
 /**
  * Get All orders existe in DB
@@ -106,7 +108,7 @@ export const addOrder = asyncHandler(async (req: Request, res: Response, next: N
     }
 
     const _beverages = req.body.boissons
-    if(_beverages == 0){
+    if (_beverages == 0) {
         throw new BadRequestError("No beverages ordered")
     }
 
@@ -116,7 +118,7 @@ export const addOrder = asyncHandler(async (req: Request, res: Response, next: N
     }
 
     const socketObj = socketMap[req.body.idDistributeur]
-    if (!socketObj || !socketObj.distributeurSocket || !socketObj.odbSocket) {
+    if (!socketObj || !socketObj.distributeurSocket) {
         throw new InternalError("Vending machine offline")
     } else if (socketObj.isBusy) {
         throw new InternalError("Vending machine busy")
@@ -129,7 +131,7 @@ export const addOrder = asyncHandler(async (req: Request, res: Response, next: N
         status: commandeStatus.enAttente,
         prix: 0.0
     }
-    
+
     let price: number = 0.0;
     const beveragesData: boisson[] = []
     for (let i = 0; i < _beverages.length; i++) {
@@ -137,33 +139,55 @@ export const addOrder = asyncHandler(async (req: Request, res: Response, next: N
         if (_beverage == null) {
             throw new BadRequestError("Beverage doesn't existe")
         }
-        beveragesData.push(_beverage)        
+        beveragesData.push(_beverage)
         price += _beverage.tarif * _beverages[i].Quantite;
     }
 
-
     _data.prix = price
-    
+
     const order = await onAddOrderHandler(_data.dateCommande, _data.idConsommateur, _data.idDistributeur,
         _data.status, _data.prix, _beverages)
 
+    const config = new Config();
+    // Set your X-API-KEY with the API key from the Customer Area.
+    config.apiKey = process.env.PAYMENT_API_KEY;
+    config.merchantAccount = 'DigitalCraftECOM';
+    const client = new Client({ config });
+    client.setEnvironment("TEST");
+    const checkout = new CheckoutAPI(client);
 
+    try {
+        
+
+        const payment = await checkout.payments({
+            amount: { currency: "DZD", value: 1000 },
+            paymentMethod: {
+                type: CardDetails.TypeEnum.Scheme,
+                encryptedCardNumber: req.body.card.cardNumber,
+                encryptedExpiryMonth: req.body.card.expiryMonth,
+                encryptedExpiryYear: req.body.card.expiryYear,
+                encryptedSecurityCode: req.body.card.securityCode,
+                holderName: req.body.card.holderName
+            },
+            reference: order.idCommande.toString(),
+            merchantAccount: process.env.MERCHANT_ACCOUNT,
+            returnUrl: "https://www.google.com"
+        });
+    } catch (error) {
+        console.log(error);
+        
+        throw new InternalError();
+    }
+
+
+    new SuccessResponse("sucess", { ...order, prix: price }).send(res);
 
     socketObj.isBusy = true
-    // const socketObj = socketMap[_data.idDistributeur]
-
-    let beverageToPrepare = beveragesData.pop()
-    socketObj.distributeurSocket.emit('prepare-beverage', beverageToPrepare)
-    socketObj.odbSocket.emit('prepare-beverage', beverageToPrepare)
-    socketObj.odbSocket.on('beverage-done', () => {
-        if (beveragesData.length > 0) {
-            beverageToPrepare = beveragesData.pop()
-            socketObj.distributeurSocket.emit('prepare-beverage', beverageToPrepare)
-            socketObj.odbSocket.emit('prepare-beverage', beverageToPrepare)
-        } else {
-            socketObj.distributeurSocket.emit('preparation-done')
-            socketObj.isBusy = false
-        }
+    socketObj.distributeurSocket.emit('prepare-beverages', beveragesData)
+    socketObj.distributeurSocket.on('preparation-done', async (ack: Function) => {
+        socketObj.isBusy = false;
+        await onUpdateOrderStatusHandler(order.idCommande, commandeStatus.terminee);
+        ack()
     })
     new SuccessResponse("sucess", { ...order, prix: price }).send(res);
 })

@@ -109,6 +109,16 @@ export const onUpdateOrderHandler = async (data: any, id: number) => {
     })
 }
 
+export const onUpdateOrderStatusHandler = async (id: number, status: commandeStatus) => {
+    await prismaClientSingleton.commande.update({
+        where: {
+            idCommande: id
+        }, data: {
+            status
+        }
+    })
+}
+
 export const onDeleteOrderHandler = async (id: number) => {
     await prismaClientSingleton.commande.delete({
         where: {
