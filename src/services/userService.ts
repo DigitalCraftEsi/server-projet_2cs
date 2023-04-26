@@ -53,7 +53,7 @@ export const onUpdateSADMHandler = async ({ id,fName , lName , phone , email , p
             prenomSADM : fName,
             telephoneSADM : phone , 
             emailSADM : email,
-            picture : picture
+            // picture : picture
         },
         where : {
             idSADM : id
@@ -186,7 +186,7 @@ export const onUpdateADMHandler = async ({ id,fName , lName , phone , email , pi
             prenomADM : fName,
             telephoneADM : phone , 
             emailADM : email,
-            picture : picture
+            // picture : picture
         },
         where : {
             idADM : id
@@ -244,7 +244,7 @@ export const onUpdateACHandler = async ({ id,fName , lName , phone , email , pic
             prenomAC : fName,
             telephoneAC : phone , 
             emailAC : email,
-            picture : picture
+            // picture : picture
         },
         where : {
             idAC : id
@@ -367,7 +367,7 @@ export const onUpdateAMHandler = async ({ id,fName , lName , phone , email , pic
             prenomAM : fName,
             telephoneAM : phone , 
             emailAM : email,
-            picture : picture
+            // picture : picture
         },
         where : {
             idAM : id
@@ -447,7 +447,7 @@ export const onUpdateDECIDEURHandler = async ({ id,fName , lName , phone , email
             prenomDecideur : fName,
             telephoneDecideur : phone , 
             emailDecideur : email,
-            picture : picture
+            // picture : picture
         },
         where : {
             idDecideur : id
@@ -506,7 +506,7 @@ export const onUpdateConsumerHandler = async ({ id,fName , lName , phone , email
             prenomConsommateur : fName,
             telephoneConsommateur : phone , 
             emailConsommateur : email,
-            picture : picture
+            // picture : picture
         },
         where : {
             idConsommateur : id
