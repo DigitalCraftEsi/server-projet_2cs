@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 
 import { Socket } from "socket.io";
 import { socketClientsTypesEnum } from "../../enums/socketClientsEnum";
@@ -16,7 +17,7 @@ type socketObject = {
     odbSocket: Socket | null
 }
 
-let socketMap: { [idDistributeur: string]: socketObject } = {}
+const socketMap: { [idDistributeur: string]: socketObject } = {}
 
 const ioMiddleware = async (socket: Socket, next: Function) => {
     // console.log(socket.handshake.headers.auth);

@@ -45,6 +45,7 @@ model adm {
   status        userStatus @default(actif)
   client        client     @relation(fields: [idClient], references: [idClient])
   idClient      Int
+  picture       String?     @db.VarChar(200)
 }
 
 model annoncepublicitaire {
@@ -56,7 +57,7 @@ model annoncepublicitaire {
   region         String?      @db.VarChar(200)
   dateDebut      DateTime     @db.DateTime(0)
   dateFin        DateTime     @db.DateTime(0)
-  visible        Boolean      @default(false)
+  visible        Boolean      @default(true)
   boisson        boisson?     @relation(fields: [idBoisson], references: [idBoisson])
   idBoisson      Int?
   distributeur   distributeur @relation(fields: [idDistributeur], references: [idDistributeur])
@@ -141,6 +142,7 @@ model consommateur {
   telephoneConsommateur  String?    @db.VarChar(200)
   motDePasseConsommateur String     @db.VarChar(200)
   commandes              commande[]
+  picture       String?     @db.VarChar(200)
 }
 
 model decideur {
@@ -153,6 +155,7 @@ model decideur {
   status             userStatus @default(actif)
   client             client     @relation(fields: [idClient], references: [idClient])
   idClient           Int
+  picture       String?     @db.VarChar(200)
 }
 
 model distributeur {
@@ -213,7 +216,9 @@ model sadm {
   emailSADM      String  @unique(map: "emailSADM") @db.VarChar(200)
   telephoneSADM  String? @db.VarChar(200)
   motDePasseSADM String  @db.VarChar(200)
+  picture        String?     @db.VarChar(200)
 }
+
 
 model tache {
   idTache        Int      @id @default(autoincrement())
@@ -255,6 +260,7 @@ model ac {
   status       userStatus @default(actif)
   client       client     @relation(fields: [idClient], references: [idClient])
   idClient     Int
+  picture       String?     @db.VarChar(200)
 }
 
 model am {
@@ -268,6 +274,7 @@ model am {
   client       client         @relation(fields: [idClient], references: [idClient])
   idClient     Int
   distributeur distributeur[]
+  picture       String?     @db.VarChar(200)
 
   @@index([idClient], map: "idClient")
 }

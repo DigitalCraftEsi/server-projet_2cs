@@ -6,6 +6,18 @@ import { onAddBeverageHandler, onDeleteBeverageHandler, onGetAllBeverageHandler,
 import {onGetMachineBydistUIDHandler} from "../../services/machinService";
 import schema from "./schema";
 
+interface RequestWithFile extends Request {
+  file: {
+      fieldname: string;
+      originalname: string;
+      encoding: string;
+      mimetype: string;
+      size: number;
+      filename: string;
+      path: string;
+      buffer: Buffer;
+  };
+}
 
 /**
  * Get all beverage of vendingMachine 
@@ -91,13 +103,13 @@ export const getBeverages = asyncHandler(
  * @param {NextFunction} next - callback function that is used to pass control to the next middleware function in the stack
  */
 export const addbeverage = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: RequestWithFile, res: Response, next: NextFunction) => {
 
     const { error } = schema.beverageSchema.validate(req.body)
     if (error) {
       throw new BadRequestError(error.details[0].message)
     }
-    const beverage = await onAddBeverageHandler(req.body)
+    const beverage = await onAddBeverageHandler(req.body,req.file.filename)
     if (beverage === null) {
       throw new BadRequestError();
     } else {
