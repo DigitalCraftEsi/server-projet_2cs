@@ -35,6 +35,8 @@ model actionsuspecte {
   @@index([idDistributeur], map: "idDistributeur")
 }
 
+
+
 model adm {
   idADM         Int        @id @default(autoincrement())
   nomADM        String     @db.VarChar(200)
@@ -143,6 +145,16 @@ model consommateur {
   motDePasseConsommateur String     @db.VarChar(200)
   commandes              commande[]
   picture       String?     @db.VarChar(200)
+  card  card[]
+}
+
+model card {
+  cardNumber    String  @id
+  expiryMonth   String
+  expiryYear    String
+  holderName    String
+  idConsommateur Int
+  consommateur  consommateur @relation(fields: [idConsommateur], references: [idConsommateur])
 }
 
 model decideur {
