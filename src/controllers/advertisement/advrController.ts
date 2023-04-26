@@ -9,8 +9,26 @@ import { SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
 import { onAddAdvertisementHandler, onDeleteAdvertisementHandler, onGetAdvertisementByIdHandler, onGetAllAdvertisementHandler } from "../../services/advertisementService";
 import { onGetAdvertiserByIdHandler } from "../../services/advertiserService";
 import { onGetBeverageHandler } from "../../services/beverageService";
+import { onGetMachineHander } from "../../services/machinService";
 
-export const addAdvertisement = asyncHandler( async  (req : Request , res : Response , next : NextFunction) => {
+interface RequestWithFile extends Request {
+    file: {
+        fieldname: string;
+        originalname: string;
+        encoding: string;
+        mimetype: string;
+        size: number;
+        filename: string;
+        path: string;
+        buffer: Buffer;
+    };
+  }
+
+  
+
+  
+export const addAdvertisement = asyncHandler( async  (req : RequestWithFile , res : Response , next : NextFunction) => {
+    
     if (!req.user) {
         throw new InternalError('User not found');
     }
@@ -21,17 +39,25 @@ export const addAdvertisement = asyncHandler( async  (req : Request , res : Resp
     if (error) {
          throw new BadRequestError(error.details[0].message)
     }
-    const _advertiser = await onGetAdvertiserByIdHandler(req.body.advertiser)
+    const _advertiser = await onGetAdvertiserByIdHandler(parseInt(req.body.advertiser))
     if (_advertiser === null ) {
         throw new BadRequestError("Advertiser doesn't existe")
     }
+    const _machine = await onGetMachineHander(parseInt(req.body.advertiser))
+    if (_machine === null ) {
+        throw new BadRequestError("Machine doesn't existe")
+    }
     if (req.body.beverage) {
-        const _beverage = await onGetBeverageHandler(req.body.beverage)
+        const _beverage = await onGetBeverageHandler(parseInt(req.body.beverage))
         if (_beverage == null) {
             throw new BadRequestError("Beverage doesn't existe")
         }
     }
-    const _adver = await onAddAdvertisementHandler(req.body)
+    if (!req.file == null) {
+        throw new BadRequestError("Video is required")
+    }
+
+    const _adver = await onAddAdvertisementHandler(req.body,req.file.filename)
     if (_adver === null ) {
         throw new BadRequestError("Creation error")
     }

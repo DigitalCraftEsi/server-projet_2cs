@@ -147,7 +147,7 @@ export const addOrder = asyncHandler(async (req: Request, res: Response, next: N
     const order = await onAddOrderHandler(_data.dateCommande, _data.idConsommateur, _data.idDistributeur,
         _data.status, _data.prix, _beverages)
 
-    new SuccessResponse("sucess", { ...order, prix: price }).send(res);
+
 
     socketObj.isBusy = true
     // const socketObj = socketMap[_data.idDistributeur]
@@ -165,6 +165,7 @@ export const addOrder = asyncHandler(async (req: Request, res: Response, next: N
             socketObj.isBusy = false
         }
     })
+    new SuccessResponse("sucess", { ...order, prix: price }).send(res);
 })
 
 /**

@@ -31,15 +31,24 @@ export const onGetBeveragesOfMachineHandler = async (
 };
 
 export const onAddBeverageHandler = async (
-  data: any
+  data: any,
+  file : string
 ): Promise<boisson | null> => {
-  const { nomBoisson, tarif, idDistributeur, description } = data;
+  const { nomBoisson, tarif, idDistributeur, description ,eau  , cafe , lait , the , sucre} = data;
   const beverage = await prismaClientSingleton.boisson.create({
     data: {
       nomBoisson,
-      tarif,
-      idDistributeur,
-      description
+      tarif : parseFloat(tarif),
+      distributeur : {
+        connect : {idDistributeur : parseInt(idDistributeur),}
+      },
+      description,
+      image : "src/uploads/" + file,
+      eau: parseFloat(eau),
+      cafe: parseFloat(cafe),
+      lait: parseFloat(lait),
+      the: parseFloat(the),
+      sucre: parseFloat(sucre),
     },
   });
   return beverage;
