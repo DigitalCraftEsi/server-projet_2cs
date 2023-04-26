@@ -5,8 +5,8 @@ import asyncHandler from "../../handler/asyncHandler";
 import { onAddBeverageHandler, onDeleteBeverageHandler, onGetAllBeverageHandler, onGetBeverageHandler, onGetBeveragesOfMachineHandler, onUpdateBeverageHandler } from "../../services/beverageService";
 import { onGetMachineBydistUIDHandler } from "../../services/machinService";
 import schema from "./schema";
-import { isConsumer } from "src/enums/rolesEnum";
-import { onAddCardHandler, onDeleteCardHandler, onGetCardByIdHandler, onGetConsumerCardsHandler } from "src/services/cardService";
+import { isConsumer } from "../../enums/rolesEnum";
+import { onAddCardHandler, onDeleteCardHandler, onGetCardByIdHandler, onGetConsumerCardsHandler } from "../../services/cardService";
 
 
 export const getConsumerCards = asyncHandler(
