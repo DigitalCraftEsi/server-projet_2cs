@@ -3,6 +3,7 @@
 import { client } from '@prisma/client';
 import request from 'supertest';
 import app from "../../index"
+import { AuthDataOfTest } from '../../src/utils/data';
 
 
 // -- API Creation of client  POST /user
@@ -12,24 +13,17 @@ describe('-- API Creation User Client  POST /user', async () => {
     let cookiesSadm : string;
     let cookiesAdm : string;
     beforeAll( async () => {
-      const _dataSadm = {
-          "email" : "chamsou@gmail.com",
-          "password"  :"chamsou2002"
-      }
-      const _dataAdm = {
-        "email" : "chamsou_ADM@esi.dz",
-        "password"  :"chamsou2002"
-    }
-      const _res = await request(app).post("/login").send(_dataSadm)
+
+      const _res = await request(app).post("/login").send(AuthDataOfTest.authSADM)
       cookiesSadm =_res.headers["set-cookie"]
-      const _resAdm = await request(app).post("/login").send(_dataAdm)
+      const _resAdm = await request(app).post("/login").send(AuthDataOfTest.authADM)
       cookiesAdm = _resAdm.headers["set-cookie"];
   
     })
     it('should return 200 OK',async (done) => {
       const _data = {
               nom: "client",
-              email: "client_test@esi.dz",
+              email: "client_test2@esi.dz",
               "telephone": "0664827074",
               "password" : "chamsou2002",
               "role"  : "CLIENT"
@@ -48,6 +42,7 @@ describe('-- API Creation User Client  POST /user', async () => {
         "password" : "chamsou2002",
         "role"  : "CLIENT"
       }
+
       const _res  = await request(app).post("/user").send(_data).set("Cookie",cookiesAdm)
       expect(_res.status).toBe(403)
       expect(_res.body.message).toBe("Permission denied");
@@ -84,11 +79,8 @@ describe('-- API Delete User ADM  DELETE /adm', async () => {
     let client : client;
     let cookies : string;
     beforeAll( async () => {
-      const _dataAuth = {
-          "email" : "chamsou@gmail.com",
-          "password"  :"chamsou2002"
-      }
-      const _resAuth = await request(app).post("/login").send(_dataAuth)
+
+      const _resAuth = await request(app).post("/login").send(AuthDataOfTest.authSADM)
       cookies =_resAuth.headers["set-cookie"]
       const _data = {
         nom: "client",
