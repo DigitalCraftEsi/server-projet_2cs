@@ -6,5 +6,9 @@ export const AuthDataOfTest = {
     authADM : {
         "email" : "chamsou_ADM2@esi.dz",
         "password"  :"chamsou2002"
+    },
+    authConsumer : {
+        "email" : "jc_berkane_consumer@esi.dz",
+        "password" : "chamsou2002"
     }
 }

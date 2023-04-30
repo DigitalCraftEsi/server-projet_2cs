@@ -68,47 +68,47 @@ describe("-- API Auth SADM Post /login", async () => {
 });
 
 
-// // -- API Auth consumer  
-// describe("-- API Auth consumer Post /login", async () => {
-//     let consumer: consommateur;
-//     const _data = {
-//       nomConsommateur: "chamsou",
-//       prenomConsommateur: "berkane",
-//       emailConsommateur: "chamsou_consommateur@esi.dz",
-//       motDePasseConsommateur: _passswordCrypted,
-//       telephoneConsommateur : "0664827074"
-//     };
+// -- API Auth consumer  
+describe("-- API Auth consumer Post /login", async () => {
+    let consumer: consommateur;
+    const _data = {
+      nomConsommateur: "chamsou",
+      prenomConsommateur: "berkane",
+      emailConsommateur: "chamsou_consommateur@esi.dz",
+      motDePasseConsommateur: _passswordCrypted,
+      telephoneConsommateur : "0664827074"
+    };
 
-//     beforeAll(async () => {
-//       consumer = await onAddConsumerHandler(_data);
-//     });
+    beforeAll(async () => {
+      consumer = await onAddConsumerHandler(_data);
+    });
   
-//     it("should return 200 OK", async (done) => {
-//       const res = await request(app).post("/login").send({
-//         email: _data.emailConsommateur,
-//         password: _password,
-//       });
-//       expect(res.status).toBe(200);
-//       expect(res.body.data.id).toBe(consumer.idConsommateur);
-//       expect(res.body.data.nom).toBe(_data.nomConsommateur);
-//       expect(res.body.data.prenom).toBe(_data.prenomConsommateur);
-//       expect(res.body.data.email).toBe(_data.emailConsommateur);
-//       done();
-//     });
+    it("should return 200 OK", async (done) => {
+      const res = await request(app).post("/login").send({
+        email: _data.emailConsommateur,
+        password: _password,
+      });
+      expect(res.status).toBe(200);
+      expect(res.body.data.id).toBe(consumer.idConsommateur);
+      expect(res.body.data.nom).toBe(_data.nomConsommateur);
+      expect(res.body.data.prenom).toBe(_data.prenomConsommateur);
+      expect(res.body.data.email).toBe(_data.emailConsommateur);
+      done();
+    });
     
   
-//     it("should return 401 Failed - Incorrect password - ", async (done) => {
-//       const res = await request(app).post("/login").send({
-//         email: _data.emailConsommateur,
-//         password: "Incorrect2023",
-//       });
-//       expect(res.status).toBe(401);
-//       expect(res.body.message).toBe("Incorrect password");
-//       done();
-//     });
+    it("should return 401 Failed - Incorrect password - ", async (done) => {
+      const res = await request(app).post("/login").send({
+        email: _data.emailConsommateur,
+        password: "Incorrect2023",
+      });
+      expect(res.status).toBe(401);
+      expect(res.body.message).toBe("Incorrect password");
+      done();
+    });
   
-//     // afterAll(async () => {
-//     //   await onDeleteConsumerHandler(consumer.idConsommateur);
-//     // });
-//   });
+    afterAll(async () => {
+      await onDeleteConsumerHandler(consumer.idConsommateur);
+    });
+  });
   

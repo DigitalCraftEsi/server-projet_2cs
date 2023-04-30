@@ -3,6 +3,7 @@
 import { ac } from '@prisma/client';
 import request from 'supertest';
 import app from "../../index"
+import { AuthDataOfTest } from '../../src/utils/data';
 
 // -- API Creation of AC  POST /user
 describe('-- API Creation User AC  POST /user', async () => {
@@ -11,17 +12,10 @@ describe('-- API Creation User AC  POST /user', async () => {
     let cookiesSadm : string;
     let cookiesAdm : string;
     beforeAll( async () => {
-      const _dataSadm = {
-          "email" : "chamsou@gmail.com",
-          "password"  :"chamsou2002"
-      }
-      const _dataAdm = {
-        "email" : "chamsou_ADM@esi.dz",
-        "password"  :"chamsou2002"
-    }
-      const _res = await request(app).post("/login").send(_dataSadm)
+
+      const _res = await request(app).post("/login").send(AuthDataOfTest.authSADM)
       cookiesSadm =_res.headers["set-cookie"]
-      const _resAdm = await request(app).post("/login").send(_dataAdm)
+      const _resAdm = await request(app).post("/login").send(AuthDataOfTest.authADM)
       cookiesAdm = _resAdm.headers["set-cookie"];
   
     })
@@ -85,11 +79,8 @@ describe('-- API Delete User ADM  DELETE /adm', async () => {
     let ac : ac;
     let cookies : string;
     beforeAll( async () => {
-      const _dataAuth = {
-          "email" : "chamsou_ADM@esi.dz",
-          "password"  :"chamsou2002"
-      }
-      const _resAuth = await request(app).post("/login").send(_dataAuth)
+
+      const _resAuth = await request(app).post("/login").send(AuthDataOfTest.authADM)
       cookies =_resAuth.headers["set-cookie"]
       const _data = {
         nom: "ac",
