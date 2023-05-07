@@ -34,10 +34,9 @@ import cors, { CorsOptions } from 'cors';
 import cookieParser from 'cookie-parser';
 import { createServer } from 'http';
 import { ioMiddleware, onConnectionHandler } from './src/controllers/socketio/socketioController';
-
+import {Server} from 'socket.io'
 import advrtRouter from './src/routers/advertisementRouter';
 import advertiserRouter from './src/routers/advertiserRouter';
-
 import cardRouter from './src/routers/cardRouter';
 import profileRouter from './src/routers/profileRouter';
 
