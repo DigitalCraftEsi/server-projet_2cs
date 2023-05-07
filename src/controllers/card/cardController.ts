@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { BadRequestError, ForbiddenError, InternalError, NotFoundError } from "../../handler/apiError";
-import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
+import { SuccessCreationResponse, SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
 import asyncHandler from "../../handler/asyncHandler";
 import { onAddBeverageHandler, onDeleteBeverageHandler, onGetAllBeverageHandler, onGetBeverageHandler, onGetBeveragesOfMachineHandler, onUpdateBeverageHandler } from "../../services/beverageService";
 import { onGetMachineBydistUIDHandler } from "../../services/machinService";
@@ -54,7 +54,7 @@ export const addCard = asyncHandler(
             req.user.id
         )
 
-        return new SuccessResponse("success", newCard).send(res);
+        return new SuccessCreationResponse("success", newCard).send(res);
 
     }
 );

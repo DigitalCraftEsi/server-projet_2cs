@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ac, adm, am, client, consommateur, decideur, sadm } from "@prisma/client"
-import { isString, uniq } from "lodash"
+import { isString } from "lodash"
 import { prismaClientSingleton } from "../utils/prismaClient"
+import { date } from "joi";
 
 
 // SADM ----------------------------------------------------------------------------
@@ -40,6 +41,34 @@ export const onAddSADMHandler = async ( data : any ) : Promise< sadm | null>  =>
             emailSADM,
             motDePasseSADM,
             telephoneSADM
+        }
+    })
+    return sadm
+}
+
+export const onUpdateSADMHandler = async ({ id,fName , lName , phone , email , picture}) : Promise< sadm | null> => {
+    const sadm = prismaClientSingleton.sadm.update({
+        data : {
+            nomSADM  :lName,
+            prenomSADM : fName,
+            telephoneSADM : phone , 
+            emailSADM : email,
+            picture : picture
+        },
+        where : {
+            idSADM : id
+        }
+    })
+    return sadm
+}
+
+export const onUpdatePasswordSADMHandler = async (id : number ,password : string) : Promise< sadm | null> => {
+    const sadm = prismaClientSingleton.sadm.update({
+        data : {
+            motDePasseSADM : password
+        },
+        where : {
+            idSADM : id
         }
     })
     return sadm
@@ -105,22 +134,27 @@ export const onDeleteClientHandler = async (id : number) => {
 // ADM ----------------------------------------------------------------------------
 
 export const onGetADMHandler = async ( unique : string | number) : Promise< adm | null>  => {
-    let adm : adm;
-    if (isString(unique)) {
-        adm = await prismaClientSingleton.adm.findUnique({
-            where: {
-                emailADM : unique
-            }
-        })
-    }else{
-        adm = await prismaClientSingleton.adm.findUnique({
-            where: {
-                idADM : unique
-            }
-        })
+    try {
+        let adm : adm;
+        if (isString(unique)) {
+            adm = await prismaClientSingleton.adm.findUnique({
+                where: {
+                    emailADM : unique
+                }
+            })
+        }else{
+            adm = await prismaClientSingleton.adm.findUnique({
+                where: {
+                    idADM : unique
+                }
+            })
+        }
+    
+        return adm
+    } catch (error) {
+        console.log(error,"err")
     }
 
-    return adm
 }
 
 export const onAddADMHandler = async ( data : any ) : Promise< adm | null>  => {
@@ -140,6 +174,34 @@ export const onAddADMHandler = async ( data : any ) : Promise< adm | null>  => {
             emailADM,
             motDePasseADM,
             telephoneADM
+        }
+    })
+    return adm
+}
+
+export const onUpdateADMHandler = async ({ id,fName , lName , phone , email , picture}) : Promise< adm | null> => {
+    const adm = prismaClientSingleton.adm.update({
+        data : {
+            nomADM  :lName,
+            prenomADM : fName,
+            telephoneADM : phone , 
+            emailADM : email,
+            picture : picture
+        },
+        where : {
+            idADM : id
+        }
+    })
+    return adm
+}
+
+export const onUpdatePasswordADMHandler = async (id : number ,password : string) : Promise< adm | null> => {
+    const adm = prismaClientSingleton.adm.update({
+        data : {
+            motDePasseADM : password
+        },
+        where : {
+            idADM : id
         }
     })
     return adm
@@ -175,6 +237,34 @@ export const onGetACHandler = async ( unique : string | number) : Promise< ac | 
     return ac
 }
 
+export const onUpdateACHandler = async ({ id,fName , lName , phone , email , picture}) : Promise< ac | null> => {
+    const ac = prismaClientSingleton.ac.update({
+        data : {
+            nomAC  :lName,
+            prenomAC : fName,
+            telephoneAC : phone , 
+            emailAC : email,
+            picture : picture
+        },
+        where : {
+            idAC : id
+        }
+    })
+    return ac
+}
+
+export const onUpdatePasswordACHandler = async (id : number ,password : string) : Promise< ac | null> => {
+    const ac = prismaClientSingleton.ac.update({
+        data : {
+            motDePasseAC : password
+        },
+        where : {
+            idAC : id
+        }
+    })
+    return ac
+}
+
 export const onGetCONSUMERHandler = async ( unique : string | number) : Promise< consommateur | null>  => {
     let consumer : consommateur 
     if (isString(unique)){
@@ -193,6 +283,7 @@ export const onGetCONSUMERHandler = async ( unique : string | number) : Promise<
 
     return consumer
 }
+
 
 export const onAddACHandler = async ( data : any ) : Promise< ac | null>  => {
     const {
@@ -266,6 +357,35 @@ export const onAddAMHandler = async ( data : any ) : Promise< am | null>  => {
         }
     })
     return am
+
+}
+
+export const onUpdateAMHandler = async ({ id,fName , lName , phone , email , picture}) : Promise< am | null> => {
+    const am = prismaClientSingleton.am.update({
+        data : {
+            nomAM  :lName,
+            prenomAM : fName,
+            telephoneAM : phone , 
+            emailAM : email,
+            picture : picture
+        },
+        where : {
+            idAM : id
+        }
+    })
+    return am
+}
+
+export const onUpdatePasswordAMHandler = async (id : number ,password : string) : Promise< am | null> => {
+    const am = prismaClientSingleton.am.update({
+        data : {
+            motDePasseAM : password
+        },
+        where : {
+            idAM : id
+        }
+    })
+    return am
 }
 
 
@@ -279,7 +399,7 @@ export const onDeleteAMHandler = async (id : number) => {
 
 // DECIDEUR ----------------------------------------------------------------------------
 
-export const onGetDECIDEURHandler = async ( unique : string ) : Promise< decideur | null>  => {
+export const onGetDECIDEURHandler = async ( unique : string | number ) : Promise< decideur | null>  => {
     let decideur  : decideur
     if (isString(unique)) {
         decideur = await prismaClientSingleton.decideur.findUnique({
@@ -320,6 +440,33 @@ export const onAddDECIDEURHandler = async ( data : any ) : Promise< decideur | n
     return decideur
 }
 
+export const onUpdateDECIDEURHandler = async ({ id,fName , lName , phone , email , picture}) : Promise< decideur | null> => {
+    const dec = prismaClientSingleton.decideur.update({
+        data : {
+            nomDecideur  :lName,
+            prenomDecideur : fName,
+            telephoneDecideur : phone , 
+            emailDecideur : email,
+            picture : picture
+        },
+        where : {
+            idDecideur : id
+        }
+    })
+    return dec
+}
+export const onUpdatePasswordDECIDEURMHandler = async (id : number ,password : string) : Promise< decideur | null> => {
+    const dec = prismaClientSingleton.decideur.update({
+        data : {
+            motDePasseDecideur : password
+        },
+        where : {
+            idDecideur : id
+        }
+    })
+    return dec
+}
+
 
 export const onDeleteDECIDEURHandler = async (id : number) => {
     await prismaClientSingleton.decideur.delete({
@@ -349,6 +496,38 @@ export const onGetConsumerHandler = async ( unique : string | number ) : Promise
 
     return consumer
 }
+
+
+
+export const onUpdateConsumerHandler = async ({ id,fName , lName , phone , email , picture}) : Promise< consommateur | null> => {
+    const consumer = prismaClientSingleton.consommateur.update({
+        data : {
+            nomConsommateur  :lName,
+            prenomConsommateur : fName,
+            telephoneConsommateur : phone , 
+            emailConsommateur : email,
+            picture : picture
+        },
+        where : {
+            idConsommateur : id
+        }
+    })
+    return consumer
+}
+
+export const onUpdatePasswordConsumerMHandler = async (id : number ,password : string) : Promise< consommateur | null> => {
+    const consumer = prismaClientSingleton.consommateur.update({
+        data : {
+            motDePasseConsommateur : password
+        },
+        where : {
+            idConsommateur : id
+        }
+    })
+    return consumer
+}
+
+
 
 export const onAddConsumerHandler = async ( data : any ) : Promise< consommateur | null>  => {
     const {

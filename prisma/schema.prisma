@@ -45,6 +45,7 @@ model adm {
   status        userStatus @default(actif)
   client        client     @relation(fields: [idClient], references: [idClient])
   idClient      Int
+  picture       String?     @db.VarChar(200)
 }
 
 model annoncepublicitaire {
@@ -142,6 +143,7 @@ model consommateur {
   motDePasseConsommateur String     @db.VarChar(200)
   commandes              commande[]
   cards                  card[]
+  picture       String?     @db.VarChar(200)
 }
 
 model card {
@@ -163,6 +165,7 @@ model decideur {
   status             userStatus @default(actif)
   client             client     @relation(fields: [idClient], references: [idClient])
   idClient           Int
+  picture       String?     @db.VarChar(200)
 }
 
 model distributeur {
@@ -173,7 +176,6 @@ model distributeur {
   latitude             Float?
   statut               String?
   distuid              String                @db.VarChar(200)
-  odbuid               String                @db.VarChar(200)
   am                   am?                   @relation(fields: [idAM], references: [idAM])
   idAM                 Int?
   client               client?               @relation(fields: [idClient], references: [idClient])
@@ -223,6 +225,7 @@ model sadm {
   emailSADM      String  @unique(map: "emailSADM") @db.VarChar(200)
   telephoneSADM  String? @db.VarChar(200)
   motDePasseSADM String  @db.VarChar(200)
+  picture       String?     @db.VarChar(200)
 }
 
 model tache {
@@ -265,6 +268,7 @@ model ac {
   status       userStatus @default(actif)
   client       client     @relation(fields: [idClient], references: [idClient])
   idClient     Int
+  picture       String?     @db.VarChar(200)
 }
 
 model am {
@@ -278,6 +282,7 @@ model am {
   client       client         @relation(fields: [idClient], references: [idClient])
   idClient     Int
   distributeur distributeur[]
+  picture       String?     @db.VarChar(200)
 
   @@index([idClient], map: "idClient")
 }

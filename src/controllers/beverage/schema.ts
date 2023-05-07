@@ -8,7 +8,6 @@ const beverage = {
 }
 
 const getBeveragesSchema = {
-    idDistributeur : Joi.number().positive(),
     distUID : Joi.string()
 }
 

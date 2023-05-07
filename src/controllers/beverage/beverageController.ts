@@ -3,7 +3,7 @@ import { BadRequestError, InternalError } from "../../handler/apiError";
 import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
 import asyncHandler from "../../handler/asyncHandler";
 import { onAddBeverageHandler, onDeleteBeverageHandler, onGetAllBeverageHandler, onGetBeverageHandler, onGetBeveragesOfMachineHandler, onUpdateBeverageHandler } from "../../services/beverageService";
-import {onGetMachineBydistUIDHandler} from "../../services/machinService";
+import { onGetMachineBydistUIDHandler } from "../../services/machinService";
 import schema from "./schema";
 
 
@@ -65,21 +65,17 @@ export const getBeverages = asyncHandler(
 
     let idDistributeur: number;
 
-    if (req.body.distUID) {
-      const distributeur = await onGetMachineBydistUIDHandler(req.body.UID)
-      if (!distributeur) {
-        throw new BadRequestError("Vending machine not found")
-      }
-      idDistributeur = distributeur.idDistributeur
-    } else {
-      idDistributeur = req.body.idDistributeur
+    const distributeur = await onGetMachineBydistUIDHandler(req.body.UID)
+    if (!distributeur) {
+      throw new BadRequestError("Vending machine not found")
     }
+    idDistributeur = distributeur.idDistributeur
 
-    const beverages = await onGetAllBeverageHandler(req.body.idDistributeur);
+    const beverages = await onGetAllBeverageHandler(Number(idDistributeur));
     if (beverages === null) {
       throw new InternalError();
     } else {
-      new SuccessResponse("success", {idDistributeur, boissons : beverages}).send(res);
+      new SuccessResponse("success", { idDistributeur, boissons: beverages }).send(res);
     }
   }
 );
