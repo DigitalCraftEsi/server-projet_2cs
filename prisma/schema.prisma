@@ -57,7 +57,7 @@ model annoncepublicitaire {
   region         String?      @db.VarChar(200)
   dateDebut      DateTime     @db.DateTime(0)
   dateFin        DateTime     @db.DateTime(0)
-  visible        Boolean      @default(false)
+  visible        Boolean      @default(true)
   boisson        boisson?     @relation(fields: [idBoisson], references: [idBoisson])
   idBoisson      Int?
   distributeur   distributeur @relation(fields: [idDistributeur], references: [idDistributeur])
@@ -142,6 +142,7 @@ model consommateur {
   telephoneConsommateur  String?    @db.VarChar(200)
   motDePasseConsommateur String     @db.VarChar(200)
   commandes              commande[]
+
   cards                  card[]
   picture       String?     @db.VarChar(200)
 }
@@ -227,6 +228,7 @@ model sadm {
   motDePasseSADM String  @db.VarChar(200)
   picture       String?     @db.VarChar(200)
 }
+
 
 model tache {
   idTache        Int      @id @default(autoincrement())

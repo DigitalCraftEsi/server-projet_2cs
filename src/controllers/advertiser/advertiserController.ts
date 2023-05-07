@@ -6,7 +6,7 @@ import { BadRequestError, ForbiddenError, InternalError } from "../../handler/ap
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
 import { onAddAvertiserHandler, onDeleteAdvertiserHandler, onGetAdvertiserByEmailHandler, onGetAdvertiserByIdHandler, onGetAllAdvertiserHandler } from "../../services/advertiserService";
-import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
+import { SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
 
 export const addAdvertiser = asyncHandler( async  (req : Request , res : Response , next : NextFunction) => {
     if (!req.user) {

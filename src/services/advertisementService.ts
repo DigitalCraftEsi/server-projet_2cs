@@ -25,19 +25,25 @@ export const onGetAdvertisementByAdvertiserHandler = async (id : number) => {
 }
 
 
-export const onAddAdvertisementHandler = async (data : any): Promise<annoncepublicitaire | null> => {
+export const onAddAdvertisementHandler = async (data : any , file : string): Promise<annoncepublicitaire | null> => {
     const _advert = await prismaClientSingleton.annoncepublicitaire.create({
         data : {
-            idAnnonceur : data.advertiser,
+           annonceur: {
+            connect: { idAnnonceur : parseInt(data.advertiser) } // or create or connectOrCreate
+           },
             sexe : data.sexe,
-            ageMin : data.ageMin,
-            ageMax : data.ageMax , 
+            ageMin : parseInt(data.ageMin),
+            ageMax : parseInt(data.ageMax) , 
             region : data.area,
             dateDebut : data.dateDebut,
             dateFin : data.dateFin , 
-            idBoisson : data.beverage,
-            idDistributeur : data.machine,
-            video : data.video
+            boisson: {
+              connect: { idBoisson: parseInt(data.beverage) } // or create or connectOrCreate
+            },
+            distributeur: {
+              connect: { idDistributeur: parseInt(data.machine) } // or create or connectOrCreate
+            },
+            video : 'src/uploads/' + file
         }
     })
     return _advert;

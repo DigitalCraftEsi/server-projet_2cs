@@ -4,7 +4,7 @@
 import { NextFunction, Request, Response } from 'express'
 import bcrypt from 'bcrypt';
 import { AuthFailureError } from '../../handler/apiError';
-import { SuccessMsgResponse, SuccessResponse } from '../../handler/apiResponse';
+import { SuccessMsgResponse, SuccessResponse } from '../../handler/ApiResponse';
 import asyncHandler from '../../handler/asyncHandler';
 import schema from './schema'
 import { BadRequestError, BadTokenError, InternalError } from '../../handler/apiError';
@@ -33,7 +33,7 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
     let userFetched, passwordFetched: string;
     let userPayload: userJwtPayload;
     const user: userInfo = req.body;
-
+    console.log(user)
     userFetched = await onGetCONSUMERHandler(user.email)
 
     if (userFetched) {
@@ -45,6 +45,7 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
             email: userFetched.emailConsommateur,
             role: ROLES.CONSUMER,
             telephone: userFetched.telephoneConsommateur,
+            picture : userFetched.picture ? userFetched.picture : ''
         };
     }
     else {
@@ -59,6 +60,7 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
                 email: userFetched.emailSADM,
                 role: ROLES.SADM,
                 telephone: userFetched.telephoneSADM,
+                picture : userFetched.picture ? userFetched.picture : ''
             };
         }
         else {
@@ -73,7 +75,8 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
                     email: userFetched.emailADM,
                     role: ROLES.ADM,
                     telephone: userFetched.telephoneADM,
-                    clientId: userFetched.idClient
+                    clientId: userFetched.idClient,
+                    picture : userFetched.picture ? userFetched.picture : ''
                 };
             }
             else {
@@ -88,7 +91,8 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
                         email: userFetched.emailAC,
                         role: ROLES.AC,
                         telephone: userFetched.telephoneAC,
-                        clientId: userFetched.idClient
+                        clientId: userFetched.idClient,
+                        picture : userFetched.picture ? userFetched.picture : ''
                     };
                 }
                 else {
@@ -103,7 +107,8 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
                             email: userFetched.emailAM,
                             role: ROLES.AM,
                             telephone: userFetched.telephoneAM,
-                            clientId: userFetched.idClient
+                            clientId: userFetched.idClient,
+                            picture : userFetched.picture ? userFetched.picture : ''
                         };
                     } else {
                         userFetched = await onGetDECIDEURHandler(user.email)
@@ -117,7 +122,8 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
                                 email: userFetched.emailDecideur,
                                 role: ROLES.AM,
                                 telephone: userFetched.telephoneDecideur,
-                                clientId: userFetched.idClient
+                                clientId: userFetched.idClient,
+                                picture : userFetched.picture ? userFetched.picture : ''
                             };
                         } else {
                             throw new AuthFailureError('Incorrect email');

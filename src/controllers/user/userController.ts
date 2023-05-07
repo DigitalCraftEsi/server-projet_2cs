@@ -5,7 +5,7 @@ import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
 import { BadRequestError, ForbiddenError, InternalError, NotFoundError } from "../../handler/apiError";
 import { isSADM, isADM, isAC, isAM, isDecideur, isClient, ROLES } from "../../enums/rolesEnum";
-import { SuccessCreationResponse, SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
+import { SuccessCreationResponse, SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
 import { prismaClientSingleton } from "../../utils/prismaClient";
 import bcrypt from 'bcrypt';
 
@@ -333,7 +333,7 @@ export const getUsers = asyncHandler(
 
         const user = req.user
 
-        let role: string = ''
+        let role = ''
         let id: number | null = null;
 
         if (isADM(user.role)) {

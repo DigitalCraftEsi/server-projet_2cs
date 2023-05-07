@@ -8,7 +8,7 @@ import {
   InternalError,
 } from "../../handler/apiError";
 import bcrypt from 'bcrypt';
-import { SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
+import { SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
 import { Request, Response, NextFunction } from "express";
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";

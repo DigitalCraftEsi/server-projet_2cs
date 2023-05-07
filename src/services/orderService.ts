@@ -53,7 +53,7 @@ export const onAddOrderHandler = async (
     idConsommateur: number,
     idDistributeur: number,
     status: commandeStatus = commandeStatus.enAttente,
-    prix: number = 0.0,
+    prix = 0.0,
     boissons: Array<{
         idBoisson: number;
         Quantite: number;
