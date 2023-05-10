@@ -49,18 +49,25 @@ import profileRouter from './src/routers/profileRouter';
  export const app: Application = express();
 
 let corsOptions: CorsOptions = {
-   origin: [`${process.env.FRONTEND_URL}`],
+   origin: [`${process.env.FRONTEND_URL}`, "*","0.0.0.0" , "localhost:3000","http://localhost:3000"],
    credentials: true,
 }
 
 const httpServer = createServer(app);
 const io = new Server(httpServer)
 
+app.use((req, res, next) => {
+   res.header("Access-Control-Allow-Origin", "*");
+   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+   next();
+ });
+
 io.use(ioMiddleware)
 
 io.on("connection", onConnectionHandler)
 
 app.use(compression())
+
 app.use(cors(corsOptions));
 
 //to parse everything to json
