@@ -39,6 +39,7 @@ import advrtRouter from './src/routers/advertisementRouter';
 import advertiserRouter from './src/routers/advertiserRouter';
 import cardRouter from './src/routers/cardRouter';
 import profileRouter from './src/routers/profileRouter';
+import { truncate } from 'lodash';
 
 
 
@@ -55,6 +56,7 @@ let corsOptions: CorsOptions = {
 
 const httpServer = createServer(app);
 const io = new Server(httpServer)
+
 
 
 io.use(ioMiddleware)
