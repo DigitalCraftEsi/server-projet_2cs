@@ -61,7 +61,7 @@ io.use(ioMiddleware)
 io.on("connection", onConnectionHandler)
 
 app.use(compression())
-app.use(cors({credentials  : true}));
+app.use(cors(corsOptions));
 
 //to parse everything to json
 app.use(cookieParser());
