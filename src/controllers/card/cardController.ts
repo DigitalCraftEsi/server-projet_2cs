@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import { BadRequestError, ForbiddenError, InternalError, NotFoundError } from "../../handler/apiError";
+import { SuccessCreationResponse, SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
 import {  SuccessResponse } from "../../handler/ApiResponse";
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
@@ -53,7 +54,7 @@ export const addCard = asyncHandler(
             req.user.id
         )
 
-        return new SuccessResponse("success", newCard).send(res);
+        return new SuccessCreationResponse("success", newCard).send(res);
 
     }
 );

@@ -134,13 +134,13 @@ export const addOrder = asyncHandler(async (req: Request, res: Response, next: N
     }
 
     let price: number = 0.0;
-    const beveragesData: boisson[] = []
+    let beveragesData = []
     for (let i = 0; i < _beverages.length; i++) {
         const _beverage = await onGetBeverageHandler(_beverages[i].idBoisson);
         if (_beverage == null) {
             throw new BadRequestError("Beverage doesn't existe")
         }
-        beveragesData.push(_beverage)
+        beveragesData.push({..._beverage, Quantite : _beverages[i].Quantite})
         price += _beverage.tarif * _beverages[i].Quantite;
     }
 
@@ -161,7 +161,7 @@ export const addOrder = asyncHandler(async (req: Request, res: Response, next: N
         
 
         const payment = await checkout.payments({
-            amount: { currency: "DZD", value: 1000 },
+            amount: { currency: "DZD", value: _data.prix * 100},
             paymentMethod: {
                 type: CardDetails.TypeEnum.Scheme,
                 encryptedCardNumber: req.body.card.cardNumber,
@@ -183,11 +183,14 @@ export const addOrder = asyncHandler(async (req: Request, res: Response, next: N
 
     new SuccessResponse("sucess", { ...order, prix: price }).send(res);
 
+    console.log(beveragesData);
+    
+
     socketObj.isBusy = true
     socketObj.distributeurSocket.emit('prepare-beverages', beveragesData)
     socketObj.distributeurSocket.on('preparation-done', async (ack: Function) => {
-        socketObj.isBusy = false;
         await onUpdateOrderStatusHandler(order.idCommande, commandeStatus.terminee);
+        socketObj.isBusy = false;
         ack()
     })
     new SuccessResponse("sucess", { ...order, prix: price }).send(res);

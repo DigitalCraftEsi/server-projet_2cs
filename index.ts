@@ -43,7 +43,6 @@ import { truncate } from 'lodash';
 
 
 
-
 // Initialize the express engine
 
 
@@ -102,6 +101,7 @@ app.use("/beverage",baverageRouter);
 app.use("/advertisement",advrtRouter);
 app.use("/advertiser",advertiserRouter)
 app.use("/card",cardRouter)
+app.use("/profile",profileRouter)
 
 app.use("/profile",profileRouter)
 

@@ -141,7 +141,7 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
     createCookie(res, token, 'accessToken', Number(process.env.ACCESS_TOKEN_COOKIE_EXPIRES));
     createCookie(res, refreshToken, 'refreshToken', Number(process.env.REFRESH_TOKEN_COOKIE_EXPIRES));
 
-    new SuccessResponse('Login succesful', userPayload).send(res);
+    new SuccessResponse('Login succesful', {...userPayload, token, refreshToken}).send(res);
 
     return next();
 });

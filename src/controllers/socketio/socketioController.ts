@@ -22,7 +22,6 @@ type socketObject = {
 const socketMap: { [idDistributeur: string]: socketObject } = {}
 
 const ioMiddleware = async (socket: Socket, next: Function) => {
-    // console.log(socket.handshake.headers.auth);
 
     if (!socket.handshake.headers.auth) {
         next(new Error("Authentication object not provided"))
@@ -123,6 +122,9 @@ const onConnectionHandler = (socket: Socket) => {
 
     if (socket.data.type === 'DISTRIBUTEUR') {
         socket.join(`client-${socket.data.idClient}-room`);
+        socket.emit('idDistributeur', {idDistributeur : socket.data.idDist})
+        console.log(socket.data.type + " of client " + socket.data.idClient
+                + ", vending machine " + socket.data.idDist + ", is connected");
     }else{
         console.log(socket.data.type + " of client " + socket.data.idClient +", is connected");
     }
