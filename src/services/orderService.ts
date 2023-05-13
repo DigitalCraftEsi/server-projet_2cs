@@ -12,9 +12,16 @@ export const onGetOrderHandler = async (id: number): Promise<commande | null> =>
         where: {
             idCommande: id
         },
-        // include: {
-        //     commandes: true
-        // }
+        include : {
+            consommateur : {
+                select : {
+                    nomConsommateur : true , 
+                    prenomConsommateur : true , 
+                    emailConsommateur : true,
+                    telephoneConsommateur : true 
+                }
+            }
+        }
     })
     return order;
 }

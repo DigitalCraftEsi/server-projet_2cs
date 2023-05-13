@@ -143,6 +143,7 @@ export const addOrder = asyncHandler(async (req: Request, res: Response, next: N
         beveragesData.push({..._beverage, Quantite : _beverages[i].Quantite})
         price += _beverage.tarif * _beverages[i].Quantite;
     }
+    
 
     _data.prix = price
 

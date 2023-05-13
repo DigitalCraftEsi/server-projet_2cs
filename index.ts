@@ -40,6 +40,7 @@ import advertiserRouter from './src/routers/advertiserRouter';
 import cardRouter from './src/routers/cardRouter';
 import profileRouter from './src/routers/profileRouter';
 import { truncate } from 'lodash';
+import reclamationRouter from './src/routers/ReclamationRouter';
 
 
 
@@ -102,7 +103,7 @@ app.use("/advertisement",advrtRouter);
 app.use("/advertiser",advertiserRouter)
 app.use("/card",cardRouter)
 app.use("/profile",profileRouter)
-
+app.use("/reclamation",reclamationRouter)
 app.use("/profile",profileRouter)
 
 

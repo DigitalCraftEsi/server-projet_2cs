@@ -132,6 +132,7 @@ model commande {
   idDistributeur Int
   boissons      boissoncommande[]
   status        commandeStatus @default(enAttente)
+  reclamation            reclamation[]
 }
 
 model consommateur {
@@ -144,7 +145,6 @@ model consommateur {
   commandes              commande[]
   picture       String?     @db.VarChar(200)
   cards                  card[]
-  picture       String?     @db.VarChar(200)
 }
 
 model card {
@@ -203,7 +203,7 @@ model reclamation {
   dateReclamation DateTime @db.DateTime(0)
   notif           Boolean
   idCommande      Int
-
+  commande   commande  @relation(fields: [idCommande], references: [idCommande])
   @@index([idCommande], map: "idCommande")
 }
 
