@@ -3,9 +3,7 @@ import { prismaClientSingleton } from "../utils/prismaClient";
 
 export const onGetAllOrderHandler = async (): Promise<commande[] | null> => {
 
-    console.log("first")
     const data = await prismaClientSingleton.commande.findMany();
-    console.log(data)
     return data;
 }
 

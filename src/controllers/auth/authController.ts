@@ -33,7 +33,6 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
     let userFetched, passwordFetched: string;
     let userPayload: userJwtPayload;
     const user: userInfo = req.body;
-    console.log(user)
     userFetched = await onGetCONSUMERHandler(user.email)
 
     if (userFetched) {

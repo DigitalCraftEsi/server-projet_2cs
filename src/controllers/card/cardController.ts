@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import { BadRequestError, ForbiddenError, InternalError, NotFoundError } from "../../handler/apiError";
-import { SuccessCreationResponse, SuccessMsgResponse, SuccessResponse } from "../../handler/apiResponse";
+import { SuccessCreationResponse, SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
+import {  SuccessResponse } from "../../handler/ApiResponse";
 import asyncHandler from "../../handler/asyncHandler";
-import { onAddBeverageHandler, onDeleteBeverageHandler, onGetAllBeverageHandler, onGetBeverageHandler, onGetBeveragesOfMachineHandler, onUpdateBeverageHandler } from "../../services/beverageService";
-import { onGetMachineBydistUIDHandler } from "../../services/machinService";
 import schema from "./schema";
 import { isConsumer } from "../../enums/rolesEnum";
 import { onAddCardHandler, onDeleteCardHandler, onGetCardByIdHandler, onGetConsumerCardsHandler } from "../../services/cardService";
