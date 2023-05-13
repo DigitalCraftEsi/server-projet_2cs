@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import { BadRequestError, ForbiddenError, InternalError, NotFoundError } from "../../handler/apiError";
-import { SuccessCreationResponse, SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
-import {  SuccessResponse } from "../../handler/ApiResponse";
+import { SuccessCreationResponse, SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse"
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
 import { isConsumer } from "../../enums/rolesEnum";

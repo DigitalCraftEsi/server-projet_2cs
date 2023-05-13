@@ -8,6 +8,7 @@ import {
   onAddMachineHandler,
   onDeleteMachineHandler,
   onGetAllMachinesHandler,
+  onGetMachineByClient,
   onGetMachineHander,
   onUpdateMachineHandler,
 } from '../../services/machinService'
@@ -22,14 +23,35 @@ import { isAC, isADM, isAM, isSADM } from '../../enums/rolesEnum'
  */
 export const getAllMaachin = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const machines = await onGetAllMachinesHandler()
+    if (req.query.client){
+      const machines = await onGetMachineByClient(parseInt(req.query.client.toString()))
+      if (machines === null) {
+        next(new BadRequestError())
+      } else {
+        new SuccessResponse('success', machines).send(res)
+      }
+    }else {
+      const machines = await onGetAllMachinesHandler()
+      if (machines === null) {
+        next(new BadRequestError())
+      } else {
+        new SuccessResponse('success', machines).send(res)
+      }
+    }
+
+  },
+)
+
+export const getMachinesOfClient = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const machines = onGetMachineByClient(parseInt(req.params.id))
     if (machines === null) {
       next(new BadRequestError())
     } else {
       new SuccessResponse('success', machines).send(res)
     }
-  },
-)
+
+  })
 
 /**
  * Get vendingMachine by id

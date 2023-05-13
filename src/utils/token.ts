@@ -48,7 +48,6 @@ export const createCookie = (res: Response, token:string, name:string, expiresIn
         httpOnly: true,
         expires: new Date(Date.now() + expiresIn * 24 * 60 * 60 * 1000),
         secure: process.env.NODE_ENV === "production" ? true : false,
-        domain : "0.0.0.0/0"
     };
     
     return res.cookie(name, token,cookieOption );

@@ -6,7 +6,7 @@ import { BadRequestError, ForbiddenError, InternalError } from "../../handler/ap
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
 import { SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
-import { onAddAdvertisementHandler, onDeleteAdvertisementHandler, onGetAdvertisementByIdHandler, onGetAllAdvertisementHandler } from "../../services/advertisementService";
+import { onAddAdvertisementHandler, onDeleteAdvertisementHandler, onGetAdvertisemenOfAdvertisertHandler, onGetAdvertisementByIdHandler, onGetAllAdvertisementHandler } from "../../services/advertisementService";
 import { onGetAdvertiserByIdHandler } from "../../services/advertiserService";
 import { onGetBeverageHandler } from "../../services/beverageService";
 import { onGetMachineHander } from "../../services/machinService";
@@ -32,9 +32,7 @@ export const addAdvertisement = asyncHandler( async  (req : RequestWithFile , re
     if (!req.user) {
         throw new InternalError('User not found');
     }
-    if (!isAC(req.user.role)) {
-      throw new ForbiddenError('Permission denied');
-    }
+
     const { error } = schema.advertisementScheama.validate(req.body) 
     if (error) {
          throw new BadRequestError(error.details[0].message)
@@ -70,10 +68,36 @@ export const getAllAdvertisement = asyncHandler( async ( req : Request , res  :R
     if (!req.user) {
         throw new InternalError('User not found');
     }
+
+
+    if (req.query.search) {
+        const _advers  = await onGetAdvertisemenOfAdvertisertHandler(parseInt(req.query.search.toString()));
+        if (_advers === null ) {
+            throw new BadRequestError()
+        }
+        new SuccessResponse("success",_advers).send(res);
+    }else {
+        const _advers  = await onGetAllAdvertisementHandler();
+        if (_advers === null ) {
+            throw new BadRequestError()
+        }
+        new SuccessResponse("success",_advers).send(res);
+    }
+
+})
+
+export const getAllAdvertisementOfAdvertiser = asyncHandler( async ( req : Request , res  :Response , next : NextFunction ) => {
+  
+    if (!req.user) {
+        throw new InternalError('User not found');
+    }
     if (!isAC(req.user.role)) {
       throw new ForbiddenError('Permission denied');
     }
-    const _advers  = await onGetAllAdvertisementHandler();
+    if (!req.params.id) {
+        throw new BadRequestError("id of advertiser is obligated")
+    }
+    const _advers  = await onGetAdvertisemenOfAdvertisertHandler(parseInt(req.params.id));
     if (_advers === null ) {
         throw new BadRequestError()
     }

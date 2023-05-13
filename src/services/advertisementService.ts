@@ -6,6 +6,15 @@ export const onGetAllAdvertisementHandler = async () => {
     return _advrs
 }
 
+export const onGetAdvertisemenOfAdvertisertHandler = async (id : number) => {
+  const _advrs = await prismaClientSingleton.annoncepublicitaire.findMany({
+    where : {
+      idAnnonceur : id
+    }
+  });
+  return _advrs
+}
+
 export const onGetAdvertisementByIdHandler = async (id : number) => {
     const _advrt = await prismaClientSingleton.annoncepublicitaire.findFirst({
       where : {
