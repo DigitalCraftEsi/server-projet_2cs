@@ -142,7 +142,7 @@ model consommateur {
   telephoneConsommateur  String?    @db.VarChar(200)
   motDePasseConsommateur String     @db.VarChar(200)
   commandes              commande[]
-
+  picture       String?     @db.VarChar(200)
   cards                  card[]
   picture       String?     @db.VarChar(200)
 }

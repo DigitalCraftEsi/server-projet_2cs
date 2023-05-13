@@ -56,6 +56,7 @@ export const getBeverage = asyncHandler(
   }
 );
 
+
 /**
  * Get all existing beverages .
  * @param {Request} req - object represents an incoming HTTP request
@@ -66,7 +67,7 @@ export const getBeverages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
 
     if (!req.body.idDistributeur && !req.body.distUID) {
-      throw new BadRequestError()
+      throw new BadRequestError("distUID is required")
     }
 
     const { error } = schema.getBeveragesSchema.validate(req.body);

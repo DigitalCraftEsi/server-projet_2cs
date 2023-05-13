@@ -15,6 +15,7 @@ import { socketMap } from "../socketio/socketioController";
 import { Client, Config, CheckoutAPI } from "@adyen/api-library";
 import { CardDetails } from "@adyen/api-library/lib/src/typings/checkout/cardDetails";
 
+
 /**
  * Get All orders existe in DB
  * @param {Request} req - object represents an incoming HTTP request
