@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import { NextFunction, Request, Response } from "express";
 import { BadRequestError, InternalError } from "../../handler/apiError";
 import { SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
@@ -106,7 +107,10 @@ export const addbeverage = asyncHandler(
     if (error) {
       throw new BadRequestError(error.details[0].message)
     }
-    const beverage = await onAddBeverageHandler(req.body,req.file.filename)
+    let picture : string;
+    if (req.file && req.file.filename) picture = req.file.filename
+    else picture = ""
+    const beverage = await onAddBeverageHandler(req.body,picture)
     if (beverage === null) {
       throw new BadRequestError();
     } else {
