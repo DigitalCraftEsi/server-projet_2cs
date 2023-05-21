@@ -22,7 +22,7 @@ describe('-- API Beverage  GET /machine', async () => {
 
 // -- API Beverage  GET POST /beverage/:id
 describe('-- API beverage  GET /beverage/:id', async () => {
-    const id : number = 1;
+    const id : number = 3;
     let cookies : string;
     beforeAll( async ()=>{
       const _resAuth = await request(app).post("/login").send(AuthDataOfTest.authSADM)
