@@ -67,7 +67,7 @@ export const getBeverage = asyncHandler(
 export const getBeverages = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
 
-    if (!req.body.idDistributeur && !req.body.distUID) {
+    if (!req.body.distUID) {
       throw new BadRequestError("distUID is required")
     }
 
@@ -79,7 +79,7 @@ export const getBeverages = asyncHandler(
 
     let idDistributeur: number;
 
-    const distributeur = await onGetMachineBydistUIDHandler(req.body.UID)
+    const distributeur = await onGetMachineBydistUIDHandler(req.body.distUID)
     if (!distributeur) {
       throw new BadRequestError("Vending machine not found")
     }

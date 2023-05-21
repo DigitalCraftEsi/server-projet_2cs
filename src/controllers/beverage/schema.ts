@@ -13,7 +13,7 @@ const beverage = {
 }
 
 const getBeveragesSchema = {
-    distUID : Joi.string()
+    distUID : Joi.string().required()
 }
 
 
