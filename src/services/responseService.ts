@@ -9,9 +9,6 @@ import { number } from "joi";
  */
 export const onGetAllResponseHandler = async () : Promise<reponse[] | null> => {
     const res = await prismaClientSingleton.reponse.findMany({ 
-        include : {
-            reclamation : true
-        }
     });
     return res;
   };
@@ -25,9 +22,6 @@ export const onGetResponseByIDHandler = async (id : number) : Promise<reponse | 
     const res = await prismaClientSingleton.reponse.findFirst({ 
        where : {
         idReponse : id
-       },
-       include : {
-        reclamation : true
        }
     });
     return res;
@@ -42,9 +36,6 @@ export const onGetAllResponseOfACHandler = async (ac : number) : Promise<reponse
     const res = await prismaClientSingleton.reponse.findMany({ 
        where : {
         idAC : ac
-       },
-       include : {
-        reclamation : true
        }
     });
     return res;
