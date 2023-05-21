@@ -42,6 +42,7 @@ import advertiserRouter from "./src/routers/advertiserRouter";
 import cardRouter from "./src/routers/cardRouter";
 import profileRouter from "./src/routers/profileRouter";
 import reclamationRouter from "./src/routers/ReclamationRouter";
+import responseRouter from "./src/routers/responseRouter";
 
 // Initialize the express engine
 
@@ -96,6 +97,7 @@ app.use("/advertiser", advertiserRouter);
 app.use("/card", cardRouter);
 app.use("/profile", profileRouter);
 app.use("/reclamation", reclamationRouter);
+app.use("/response",responseRouter)
 app.use("/profile", profileRouter);
 
 app.use(errorHandler);

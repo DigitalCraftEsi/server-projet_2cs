@@ -16,6 +16,23 @@ export const onGetAllResponseHandler = async () : Promise<reponse[] | null> => {
     return res;
   };
 
+  /**
+ * Get existing Reponse of AC
+ * @param {number} - id of AC
+ * @returns {reponse} - information of vendingMachine identifier by id
+ */
+export const onGetResponseByIDHandler = async (id : number) : Promise<reponse | null> => {
+    const res = await prismaClientSingleton.reponse.findFirst({ 
+       where : {
+        idReponse : id
+       },
+       include : {
+        reclamation : true
+       }
+    });
+    return res;
+};
+
 /**
  * Get existing Reponse of AC
  * @param {number} - id of AC
