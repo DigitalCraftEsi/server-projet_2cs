@@ -5,7 +5,7 @@ import _ from 'lodash';
 const addReclamation = {
     title : Joi.string().required(),
     descr  : Joi.string().required(),
-    order : Joi.number().required()
+    order : Joi.string().required()
 }
 
 const updateReclamation = {

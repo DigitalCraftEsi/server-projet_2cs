@@ -50,6 +50,7 @@ export const AddReclamations = asyncHandler(
             if (!req.user) {
                 throw new InternalError('User not found');
             }
+            console.log(req.body);
             const { error } = schema.addReclamationSchema.validate(req.body)
             if (error) {
               throw new BadRequestError(error.details[0].message)
@@ -57,7 +58,7 @@ export const AddReclamations = asyncHandler(
             const _data = {
                 titre : req.body.title ,
                 description : req.body.descr,
-                idCommande : req.body.order,
+                idCommande : parseInt(req.body.order),
                 dateReclamation : new Date(),
                 notif: true
 
