@@ -43,6 +43,7 @@ import cardRouter from "./src/routers/cardRouter";
 import profileRouter from "./src/routers/profileRouter";
 import reclamationRouter from "./src/routers/ReclamationRouter";
 import responseRouter from "./src/routers/responseRouter";
+import taskAmRouter from "./src/routers/taskAmRouter";
 
 // Initialize the express engine
 
@@ -99,6 +100,7 @@ app.use("/profile", profileRouter);
 app.use("/reclamation", reclamationRouter);
 app.use("/response",responseRouter)
 app.use("/profile", profileRouter);
+app.use("/task",taskAmRouter);
 
 app.use(errorHandler);
 

@@ -220,6 +220,19 @@ CREATE TABLE AnnoncePublicitaire(
    FOREIGN KEY(idAnnonceur) REFERENCES Annonceur(idAnnonceur)
 );
 
+CREATE TABLE Tache(
+   idTache INT AUTO_INCREMENT,
+   dateDebut DATETIME NOT NULL,
+   dateFin DATETIME NOT NULL,
+   etat VARCHAR(50) NOT NULL,
+   notif BOOLEAN NOT NULL,
+   idDistributeur INT NOT NULL,
+   idAM INT,
+   PRIMARY KEY(idTache),
+   FOREIGN KEY(idDistributeur) REFERENCES Distributeur(idDistributeur),
+   FOREIGN KEY(idAM) REFERENCES AM(idAM)
+);
+
 CREATE TABLE Panne(
    idPanne INT AUTO_INCREMENT,
    titre VARCHAR(200) NOT NULL,

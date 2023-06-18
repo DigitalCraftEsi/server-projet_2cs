@@ -8,6 +8,12 @@ export enum ROLES {
     CONSUMER = 'CONSUMER',
 }
 
+export enum STATUS_TASK_AM {
+    DONE = "DONE" , 
+    PENDING = "PENDING",
+    CANCELLED =  "CANCELED"
+}
+
 export const isSADM = (role:string) => {
     return role === ROLES.SADM;
 }

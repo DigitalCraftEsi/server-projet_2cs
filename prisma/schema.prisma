@@ -194,6 +194,7 @@ model panne {
   idPanne     Int    @id @default(autoincrement())
   titre       String @db.VarChar(200)
   description String @db.VarChar(200)
+  qte Int? 
   tache               tache?               @relation(fields: [idTache], references: [idTache])
   idTache     Int?   
 }
@@ -238,6 +239,7 @@ model tache {
   dateDebut      DateTime @db.DateTime(0)
   dateFin        DateTime @db.DateTime(0)
   etat           String   @db.VarChar(50)
+  type  String? @db.VarChar(50)
   notif          Boolean
   idDistributeur Int
   idAM           Int?
