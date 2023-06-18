@@ -14,8 +14,8 @@ export const onAddTaskPanneHandler = async (data: any) : Promise<unknown> => {
               dateDebut: new Date(), // Replace with your desired date value
               dateFin: data.dateEnd, // Replace with your desired date value
               etat: STATUS_TASK_AM.PENDING,
-              notif: true,
               type : data.type,
+              notif: true,
               idDistributeur: data.machine, // Replace with the actual distributor ID
               idAM: data.am // Replace with the actual AM ID or remove this field if not applicable
             }
@@ -82,7 +82,10 @@ export const onAddTaskPanneHandler = async (data: any) : Promise<unknown> => {
                 tache : true
             }
         })
-        return pannes.filter(a => a.tache.idAM == am)
+        type ExtendedPanne = panne & {
+            tache : tache
+          };
+        return pannes.filter(a => (a as unknown as ExtendedPanne).tache?.idAM == am)
     } catch (error) {
         console.log(error)
         return null
@@ -104,7 +107,10 @@ export const onAddTaskPanneHandler = async (data: any) : Promise<unknown> => {
                 }
             }
         })
-        return anomalies.filter(a => a.tache.idAM == am)
+        type ExtendedAnomalie = anomalie & {
+            tache : tache
+          };
+        return anomalies.filter(a => (a as unknown as ExtendedAnomalie).tache.idAM == am)
     } catch (error) {
         console.log(error)
         return null

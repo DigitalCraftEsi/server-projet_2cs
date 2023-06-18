@@ -255,7 +255,6 @@ model vol {
   description    String   @db.VarChar(200)
   notif          Boolean
   idDistributeur Int
-
   @@index([idDistributeur], map: "idDistributeur")
 }
 
