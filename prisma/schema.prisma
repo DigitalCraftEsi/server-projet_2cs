@@ -178,6 +178,7 @@ model distributeur {
   latitude             Float?
   statut               String?
   distuid              String                @db.VarChar(200)
+  odbuid                String                @db.VarChar(200)
   am                   am?                   @relation(fields: [idAM], references: [idAM])
   idAM                 Int?
   client               client?               @relation(fields: [idClient], references: [idClient])
