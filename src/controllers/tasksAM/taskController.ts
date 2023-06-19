@@ -18,7 +18,6 @@ export const addTaskPanne = asyncHandler( async (req : Request , res : Response 
         throw new BadRequestError(error.details[0].message);
     }
 
-
     const machine = await onGetMachineHander(req.body.machine);
     if (!machine) {
         throw new BadRequestError("machine doesnt existe")

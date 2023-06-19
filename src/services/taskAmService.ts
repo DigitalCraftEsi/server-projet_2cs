@@ -75,26 +75,20 @@ export const onAddTaskPanneHandler = async (data: any) : Promise<unknown> => {
   /**
  * getAll panne of Am
  */
-  export const onGetAllTaskPanneHandler = async (am : number) : Promise<panne[]> => {
+  export const onGetAllTaskPanneHandler = async (am : number) : Promise<any[]> => {
     try {
-        const pannes = await prismaClientSingleton.panne.findMany({
-            include : {
-                tache : {
-                    select : {
-                        dateDebut : true , 
-                        dateFin : true , 
-                        etat : true,
-                        idTache : true ,
-                        idAM : true , 
-                        idDistributeur : true
-                    }
-                }
-            }
+        const tasks = await prismaClientSingleton.tache.findMany({
+            where : {
+                idAM : am
+            },
+        
         })
-        type ExtendedPanne = panne & {
-            tache : tache
-          };
-        return pannes.filter(a => (a as unknown as ExtendedPanne).tache?.idAM == am)
+        const pannes = await prismaClientSingleton.panne.findMany({})
+        const tasksPannes = tasks.map((ts) => ({
+            ...ts,
+            panne: pannes.filter(it => it.idTache == ts.idTache)
+        }));
+        return tasksPannes.filter(ts => ts.panne.length > 0)
     } catch (error) {
         console.log(error)
         return null
@@ -105,26 +99,20 @@ export const onAddTaskPanneHandler = async (data: any) : Promise<unknown> => {
 /**
  * getAll anomalie of Am
  */
-  export const onGetAllTaskAnomalieHandler = async (am : number) : Promise<anomalie[]> => {
+  export const onGetAllTaskAnomalieHandler = async (am : number) : Promise<any[]> => {
     try {
-        const anomalies  = await prismaClientSingleton.anomalie.findMany({
-            include : {
-                tache : {
-                    select : {
-                        dateDebut : true , 
-                        dateFin : true , 
-                        etat : true,
-                        idTache : true ,
-                        idAM : true , 
-                        idDistributeur : true
-                    }
-                }
-            }
+        const tasks = await prismaClientSingleton.tache.findMany({
+            where : {
+                idAM : am
+            },
+        
         })
-        type ExtendedAnomalie = anomalie & {
-            tache : tache
-          };
-        return anomalies.filter(a => (a as unknown as ExtendedAnomalie).tache.idAM == am)
+        const anomalie = await prismaClientSingleton.anomalie.findMany({})
+        const tasksPannes = tasks.map((ts) => ({
+            ...ts,
+            anomalie: anomalie.filter(it => it.idTache == ts.idTache)
+        }));
+        return tasksPannes.filter(ts => ts.anomalie.length > 0)
     } catch (error) {
         console.log(error)
         return null
