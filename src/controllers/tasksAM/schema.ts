@@ -7,8 +7,8 @@ const addTask = {
     descr  : Joi.string().required(),
     dateEnd : Joi.date().iso().required(),
     machine : Joi.number().required(),
-    qty : Joi.number(),
-    type : Joi.string().required(),
+    //qty : Joi.number(),
+    //type : Joi.string().required(),
     am : Joi.number().required()
 }
 

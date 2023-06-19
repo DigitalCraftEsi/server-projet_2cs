@@ -79,7 +79,16 @@ export const onAddTaskPanneHandler = async (data: any) : Promise<unknown> => {
     try {
         const pannes = await prismaClientSingleton.panne.findMany({
             include : {
-                tache : true
+                tache : {
+                    select : {
+                        dateDebut : true , 
+                        dateFin : true , 
+                        etat : true,
+                        idTache : true ,
+                        idAM : true , 
+                        idDistributeur : true
+                    }
+                }
             }
         })
         type ExtendedPanne = panne & {
@@ -101,8 +110,13 @@ export const onAddTaskPanneHandler = async (data: any) : Promise<unknown> => {
         const anomalies  = await prismaClientSingleton.anomalie.findMany({
             include : {
                 tache : {
-                    include : {
-                        
+                    select : {
+                        dateDebut : true , 
+                        dateFin : true , 
+                        etat : true,
+                        idTache : true ,
+                        idAM : true , 
+                        idDistributeur : true
                     }
                 }
             }
