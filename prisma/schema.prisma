@@ -178,7 +178,6 @@ model distributeur {
   latitude             Float?
   statut               String?
   distuid              String                @db.VarChar(200)
-  odbuid                String                @db.VarChar(200)
   am                   am?                   @relation(fields: [idAM], references: [idAM])
   idAM                 Int?
   client               client?               @relation(fields: [idClient], references: [idClient])
@@ -195,7 +194,6 @@ model panne {
   idPanne     Int    @id @default(autoincrement())
   titre       String @db.VarChar(200)
   description String @db.VarChar(200)
-  qte Int? 
   tache               tache?               @relation(fields: [idTache], references: [idTache])
   idTache     Int?   
 }
@@ -240,7 +238,6 @@ model tache {
   dateDebut      DateTime @db.DateTime(0)
   dateFin        DateTime @db.DateTime(0)
   etat           String   @db.VarChar(50)
-  type  String? @db.VarChar(50)
   notif          Boolean
   idDistributeur Int
   idAM           Int?
@@ -256,6 +253,7 @@ model vol {
   description    String   @db.VarChar(200)
   notif          Boolean
   idDistributeur Int
+
   @@index([idDistributeur], map: "idDistributeur")
 }
 
