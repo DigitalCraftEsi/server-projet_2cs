@@ -14,7 +14,7 @@ export const onAddTaskPanneHandler = async (data: any) : Promise<unknown> => {
               dateDebut: new Date(), // Replace with your desired date value
               dateFin: data.dateEnd, // Replace with your desired date value
               etat: STATUS_TASK_AM.PENDING,
-              type : data.type,
+              //type : data.type,
               notif: true,
               idDistributeur: data.machine, // Replace with the actual distributor ID
               idAM: data.am // Replace with the actual AM ID or remove this field if not applicable
@@ -25,7 +25,7 @@ export const onAddTaskPanneHandler = async (data: any) : Promise<unknown> => {
             data: {
               titre: data.title,
               description: data.descr,
-              qte : data.qty ? data.qty : null,
+              //qte : data.qty ? data.qty : null,
               idTache: tache.idTache
             }
           });
@@ -50,7 +50,7 @@ export const onAddTaskPanneHandler = async (data: any) : Promise<unknown> => {
                   dateFin: data.dateEnd, // Replace with your desired date value
                   etat: STATUS_TASK_AM.PENDING,
                   notif: true,
-                  type : data.type,
+                  //type : data.type,
                   idDistributeur: data.machine, // Replace with the actual distributor ID
                   idAM: data.am // Replace with the actual AM ID or remove this field if not applicable
                 }
