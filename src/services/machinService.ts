@@ -7,9 +7,21 @@ import { prismaClientSingleton } from "../utils/prismaClient";
  * @returns {distributeur[]} - list of vending machines
  */
 export const onGetAllMachinesHandler = async () : Promise<distributeur[] | null>  => {
-  const machines = await prismaClientSingleton.distributeur.findMany();
+  const machines = await prismaClientSingleton.distributeur.findMany({
+    include : {
+      client : {
+        select : {
+          nomClient : true , 
+          emailClient : true,
+          telephoneClient : true , 
+          idClient : true ,       
+        }
+      }
+    }
+  });
   return machines;
 };
+
 
 /**
  * Get existing vending machine by id
@@ -33,6 +45,16 @@ export const onGetMachineByClient = async (id: number) : Promise<distributeur[] 
     where: { 
       idClient : id
      },
+     include : {
+      client : {
+        select : {
+          nomClient : true , 
+          emailClient : true,
+          telephoneClient : true , 
+          idClient : true ,       
+        }
+      }
+    }
   });
   return machine;
 };

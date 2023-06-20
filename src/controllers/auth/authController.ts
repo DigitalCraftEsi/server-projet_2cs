@@ -30,6 +30,7 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
         throw new BadRequestError(error.details[0].message)
     }
 
+
     let userFetched, passwordFetched: string;
     let userPayload: userJwtPayload;
     const user: userInfo = req.body;

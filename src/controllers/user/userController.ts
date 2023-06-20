@@ -325,11 +325,6 @@ export const getUsers = asyncHandler(
         if (!req.user) {
             throw new InternalError('User not found');
         }
-        const { error } = schema.getDeleteUserSchema.validate(req.body);
-
-        if (error) {
-            throw new BadRequestError(error.details[0].message);
-        }
 
         const user = req.user
 
@@ -400,14 +395,14 @@ export const getUsers = asyncHandler(
                     }
                 })
 
-                const usersList = [...decideurs, ...acs, ...ams];
+                const usersList = {decideurs  , acs , ams} ;
 
                 new SuccessResponse('Users list', usersList).send(res)
             } else {
                 //SADM
                 const clients = await prismaClientSingleton.client.findMany()
 
-                let clientsList = [...clients];
+                let clientsList = {clients};
 
                 new SuccessResponse('Clients list', clientsList).send(res)
             }
@@ -437,7 +432,6 @@ export const getUsers = asyncHandler(
                         break;
                     }
                     case ROLES.AC: {
-
                         const ac = await prismaClientSingleton.ac.findUnique({
                             where: {
                                 idAC: id
