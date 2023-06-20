@@ -8,4 +8,5 @@ advertiserRouter.get("/:id",verifyAuth,getAdvertiser)
 advertiserRouter.post('/',verifyAuth,addAdvertiser)
 advertiserRouter.delete("/:id",verifyAuth , deleteAdvertiser)
 
+
 export default advertiserRouter

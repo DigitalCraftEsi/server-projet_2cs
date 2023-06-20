@@ -9,4 +9,5 @@ advrtRouter.get("/:id",verifyAuth , getAdvertisement)
 advrtRouter.post("/",verifyAuth , upload.single("video") ,addAdvertisement)
 advrtRouter.delete('/:id',verifyAuth , deleteAdvertisement)
 
+
 export default advrtRouter

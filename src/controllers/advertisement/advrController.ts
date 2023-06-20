@@ -29,6 +29,7 @@ interface RequestWithFile extends Request {
   
 export const addAdvertisement = asyncHandler( async  (req : RequestWithFile , res : Response , next : NextFunction) => {
     
+    console.log(req.file)
     if (!req.user) {
         throw new InternalError('User not found');
     }

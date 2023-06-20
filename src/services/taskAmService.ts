@@ -2,6 +2,7 @@
 import { anomalie, panne, tache } from "@prisma/client";
 import { STATUS_TASK_AM } from "../enums/rolesEnum";
 import { prismaClientSingleton } from "../utils/prismaClient";
+import { onGetAllMachinesHandler } from "./machinService";
 
   /**
  * add task - panne -  to am 
@@ -81,12 +82,13 @@ export const onAddTaskPanneHandler = async (data: any) : Promise<unknown> => {
             where : {
                 idAM : am
             },
-        
         })
         const pannes = await prismaClientSingleton.panne.findMany({})
+        const machines = await  onGetAllMachinesHandler();
         const tasksPannes = tasks.map((ts) => ({
             ...ts,
-            panne: pannes.filter(it => it.idTache == ts.idTache)
+            panne: pannes.filter(it => it.idTache == ts.idTache),
+            machine : machines.filter(it => it.idDistributeur  == ts.idDistributeur)[0]
         }));
         return tasksPannes.filter(ts => ts.panne.length > 0)
     } catch (error) {
@@ -108,9 +110,11 @@ export const onAddTaskPanneHandler = async (data: any) : Promise<unknown> => {
         
         })
         const anomalie = await prismaClientSingleton.anomalie.findMany({})
+        const machines = await  onGetAllMachinesHandler();
         const tasksPannes = tasks.map((ts) => ({
             ...ts,
-            anomalie: anomalie.filter(it => it.idTache == ts.idTache)
+            anomalie: anomalie.filter(it => it.idTache == ts.idTache),
+            machine : machines.filter(it => it.idDistributeur  == ts.idDistributeur)[0]
         }));
         return tasksPannes.filter(ts => ts.anomalie.length > 0)
     } catch (error) {
