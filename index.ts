@@ -44,6 +44,7 @@ import profileRouter from "./src/routers/profileRouter";
 import reclamationRouter from "./src/routers/ReclamationRouter";
 import responseRouter from "./src/routers/responseRouter";
 import taskAmRouter from "./src/routers/taskAmRouter";
+import statisticRouter from "./src/routers/statistic";
 
 // Initialize the express engine
 
@@ -101,6 +102,7 @@ app.use("/reclamation", reclamationRouter);
 app.use("/response",responseRouter)
 app.use("/profile", profileRouter);
 app.use("/task",taskAmRouter);
+app.use("/statistic",statisticRouter)
 
 app.use(errorHandler);
 

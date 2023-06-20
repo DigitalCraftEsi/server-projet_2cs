@@ -106,7 +106,7 @@ export const login = asyncHandler(async (req: Request, res: Response, next: Next
                             nom: userFetched.nomDecideur,
                             prenom: userFetched.prenomDecideur,
                             email: userFetched.emailDecideur,
-                            role: ROLES.AM,
+                            role: ROLES.DECIDEUR,
                             telephone: userFetched.telephoneDecideur,
                             clientId: userFetched.idClient,
                             picture: userFetched.picture ? userFetched.picture : ''
