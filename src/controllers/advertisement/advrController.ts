@@ -6,10 +6,12 @@ import { BadRequestError, ForbiddenError, InternalError } from "../../handler/ap
 import asyncHandler from "../../handler/asyncHandler";
 import schema from "./schema";
 import { SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
-import { onAddAdvertisementHandler, onDeleteAdvertisementHandler, onGetAdvertisemenOfAdvertisertHandler, onGetAdvertisementByIdHandler, onGetAllAdvertisementHandler } from "../../services/advertisementService";
+import { onAddAdvertisementHandler, onDeleteAdvertisementHandler,
+    onGetAdvertisemenOfAdvertisertHandler, onGetAdvertisementByIdHandler,
+    onGetAllAdvertisementHandler, onGetRandomAdOfDistributeurHandler } from "../../services/advertisementService";
 import { onGetAdvertiserByIdHandler } from "../../services/advertiserService";
 import { onGetBeverageHandler } from "../../services/beverageService";
-import { onGetMachineHander } from "../../services/machinService";
+import { onGetMachineBydistUIDHandler, onGetMachineHander } from "../../services/machinService";
 
 interface RequestWithFile extends Request {
     file: {
@@ -86,6 +88,27 @@ export const getAllAdvertisement = asyncHandler( async ( req : Request , res  :R
 
 })
 
+export const getAdByAgeGender = asyncHandler( async ( req : Request , res  :Response , next : NextFunction ) => {
+  
+    if (!req.body.distUID) {
+        throw new BadRequestError("distUID is required")
+      }
+  
+      let idDistributeur: number;
+  
+      const distributeur = await onGetMachineBydistUIDHandler(req.body.distUID)
+      if (!distributeur) {
+        throw new BadRequestError("Vending machine not found")
+      }
+
+      idDistributeur = distributeur.idDistributeur
+
+      const ad = await onGetRandomAdOfDistributeurHandler(idDistributeur, req.body.age, req.body.sexe)
+
+      new SuccessResponse('Advertissement', {link : ad[0]? ad[0].video: null}).send(res)
+
+})
+
 export const getAllAdvertisementOfAdvertiser = asyncHandler( async ( req : Request , res  :Response , next : NextFunction ) => {
   
     if (!req.user) {
@@ -111,6 +134,20 @@ export const getAdvertisement = asyncHandler( async ( req : Request , res  :Resp
     if (!isAC(req.user.role)) {
       throw new ForbiddenError('Permission denied');
     }
+    const id = parseInt(req.params.id)
+    const _advertiser  = await onGetAdvertisementByIdHandler(id);
+    if (_advertiser === null ) {
+        throw new BadRequestError("advertisement doesn't existe")
+    }
+    new SuccessResponse("success",_advertiser).send(res);
+})
+
+
+export const getAdvertisementByAgeGender = asyncHandler( async ( req : Request , res  :Response , next : NextFunction ) => {
+    if (!req.body.age || !req.body.gender) {
+        throw new BadRequestError('Age & gender required');
+    }
+    
     const id = parseInt(req.params.id)
     const _advertiser  = await onGetAdvertisementByIdHandler(id);
     if (_advertiser === null ) {
