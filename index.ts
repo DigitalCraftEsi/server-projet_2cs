@@ -58,7 +58,10 @@ let corsOptions: CorsOptions = {
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
-app.use(express.static("src/uploads"));
+
+app.use('/src/uploads', express.static('src/uploads'));
+
+app.use(express.static('src/uploads'));
 
 io.use(ioMiddleware);
 
