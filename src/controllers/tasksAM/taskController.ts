@@ -8,7 +8,7 @@ import { date, expression } from "joi";
 import { onGetMachineHander } from "../../services/machinService";
 import { onGetAMHandler } from "../../services/userService";
 import { SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
-import { isAM } from "../../enums/rolesEnum";
+import { isADM, isAM } from "../../enums/rolesEnum";
 
 
 export const addTaskPanne = asyncHandler( async (req : Request , res : Response , next : NextFunction) =>{
@@ -52,7 +52,7 @@ export const addTaskAnnomalie = asyncHandler( async (req : Request , res : Respo
     }
 
     const am = await onGetAMHandler(req.body.am);
-    if (!am) {
+    if (!am ) {
         throw new BadRequestError("AM doesnt existe");
     }
 
@@ -70,7 +70,7 @@ export const getAllTaskAnnomalie = asyncHandler( async (req : Request , res : Re
     if (!req.user) {
         throw new InternalError('User not found');
     }
-    if (!isAM(req.user.role)) {
+    if (!isAM(req.user.role) && !isADM(req.user.role ) ) {
         throw new ForbiddenError('Permission denied');
     }
     const id= req.user.id;
@@ -92,7 +92,7 @@ export const getAllTaskPannes = asyncHandler( async (req : Request , res : Respo
     if (!req.user) {
         throw new InternalError('User not found');
     }
-    if (!isAM(req.user.role)) {
+    if (!isAM(req.user.role) && !isADM(req.user.role )) {
         throw new ForbiddenError('Permission denied');
     }
     const id= req.user.id;
@@ -113,7 +113,7 @@ export const getAllTasks  = asyncHandler( async (req : Request , res : Response 
     if (!req.user) {
         throw new InternalError('User not found');
     }
-    if (!isAM(req.user.role)) {
+    if (!isAM(req.user.role) && !isADM(req.user.role )) {
         throw new ForbiddenError('Permission denied');
     }
     const id= req.user.id;  
