@@ -109,6 +109,26 @@ export const getAllTaskPannes = asyncHandler( async (req : Request , res : Respo
 
 })
 
+export const getAllTaskForAdm = asyncHandler( async (req : Request , res : Response , next : NextFunction) =>{
+    const id = parseInt(req.params.id);
+    const am = await onGetAMHandler(id);
+    if (!am) {
+        throw new BadRequestError("AM doesnt existe");
+    }
+    const pannes = await onGetAllTaskPanneHandler(id);
+    const anomalies = await onGetAllTaskAnomalieHandler(id);
+    const pannesWithType = pannes.map((tache) => ({
+        ...tache,
+        type: 'panne'
+      }));
+      const anomaliesWithType = anomalies.map((tache) => ({
+        ...tache,
+        type: 'anomalie'
+      }));
+    new SuccessResponse("sucess",[...pannesWithType,...anomaliesWithType]).send(res);
+
+})
+
 export const getAllTasks  = asyncHandler( async (req : Request , res : Response , next : NextFunction) => {
     if (!req.user) {
         throw new InternalError('User not found');
