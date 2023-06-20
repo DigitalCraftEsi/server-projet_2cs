@@ -26,6 +26,23 @@ export const onGetOrderHandler = async (id: number): Promise<commande | null> =>
     return order;
 }
 
+export const onGetOrderOfClientHandler = async (id: number): Promise<unknown | null> => {
+    const orders = await prismaClientSingleton.commande.findMany({
+        include : {
+            distributeur : {
+                select : {
+                    idClient : true,
+                    adresse : true , 
+                    codeDeDeverrouillage : true , 
+                    latitude : true  , 
+                    longitude : true
+                }
+            }
+        }
+    })
+    return orders.filter(order => order.distributeur.idClient == id);
+}
+
 export const onGetOrdersOfConsumerHandler = async (id: number): Promise<commande[] | null> => {
     const orders = await prismaClientSingleton.commande.findMany({
         where: {

@@ -7,6 +7,7 @@ const userRouter = express.Router();
 userRouter.post("/", verifyAuth, addUser);
 userRouter.delete("/", verifyAuth, deleteUser);
 userRouter.get("/", verifyAuth, getUsers)
+userRouter.post("/getadm", verifyAuth, getUsers)
 userRouter.patch("/", verifyAuth, updateUser)
 
 export default userRouter;
