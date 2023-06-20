@@ -59,6 +59,30 @@ export const onGetMachineByClient = async (id: number) : Promise<distributeur[] 
   return machine;
 };
 
+/**
+ * Get existing vending machine by id
+ * @param {number} id - identifier in distributeur table
+ * @returns {distributeur} - information of vendingMachine identifier by id
+ */
+export const onGetMachineByAmHandler = async (id: number) : Promise<distributeur[] | null> => {
+  console.log(id)
+  const machines = await onGetAllMachinesHandler();
+
+  return machines.filter(it => it.idAM == id );
+};
+
+export const SetMachineToAmHandler = async (id: number,am : number)  => {
+  await prismaClientSingleton.distributeur.updateMany({
+    where: { 
+      idDistributeur : id
+     },
+     data : {
+      idAM : am
+     }
+    }
+  );
+};
+
 
 
 export const onGetMachineBydistUIDHandler = async (distUID : string) : Promise<distributeur | null>=>{
