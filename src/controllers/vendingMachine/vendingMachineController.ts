@@ -5,9 +5,11 @@ import { BadRequestError, ForbiddenError, InternalError } from '../../handler/ap
 import { SuccessMsgResponse, SuccessResponse } from '../../handler/ApiResponse'
 import asyncHandler from '../../handler/asyncHandler'
 import {
+  SetMachineToAmHandler,
   onAddMachineHandler,
   onDeleteMachineHandler,
   onGetAllMachinesHandler,
+  onGetMachineByAmHandler,
   onGetMachineByClient,
   onGetMachineHander,
   onUpdateMachineHandler,
@@ -41,6 +43,28 @@ export const getAllMaachin = asyncHandler(
 
   },
 )
+
+  
+export const getMachineOfAM = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const machines = await onGetMachineByAmHandler(parseInt(req.params.id))
+    if (machines === null) {
+      next(new BadRequestError())
+    } else {
+      new SuccessResponse('success', machines).send(res)
+    }
+  })
+
+  export const setMachineToAM = asyncHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const machines = await SetMachineToAmHandler(req.body.machine,req.body.am)
+      if (machines === null) {
+        next(new BadRequestError())
+      } else {
+        new SuccessResponse('success', machines).send(res)
+      }
+  
+    })
 
 export const getMachinesOfClient = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

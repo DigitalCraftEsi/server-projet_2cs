@@ -8,9 +8,8 @@ import { date, expression } from "joi";
 import { onGetMachineHander } from "../../services/machinService";
 import { onGetAMHandler } from "../../services/userService";
 import { SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
-import { isAM } from "../../enums/rolesEnum";
+import { isADM, isAM } from "../../enums/rolesEnum";
 import { firebaseAdmin } from "../../utils/firebaseClient";
-
 
 export const addTaskPanne = asyncHandler( async (req : Request , res : Response , next : NextFunction) =>{
 
@@ -76,7 +75,7 @@ export const addTaskAnnomalie = asyncHandler( async (req : Request , res : Respo
     }
 
     const am = await onGetAMHandler(req.body.am);
-    if (!am) {
+    if (!am ) {
         throw new BadRequestError("AM doesnt existe");
     }
 
@@ -110,7 +109,7 @@ export const getAllTaskAnnomalie = asyncHandler( async (req : Request , res : Re
     if (!req.user) {
         throw new InternalError('User not found');
     }
-    if (!isAM(req.user.role)) {
+    if (!isAM(req.user.role) && !isADM(req.user.role ) ) {
         throw new ForbiddenError('Permission denied');
     }
     const id= req.user.id;
@@ -132,7 +131,7 @@ export const getAllTaskPannes = asyncHandler( async (req : Request , res : Respo
     if (!req.user) {
         throw new InternalError('User not found');
     }
-    if (!isAM(req.user.role)) {
+    if (!isAM(req.user.role) && !isADM(req.user.role )) {
         throw new ForbiddenError('Permission denied');
     }
     const id= req.user.id;
@@ -149,11 +148,31 @@ export const getAllTaskPannes = asyncHandler( async (req : Request , res : Respo
 
 })
 
+export const getAllTaskForAdm = asyncHandler( async (req : Request , res : Response , next : NextFunction) =>{
+    const id = parseInt(req.params.id);
+    const am = await onGetAMHandler(id);
+    if (!am) {
+        throw new BadRequestError("AM doesnt existe");
+    }
+    const pannes = await onGetAllTaskPanneHandler(id);
+    const anomalies = await onGetAllTaskAnomalieHandler(id);
+    const pannesWithType = pannes.map((tache) => ({
+        ...tache,
+        type: 'panne'
+      }));
+      const anomaliesWithType = anomalies.map((tache) => ({
+        ...tache,
+        type: 'anomalie'
+      }));
+    new SuccessResponse("sucess",[...pannesWithType,...anomaliesWithType]).send(res);
+
+})
+
 export const getAllTasks  = asyncHandler( async (req : Request , res : Response , next : NextFunction) => {
     if (!req.user) {
         throw new InternalError('User not found');
     }
-    if (!isAM(req.user.role)) {
+    if (!isAM(req.user.role) && !isADM(req.user.role )) {
         throw new ForbiddenError('Permission denied');
     }
     const id= req.user.id;  
