@@ -93,7 +93,6 @@ app.get("/", async (req, res, next) => {
 });
 
 app.use("/order", orderRouter);
-app.use("/", authRouter);
 app.use("/user", userRouter);
 app.use("/machine", machinRouter);
 app.use("/beverage", baverageRouter);
@@ -106,6 +105,7 @@ app.use("/response",responseRouter)
 app.use("/profile", profileRouter);
 app.use("/task",taskAmRouter);
 app.use("/statistic",statisticRouter)
+app.use("/", authRouter);
 
 app.use(errorHandler);
 

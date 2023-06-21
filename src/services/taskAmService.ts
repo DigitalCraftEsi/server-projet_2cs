@@ -13,7 +13,7 @@ export const onAddTaskPanneHandler = async (data: any) : Promise<unknown> => {
         const tache = await prismaClientSingleton.tache.create({
             data: {
               dateDebut: new Date(), // Replace with your desired date value
-              dateFin: data.dateEnd, // Replace with your desired date value
+              dateFin: new Date(data.dateEnd), // Replace with your desired date value
               etat: STATUS_TASK_AM.PENDING,
               //type : data.type,
               notif: true,

@@ -8,9 +8,9 @@ taskAmRouter.post("/panne",addTaskPanne)
 taskAmRouter.post("/anomalie",addTaskAnnomalie)
 taskAmRouter.get("/panne",verifyAuth,getAllTaskPannes)
 taskAmRouter.get("/anomalie",verifyAuth,getAllTaskAnnomalie);
-taskAmRouter.get("/",verifyAuth,getAllTasks);
 taskAmRouter.post("/notif",verifyAuth,updateNotifOfTask)
 taskAmRouter.post("/status",verifyAuth,updateStatusOfTask)
+taskAmRouter.get("/",verifyAuth,getAllTasks);
 
 
 export default taskAmRouter

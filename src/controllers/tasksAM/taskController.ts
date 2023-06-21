@@ -9,29 +9,53 @@ import { onGetMachineHander } from "../../services/machinService";
 import { onGetAMHandler } from "../../services/userService";
 import { SuccessMsgResponse, SuccessResponse } from "../../handler/ApiResponse";
 import { isAM } from "../../enums/rolesEnum";
+import { firebaseAdmin } from "../../utils/firebaseClient";
 
 
 export const addTaskPanne = asyncHandler( async (req : Request , res : Response , next : NextFunction) =>{
-    
+
     const { error } = schema.addTaskSchema.validate(req.body);
     if (error) {
+        
         throw new BadRequestError(error.details[0].message);
+        
     }
 
     const machine = await onGetMachineHander(req.body.machine);
     if (!machine) {
+        
         throw new BadRequestError("machine doesnt existe")
+        
     }
 
     const am = await onGetAMHandler(req.body.am);
     if (!am) {
+        
         throw new BadRequestError("AM doesnt existe");
+        
     }
 
     const task = await onAddTaskPanneHandler(req.body);
     if (task == null ){
+        
+        
         throw new BadRequestError();
     }
+
+    const message = {
+        topic: `am-${am.idAM}`,
+        notification: {
+          title: req.body.title,
+          body: req.body.descr
+        }
+      };
+
+      try {
+        await firebaseAdmin.messaging().send(message);
+        console.log(`Successfully sent notification to am-${am.idAM}`);
+      } catch (error) {
+        console.error(`Error sending notification to am-${am.idAM}`);
+      }
 
     new SuccessResponse("add Task with sucess" , task).send(res);
     
@@ -58,8 +82,24 @@ export const addTaskAnnomalie = asyncHandler( async (req : Request , res : Respo
 
     const task = await onAddTaskAnomalieHandler(req.body);
     if (task == null ){
+        
         throw new BadRequestError();
     }
+
+    const message = {
+        topic: `am-${am.idAM}`,
+        notification: {
+          title: req.body.title,
+          body: req.body.descr
+        }
+      };
+
+      try {
+        await firebaseAdmin.messaging().send(message);
+        console.log(`Successfully sent notification to am-${am.idAM}`);
+      } catch (error) {
+        console.error(`Error sending notification to am-${am.idAM}`);
+      }
 
     new SuccessResponse("add Task with sucess" , task).send(res);
     
